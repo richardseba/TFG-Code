@@ -42,7 +42,8 @@ HEADERS  += mainwindow.h \
     ../Libelas/Libelas/filter.h \
     ../Libelas/Libelas/matrix.h \
     ../Libelas/Libelas/timer.h \
-    ../Libelas/Libelas/triangle.h
+    ../Libelas/Libelas/triangle.h \
+    ../Libelas/Libelas/image.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \

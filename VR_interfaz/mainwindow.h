@@ -73,7 +73,7 @@ private slots:
 private:
     bool saveImage(QImage qImage);
     void showVRViewer(int screen=0);
-    void processDisparity(QImage* right,QImage* left);
+    void processDisparity(QImage* Im1,QImage* Im2);
 
     Camera* m_cameraL;
     Camera* m_cameraR;

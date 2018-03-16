@@ -3,6 +3,7 @@
 
 #include "QDebug"
 #include "../Libelas/Libelas/elas.h"
+#include "../Libelas/Libelas/image.h"
 
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
@@ -481,23 +482,38 @@ void MainWindow::on_switchCamera_pushButton_clicked()
     m_cameraR = temp;
 }
 
-void MainWindow::processDisparity(QImage* right,QImage* left)
+void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
 {
-    int32_t width  = right->width();
-    int32_t height = right->height();
+    QImage I1 = Im1->convertToFormat(QImage::Format_Grayscale8);
+    QImage I2 = Im2->convertToFormat(QImage::Format_Grayscale8);
 
+    // check for correct size
+     if (I1.width()<=0 || I1.height() <=0 || I2.width()<=0 || I2.height() <=0 ||
+         I1.width()!=I2.width() || I1.height()!=I2.height()) {
+       qDebug() << "ERROR: Images must be of same size, but" << endl;
+       qDebug() << "       I1: " << I1.width() <<  " x " << I1.height() <<
+                    ", I2: " << I2.width() <<  " x " << I2.height() << endl;
+       return;
+     }
+
+    // get image width and height
+     int32_t width  = I1.width();
+     int32_t height = I1.height();
+
+
+    // allocate memory for disparity images
     const int32_t dims[3] = {width,height,width}; // bytes per line = width
     float* D1_data = (float*)malloc(width*height*sizeof(float));
     float* D2_data = (float*)malloc(width*height*sizeof(float));
 
-      // process
+    // process
 
     Elas::parameters param;
     param.postprocess_only_left = true;
-    Elas elas(param);
+    //Elas elas(param);
 
-    //Elas elas(Elas::setting::ROBOTICS);
-    elas.process(right->bits(),left->bits(),D1_data,D2_data,dims);
+    Elas elas(Elas::setting::CVC);
+    elas.process(I1.bits(),I2.bits(),D1_data,D2_data,dims);
 
     // find maximum disparity for scaling output disparity images to [0..255]
     float disp_max = 0;
@@ -506,22 +522,22 @@ void MainWindow::processDisparity(QImage* right,QImage* left)
       if (D2_data[i]>disp_max) disp_max = D2_data[i];
     }
 
-    // copy float to uchar
-
-    QImage D1((int)width,(int)height,QImage::Format_RGB888);
-    QImage D2((int)width,(int)height,QImage::Format_RGB888);
+    QImage D1((int)width,(int)height,QImage::Format_Grayscale8);
+    QImage D2((int)width,(int)height,QImage::Format_Grayscale8);
 
     for (int32_t i=0; i<width*height; i++) {
       D1.bits()[i] = (uint8_t)max(255.0*D1_data[i]/disp_max,0.0);
       D2.bits()[i] = (uint8_t)max(255.0*D2_data[i]/disp_max,0.0);
     }
-    qDebug() << "test!";
-    D1.save("output_1.pgm");
-    D2.save("output_2.pgm");
-    right->save("org_1.pgm");
-    left->save("org_2.pgm");
-}
 
+    ui->label_display1->setPixmap(QPixmap::fromImage(D1));
+    ui->label_display1->show();
+    ui->label_display2->setPixmap(QPixmap::fromImage(D2));
+    ui->label_display2->show();
+
+    free(D1_data);
+    free(D2_data);
+}
 
 
 

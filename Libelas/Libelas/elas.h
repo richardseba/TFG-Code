@@ -42,7 +42,7 @@ class Elas {
   
 public:
   
-  enum setting {ROBOTICS,MIDDLEBURY};
+  enum setting {ROBOTICS,MIDDLEBURY,CVC};
   
   // parameter settings
   struct parameters {
@@ -102,7 +102,32 @@ public:
         filter_adaptive_mean  = 1;
         postprocess_only_left = 1;
         subsampling           = 0;
-        
+
+        //CVC parameters
+      } else if(s==CVC) {
+          disp_min              = 5;
+          disp_max              = 255;
+          support_threshold     = 0.97;
+          support_texture       = 10;
+          candidate_stepsize    = 10;
+          incon_window_size     = 5;
+          incon_threshold       = 5;
+          incon_min_support     = 5;
+          add_corners           = 1;
+          grid_size             = 20;
+          beta                  = 0.02;
+          gamma                 = 3;
+          sigma                 = 1;
+          sradius               = 2;
+          match_texture         = 4;
+          lr_threshold          = 2;
+          speckle_sim_threshold = 1;
+          speckle_size          = 40;
+          ipol_gap_width        = 4;
+          filter_median         = 0;
+          filter_adaptive_mean  = 1;
+          postprocess_only_left = 1;
+          subsampling           = 0;
       // default settings for middlebury benchmark
       // (interpolate all missing disparities)
       } else {

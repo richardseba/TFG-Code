@@ -26,6 +26,8 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 #include "image.h"
 #include <algorithm>
 
+#include <QImage>
+
 using namespace std;
 
 // compute disparities of pgm image input pair file_1, file_2
@@ -34,24 +36,27 @@ void process (const char* file_1,const char* file_2) {
   cout << "Processing: " << file_1 << ", " << file_2 << endl;
 
   // load images
-  image<uchar> *I1,*I2;
-  I1 = loadPGM(file_1);
-  I2 = loadPGM(file_2);
+  QImage I1,I2;
+  I1.load(file_1);
+  I2.load(file_2);
+
+  I1 = I1.convertToFormat(QImage::Format_Grayscale8);
+  I2 = I2.convertToFormat(QImage::Format_Grayscale8);
+
 
   // check for correct size
-  if (I1->width()<=0 || I1->height() <=0 || I2->width()<=0 || I2->height() <=0 ||
-      I1->width()!=I2->width() || I1->height()!=I2->height()) {
-    cout << "ERROR: Images must be of same size, but" << endl;
-    cout << "       I1: " << I1->width() <<  " x " << I1->height() << 
-                 ", I2: " << I2->width() <<  " x " << I2->height() << endl;
-    delete I1;
-    delete I2;
-    return;    
-  }
+   if (I1.width()<=0 || I1.height() <=0 || I2.width()<=0 || I2.height() <=0 ||
+       I1.width()!=I2.width() || I1.height()!=I2.height()) {
+     cout << "ERROR: Images must be of same size, but" << endl;
+     cout << "       I1: " << I1.width() <<  " x " << I1.height() <<
+                  ", I2: " << I2.width() <<  " x " << I2.height() << endl;
+     return;
+   }
 
   // get image width and height
-  int32_t width  = I1->width();
-  int32_t height = I1->height();
+   int32_t width  = I1.width();
+   int32_t height = I1.height();
+
 
   // allocate memory for disparity images
   const int32_t dims[3] = {width,height,width}; // bytes per line = width
@@ -62,10 +67,10 @@ void process (const char* file_1,const char* file_2) {
   
   Elas::parameters param;
   param.postprocess_only_left = true; 
-  Elas elas(param);
+  //Elas elas(param);
   
-  //Elas elas(Elas::setting::ROBOTICS);
-  elas.process(I1->data,I2->data,D1_data,D2_data,dims);
+  Elas elas(Elas::setting::CVC);
+  elas.process(I1.bits(),I2.bits(),D1_data,D2_data,dims);
 
   // find maximum disparity for scaling output disparity images to [0..255]
   float disp_max = 0;
@@ -95,8 +100,6 @@ void process (const char* file_1,const char* file_2) {
   savePGM(D2,output_2);
 
   // free memory
-  delete I1;
-  delete I2;
   delete D1;
   delete D2;
   free(D1_data);
