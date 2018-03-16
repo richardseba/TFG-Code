@@ -1,7 +1,10 @@
-QT -= gui
+QT       += core gui
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
+
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -29,3 +32,32 @@ HEADERS += \
     matrix.h \
     timer.h \
     triangle.h
+
+win32 {
+    INCLUDEPATH += $$(PYLON_DEV_DIR)/include \
+    INCLUDEPATH += C:\opencv\build\include\
+}
+
+CONFIG(debug, debug|release) {
+    LIBS += C:\opencv\build\x86\vc12\lib\opencv_core2413d.lib \
+            C:\opencv\build\x86\vc12\lib\opencv_imgproc2413d.lib \
+            C:\opencv\build\x86\vc12\lib\opencv_highgui2413d.lib \
+            C:\opencv\build\x86\vc12\lib\opencv_ml2413d.lib \
+             C:\opencv\build\x86\vc12\lib\opencv_calib3d2413d.lib \
+            -L$$(PYLON_DEV_DIR)/lib/Win32 \
+            -lPylonBase_MD_VC120_v5_0 \
+            -lPylonUtility_MD_VC120_v5_0 \
+            -lPylonC_MD_VC120 \
+    }
+    else
+    {
+    LIBS += C:\opencv\build\x86\vc12\lib\opencv_core2413.lib \
+            C:\opencv\build\x86\vc12\lib\opencv_imgproc2413.lib \
+            C:\opencv\build\x86\vc12\lib\opencv_highgui2413.lib \
+            C:\opencv\build\x86\vc12\lib\opencv_ml2413.lib \
+            C:\opencv\build\x86\vc12\lib\opencv_calib3d2413.lib \
+            -L$$(PYLON_DEV_DIR)/lib/Win32 \
+            -lPylonBase_MD_VC120_v5_0 \
+            -lPylonUtility_MD_VC120_v5_0 \
+            -lPylonC_MD_VC120 \
+    }

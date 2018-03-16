@@ -21,7 +21,12 @@ SOURCES += main.cpp\
     vrimageupdater.cpp \
     selectcameraparamsdialog.cpp \
     vrui.cpp \
-    qgraphicstextitemvr.cpp
+    qgraphicstextitemvr.cpp \
+    ../Libelas/Libelas/descriptor.cpp \
+    ../Libelas/Libelas/elas.cpp \
+    ../Libelas/Libelas/filter.cpp \
+    ../Libelas/Libelas/matrix.cpp \
+    ../Libelas/Libelas/triangle.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -31,7 +36,13 @@ HEADERS  += mainwindow.h \
     vrimageupdater.h \
     selectcameraparamsdialog.h \
     vrui.h \
-    qgraphicstextitemvr.h
+    qgraphicstextitemvr.h \
+    ../Libelas/Libelas/descriptor.h \
+    ../Libelas/Libelas/elas.h \
+    ../Libelas/Libelas/filter.h \
+    ../Libelas/Libelas/matrix.h \
+    ../Libelas/Libelas/timer.h \
+    ../Libelas/Libelas/triangle.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \
