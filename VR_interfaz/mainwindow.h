@@ -22,6 +22,8 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+#include <algorithm>
+
 using namespace cv;
 
 const int FRAME_TIMER = 0;
@@ -71,6 +73,7 @@ private slots:
 private:
     bool saveImage(QImage qImage);
     void showVRViewer(int screen=0);
+    void processDisparity(QImage* right,QImage* left);
 
     Camera* m_cameraL;
     Camera* m_cameraR;

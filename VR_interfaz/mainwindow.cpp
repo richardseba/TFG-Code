@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "QDebug"
+#include "../Libelas/Libelas/elas.h"
 
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
@@ -197,34 +198,59 @@ void MainWindow::frameTimeEvent()
 {
     QImage *qImage = NULL;
     bool ret;
-    if(ui->checkBox_continous_left->isChecked())
+
+    bool left,right;
+    left = ui->checkBox_continous_left->isChecked();
+    right = ui->checkBox_continous_right->isChecked();
+
+    if(left && right)
     {
-        qImage = this->m_cameraL->grab_image(ret);
-
-        if(ret)
+        QImage *qImageL = this->m_cameraL->grab_image(left);
+        QImage *qImageR = this->m_cameraR->grab_image(right);
+        if(left && right)
         {
-            ui->label_display1->setPixmap(QPixmap::fromImage(*qImage));
-            ui->label_display1->show();
+            this->processDisparity(qImageR,qImageL);
+        }
+        delete[] qImageL->bits();
+        delete qImageL;
+        qImageL = NULL;
+        delete[] qImageR->bits();
+        delete qImageR;
+        qImageR = NULL;
+    }
+    else
+    {
+        if(ui->checkBox_continous_left->isChecked())
+        {
+            qImage = this->m_cameraL->grab_image(ret);
 
-            delete[] qImage->bits();
-            delete qImage;
-            qImage = NULL;
+            if(ret)
+            {
+                ui->label_display1->setPixmap(QPixmap::fromImage(*qImage));
+                ui->label_display1->show();
+
+                delete[] qImage->bits();
+                delete qImage;
+                qImage = NULL;
+            }
+        }
+
+        if(ui->checkBox_continous_right->isChecked())
+        {
+            qImage = this->m_cameraR->grab_image(ret);
+            if(ret)
+            {
+                ui->label_display2->setPixmap(QPixmap::fromImage(*qImage));
+                ui->label_display2->show();
+
+                delete[] qImage->bits();
+                delete qImage;
+                qImage = NULL;
+            }
         }
     }
 
-    if(ui->checkBox_continous_right->isChecked())
-    {
-        qImage = this->m_cameraR->grab_image(ret);
-        if(ret)
-        {
-            ui->label_display2->setPixmap(QPixmap::fromImage(*qImage));
-            ui->label_display2->show();
 
-            delete[] qImage->bits();
-            delete qImage;
-            qImage = NULL;
-        }
-    }
 }
 
 /* Function saveImage
@@ -455,6 +481,46 @@ void MainWindow::on_switchCamera_pushButton_clicked()
     m_cameraR = temp;
 }
 
+void MainWindow::processDisparity(QImage* right,QImage* left)
+{
+    int32_t width  = right->width();
+    int32_t height = right->height();
+
+    const int32_t dims[3] = {width,height,width}; // bytes per line = width
+    float* D1_data = (float*)malloc(width*height*sizeof(float));
+    float* D2_data = (float*)malloc(width*height*sizeof(float));
+
+      // process
+
+    Elas::parameters param;
+    param.postprocess_only_left = true;
+    Elas elas(param);
+
+    //Elas elas(Elas::setting::ROBOTICS);
+    elas.process(right->bits(),left->bits(),D1_data,D2_data,dims);
+
+    // find maximum disparity for scaling output disparity images to [0..255]
+    float disp_max = 0;
+    for (int32_t i=0; i<width*height; i++) {
+      if (D1_data[i]>disp_max) disp_max = D1_data[i];
+      if (D2_data[i]>disp_max) disp_max = D2_data[i];
+    }
+
+    // copy float to uchar
+
+    QImage D1((int)width,(int)height,QImage::Format_RGB888);
+    QImage D2((int)width,(int)height,QImage::Format_RGB888);
+
+    for (int32_t i=0; i<width*height; i++) {
+      D1.bits()[i] = (uint8_t)max(255.0*D1_data[i]/disp_max,0.0);
+      D2.bits()[i] = (uint8_t)max(255.0*D2_data[i]/disp_max,0.0);
+    }
+    qDebug() << "test!";
+    D1.save("output_1.pgm");
+    D2.save("output_2.pgm");
+    right->save("org_1.pgm");
+    left->save("org_2.pgm");
+}
 
 
 
