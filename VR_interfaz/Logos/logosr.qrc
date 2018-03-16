@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/Logospref">
+        <file alias="CVCLogo">CVC_CAT_CMYK.gif</file>
+    </qresource>
+</RCC>

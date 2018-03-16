@@ -1,0 +1,616 @@
+#include "camera.h"
+#include <pylon/PylonGUI.h>
+
+/* Function Camera
+ * -------------------------------
+ * built in constructor
+*/
+Camera::Camera()
+{
+    PylonInitialize();
+}
+
+/* Function Camera
+ * -------------------------------
+ * Overloaded constructor sets up the CInstantCamera and raises a
+ * messagebox warning in case that the camera isn't connected or is busy
+ *
+ * num_cam : number of the camera selected
+*/
+Camera::Camera(int num_cam)
+{
+    PylonInitialize();
+    CTlFactory& tlFactory = CTlFactory::GetInstance();
+    DeviceInfoList_t devices;
+    this->m_isInitUndistort = false;
+
+    int num_cameras = tlFactory.EnumerateDevices(devices);
+    if(num_cameras-1 >= num_cam)
+    {
+        this->m_pylon_camera = new CInstantCamera( CTlFactory::GetInstance().CreateDevice(devices[num_cam]));
+        this->m_pylon_camera->Open();
+    }
+    else
+    {
+        QMessageBox Msgbox;
+        Msgbox.setIcon(Msgbox.Critical);
+        Msgbox.setText("<big>Warning</big> <p>\n\n Camera not conected \n The program won't work without both cameras conected</p>");
+        Msgbox.exec();
+    }
+}
+
+/* Function Camera
+ * -------------------------------
+ * built in destructor
+*/
+Camera::~Camera()
+{
+    m_pylon_camera->Close();
+    delete m_pylon_camera;
+}
+
+/* Function startGrabbing
+ * -------------------------------
+ * calls the a CInstantCamera function StartGrabbing
+ *  Starts the grabbing of images from the camera
+ *
+ * grab_strategy : the grabbing strategy, see Pylon::EGrabStrategy,
+ *                  by default GrabStrategy_LatestImageOnly used
+*/
+void Camera::startGrabbing(EGrabStrategy grab_strategy)
+{
+    if(!isGrabbing())
+        this->m_pylon_camera->StartGrabbing(grab_strategy);
+}
+
+/* Function stopGrabbing
+ * -------------------------------
+ * calls the a CInstantCamera function StopGrabbing
+ *  stop the grabbing of images from the camera
+*/
+void Camera::stopGrabbing()
+{
+    //this->m_pylon_camera->Close();
+    this->m_pylon_camera->StopGrabbing();
+}
+
+/* Function isGrabbing
+ * -------------------------------
+ * returns true if the camera is grabbing images
+*/
+bool Camera::isGrabbing()
+{
+    return this->m_pylon_camera->IsGrabbing();
+}
+
+/* Function hasImage
+ * -------------------------------
+ * returns if there is an image to grab
+ *
+ * return : boolean indicating if there is a image to grab
+*/
+bool Camera::hasImage()
+{
+    return this->m_pylon_camera->GetGrabResultWaitObject().Wait(0);
+}
+
+/* Function getIsinitUndistort
+ * -------------------------------
+ * return the current value of m_isInitUndistort
+ *
+ * return : current value of m_isInitUndistort
+*/
+bool Camera::getIsinitUndistort()
+{
+    return this->m_isInitUndistort;
+}
+
+/* Function setBinning
+ * -------------------------------
+ *  this function sets the camera capture binning.
+ *  the binning value needs to be between 1 and 4.
+ *
+ *  1 value will use the maximum camera resolution
+ *  2,3,4 value will devide the original resolution 2,3,4 times.
+ *  otherwise the binning will be left as it is.
+ *
+ *  binningValueHorizontal : horizontal binning value.
+ *
+ *  binningValueVertical : vertical binning value.
+*/
+void Camera::setBinning(int binningValueHorizontal,int binningValueVertical)
+{
+    this->m_pylon_camera->Open();
+
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+    if(binningValueHorizontal>0&&binningValueHorizontal<=4)
+        CIntegerPtr(nodemap.GetNode("BinningHorizontal"))->SetValue(binningValueHorizontal);
+    if(binningValueVertical>0&&binningValueVertical<=4)
+        CIntegerPtr(nodemap.GetNode("BinningVertical"))->SetValue(binningValueVertical);
+
+}
+
+/* Function getHBinning
+ * -------------------------------
+ *  this function return the camera horizontal binning currently used
+*/
+int Camera::getHBinning()
+{
+    this->m_pylon_camera->Open();
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+
+    return CIntegerPtr(nodemap.GetNode("BinningHorizontal"))->GetValue();
+}
+
+/* Function getVBinning
+ * -------------------------------
+ *  this function return the camera horizontal binning currently used
+*/
+int Camera::getVBinning()
+{
+    this->m_pylon_camera->Open();
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+
+    return CIntegerPtr(nodemap.GetNode("BinningVertical"))->GetValue();
+}
+
+/* Function setflipYOutput
+ * -------------------------------
+ * sets a camera flag that will return the images flipped in the y axis.
+ * The flip is set at the start to false by default
+ *
+ * flip : boolean that selects if the image will be flipped in the y axis,
+ *        True -> the image will be flipped
+ *        false -> the image won't be flipped
+ *
+*/
+void Camera::setflipYOutput(bool flip)
+{
+    this->m_pylon_camera->Open();
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+    CBooleanPtr(nodemap.GetNode("ReverseY"))->SetValue(flip);
+}
+
+/* Function getflipY
+ * -------------------------------
+ * return true if the camera image is being flipped in the Y axis
+*/
+bool Camera::getflipY()
+{
+    this->m_pylon_camera->Open();
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+    return CBooleanPtr(nodemap.GetNode("ReverseY"))->GetValue();
+}
+
+/* Function setflipXOutput
+ * -------------------------------
+ * sets a camera flag that will return the images flipped in the x axis.
+ * The flip is set at the start to false by default
+ *
+ * flip : boolean that selects if the image will be flipped in the x axis,
+ *        True -> the image will be flipped
+ *        false -> the image won't be flipped
+ *
+*/
+void Camera::setflipXOutput(bool flip)
+{
+    this->m_pylon_camera->Open();
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+    CBooleanPtr(nodemap.GetNode("ReverseX"))->SetValue(flip);
+}
+
+/* Function getflipX
+ * -------------------------------
+ * return true if the camera image is being flipped in the x axis
+ *
+*/
+bool Camera::getflipX()
+{
+    this->m_pylon_camera->Open();
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+    return CBooleanPtr(nodemap.GetNode("ReverseX"))->GetValue();
+}
+
+
+/* Function setResolution
+ * -------------------------------
+ * sets the camera image resolution
+ *
+ * width: desired width of the image must be lower or equal
+ *        to the camera's max width
+ * height: desired height of the image must be lower or equal
+ *         to the camera's max height
+*/
+void Camera::setResolution(int width,int height)
+{
+    this->m_pylon_camera->Open();
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+
+    long maxWidth = CIntegerPtr(nodemap.GetNode("WidthMax"))->GetValue();
+    long maxHeight = CIntegerPtr(nodemap.GetNode("HeightMax"))->GetValue();
+
+    if(width>0 && width<=maxWidth)
+        CIntegerPtr(nodemap.GetNode("Width"))->SetValue(odd2Even(width));
+    if(height>0 && height<=maxHeight)
+        CIntegerPtr(nodemap.GetNode("Height"))->SetValue(odd2Even(height));
+}
+
+/* Function setROIOffset
+ * -------------------------------
+ * sets the offset inside the sensor of the left up corner of the image
+ *
+*/
+void Camera::setROIOffset(int x, int y)
+{
+    int width,height = 0;
+    this->m_pylon_camera->Open();
+
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+
+    long maxWidth = CIntegerPtr(nodemap.GetNode("WidthMax"))->GetValue();
+    long maxHeight = CIntegerPtr(nodemap.GetNode("HeightMax"))->GetValue();
+
+    width = CIntegerPtr(nodemap.GetNode("Width"))->GetValue();
+    height = CIntegerPtr(nodemap.GetNode("Height"))->GetValue();
+
+    if(x>=0 && x<maxWidth && maxWidth>=x+width)
+        CIntegerPtr(nodemap.GetNode("OffsetX"))->SetValue(odd2Even(x));
+    if(y>=0 && y<maxHeight && maxHeight>=y+height)
+        CIntegerPtr(nodemap.GetNode("OffsetY"))->SetValue(odd2Even(y));
+}
+
+/* Function getCurrentROIRect
+ * -------------------------------
+ * returns the current cv::rect where x and y are de offsets
+ * of the image inside the sensor
+ *
+*/
+Rect Camera::getCurrentROIRect()
+{
+    int width,height,x,y = 0;
+
+    this->m_pylon_camera->Open();
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+    width = CIntegerPtr(nodemap.GetNode("Width"))->GetValue();
+    height = CIntegerPtr(nodemap.GetNode("Height"))->GetValue();
+    x = CIntegerPtr(nodemap.GetNode("OffsetX"))->GetValue();
+    y = CIntegerPtr(nodemap.GetNode("OffsetY"))->GetValue();
+
+    return Rect(x,y,width,height);
+}
+
+/* Function setROIRect
+ * -------------------------------
+ * sets the current camera roi rectangle
+ *
+*/
+void Camera::setROIRect(Rect ROIrect)
+{
+    this->setResolution(ROIrect.width,ROIrect.height);
+    this->setROIOffset(odd2Even(ROIrect.x),odd2Even(ROIrect.y));
+}
+
+/* Function getMaxWidth
+ * -------------------------------
+ * returns the maximum width avaliable in this camera
+*/
+int Camera::getMaxWidth()
+{
+    this->m_pylon_camera->Open();
+
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+    return CIntegerPtr(nodemap.GetNode("WidthMax"))->GetValue();
+}
+
+/* Function getMaxHeight
+ * -------------------------------
+ * returns the maximum height avaliable in this camera
+*/
+int Camera::getMaxHeight()
+{
+    this->m_pylon_camera->Open();
+
+    INodeMap& nodemap = m_pylon_camera->GetNodeMap();
+    return CIntegerPtr(nodemap.GetNode("HeightMax"))->GetValue();
+}
+
+/* Function moveROIBy
+ * -------------------------------
+ * this function moves the current ROI in the sensor
+ *
+ * x: movement done in the x axis
+ * y: movement done in the y axis
+*/
+void Camera::moveROIBy(int x, int y)
+{
+    Rect rectangle = this->getCurrentROIRect();
+
+    this->setROIOffset(odd2Even(rectangle.x+x),odd2Even(rectangle.y+y));
+}
+
+/* Function grab_image
+ * -------------------------------
+ * grabs a image from the CInstantCamera
+ *
+ * &ret : boolean that indicates if the grabbing has been successfully.
+ *
+ * return -> image grabbed in QImage type
+*/
+QImage* Camera::grab_image(bool &ret)
+{
+    ret = false;
+    QImage *qImage = NULL;
+    CPylonImage image;
+    CImageFormatConverter fc;
+    fc.OutputPixelFormat = PixelType_RGB8packed; 
+    CGrabResultPtr ptrGrabResult;
+
+    this->m_pylon_camera->RetrieveResult( 5000, ptrGrabResult, TimeoutHandling_ThrowException);
+
+    if (ptrGrabResult->GrabSucceeded())
+    {
+        ret = true;
+
+        fc.Convert(image, ptrGrabResult);
+        size_t bufferSize = image.GetAllocatedBufferSize();
+        uint8_t *nBuffer = new uint8_t[bufferSize];
+        memcpy(nBuffer,image.GetBuffer(),bufferSize);
+        qImage = new QImage((uint8_t *)nBuffer, ptrGrabResult->GetWidth(), ptrGrabResult->GetHeight(),QImage::Format_RGB888);
+    }
+    return qImage;
+}
+
+/* Function single_grab_image
+ * -------------------------------
+ * open the camera grabs an image and closes it
+ *
+ * &ret : boolean that indicates if the grabbing has been successfully.
+ *
+ * return -> image grabbed in QImage type
+*/
+QImage* Camera::single_grab_image(bool &ret)
+{
+    this->startGrabbing();
+    QImage* image = grab_image(ret);
+    this->stopGrabbing();
+    return image;
+}
+
+/* Function initCamParametersFromYALM
+ * -------------------------------
+ * loads the camera configuration using a YAML file
+ * will raise a messagebox warning if the maximum resolution from the file
+ * isn't equal to the maximum resolution of the running camera
+ *
+ * filename : YAML file path that contains the camera configuration
+*/
+void Camera::initCamParametersFromYALM(QString filename)
+{
+    this->stopGrabbing();
+    int hBinning,vBinning,width,height,xOffset,yOffset,maxHeight,maxWidth = 0;
+    bool xflip,yflip = false;
+
+    FileStorage fs(filename.toStdString(), FileStorage::READ);
+    fs["horizontalBinning"] >> hBinning;
+    fs["verticalBinning"] >> vBinning;
+    fs["xflip"] >> xflip;
+    fs["yflip"] >> yflip;
+    fs["maxWidth"] >> maxWidth;
+    fs["maxHeight"] >> maxHeight;
+    fs["width"] >> width;
+    fs["height"] >> height;
+    fs["xOffset"] >> xOffset;
+    fs["yOffset"] >> yOffset;
+
+    if(maxWidth != this->getMaxWidth() || maxHeight != this->getMaxHeight())
+    {
+        QMessageBox Msgbox;
+        Msgbox.setIcon(Msgbox.Warning);
+        Msgbox.setText("<big>Warning</big> <p>\n\n Camera Resolution aren't equal \n It's posible that the YALM file is from other camera</p>");
+        Msgbox.exec();
+    }
+    this->setBinning(hBinning,vBinning);
+    this->setResolution(width,height);
+    this->setROIOffset(xOffset,yOffset);
+    this->setflipXOutput(xflip);
+    this->setflipYOutput(yflip);
+}
+
+/* Function initCalibParams
+ * -------------------------------
+ * function used to initialize the calibration params from two files.
+ *
+ * intrinsicFilename : filepath of the instrinsic matrix in csv format
+ * distCoeffsFilename : filepath of the distortion coeficient in csv format
+ *
+ * return -> boolean indicates if the calibration paramenters have been loaded
+ *          successfully.
+*/
+bool Camera::initCalibParams(QString intrinsicFilename,QString distCoeffsFilename)
+{
+    this->m_isInitUndistort = true;
+
+    this->m_intrinsic = Mat(INTRINSICS_MAT_SIZE,INTRINSICS_MAT_SIZE, CV_64F);
+    this->m_distCoeffs = Mat(1,MAX_VECTOR_COEFF_LENGHT, CV_64F);
+
+    for(int h=0;h<MAX_VECTOR_COEFF_LENGHT;h++)
+        this->m_distCoeffs.at<double>(0,h) = 0;
+
+    //Intrinsic matrix initialization
+    QFile filemat(intrinsicFilename);
+    if(!filemat.open(QIODevice::ReadOnly)) {
+        this->m_isInitUndistort = false;
+    }
+    QTextStream inmat(&filemat);
+    int i = 0;
+    bool error = false;
+    while(!inmat.atEnd() && !error) {
+        QString line = inmat.readLine();
+        QStringList fields = line.split(",");
+
+        if(fields.size()==INTRINSICS_MAT_SIZE && i<INTRINSICS_MAT_SIZE)
+        {
+            for(int j=0; j<fields.size();j++)
+            {
+                this->m_intrinsic.at<double>(i,j) = QString(fields[j]).toDouble();
+            }
+        }else
+        {
+            error = true;
+            QMessageBox Msgbox;
+            Msgbox.setIcon(Msgbox.Warning);
+            Msgbox.setText("<big>Warning</big> <p>Matrix incorrect</p>");
+            Msgbox.exec();
+        }
+        i++;
+    }
+    this->m_isInitUndistort &=!error;
+    filemat.close();
+
+    error = false;
+    //distorsion coefficients initialitation
+    QFile file(distCoeffsFilename);
+    if(!file.open(QIODevice::ReadOnly)) {
+        this->m_isInitUndistort = false;
+    }
+    QTextStream indist(&file);
+    if(!indist.atEnd()){
+            QString line = indist.readLine();
+            QStringList fields = line.split(",");
+         //allowed distortion coefficients vector sizes
+        if(fields.size()==4 || fields.size()== 5 || fields.size() == 8)
+        {
+            for(int j=0; j<fields.size();j++)
+            {
+                 this->m_distCoeffs.at<double>(0,j) = QString(fields[j]).toDouble();
+            }
+        }
+        else
+        {
+            error = true;
+            QMessageBox Msgbox;
+            Msgbox.setIcon(Msgbox.Warning);
+            Msgbox.setText("<big>Warning</big> <p>Distortion vector incorrect</p>");
+            Msgbox.exec();
+        }
+    }else
+    {
+        //the file is empty or doesn't exist
+        error = true;
+    }
+    file.close();
+    this->m_isInitUndistort &=!error;
+
+    if(!m_isInitUndistort)
+    {
+        QMessageBox Msgbox;
+        Msgbox.setIcon(Msgbox.Warning);
+        Msgbox.setText("<big>Warning</big> <p>The loading of the calibration parameters failed</p> <p> Check if the file exists or if it's corrupted</p>");
+        Msgbox.exec();
+
+    }
+
+    return this->m_isInitUndistort;
+}
+
+/* Function initUndistortMap
+ * -------------------------------
+ * function used to initialize and map the calibration params
+ *
+ * imageSize : width and height of the image that will be transformed
+*/
+void Camera::initUndistortMap(Size imageSize)
+{
+    Mat indenity = Mat::eye(3, 3, CV_64F);
+    initUndistortRectifyMap(this->m_intrinsic,this->m_distCoeffs,indenity,this->m_intrinsic,imageSize,CV_16SC2,this->m_map1,this->m_map2);
+}
+
+/* Function undistortMapImage
+ * -------------------------------
+ * function used to undistort an image using mapping
+ *
+ * src : image used to perform the undistortion
+ * interpolation : interpolation used in the remap function, see cv::remap
+ *
+ * return -> the input image undistorted
+*/
+QImage Camera::undistortMapImage(QImage src, int interpolation)
+{
+    //this->crono.restart();
+
+    Mat imageUndistorted;
+    Mat image = this->QImage2Mat(src);
+
+    remap( image, imageUndistorted, this->m_map1, this->m_map2, interpolation , BORDER_CONSTANT );
+
+    //return this->Mat2QImage(Mat(imageUndistorted,Rect(50,50,1200-100,1200-100)   ));
+    return this->Mat2QImage(imageUndistorted);
+}
+
+/* Function undistortImage
+ * -------------------------------
+ * function used to undistort an image
+ *
+ * src : image used to perform the undistortion
+ *
+ * return -> the input image undistorted
+*/
+QImage Camera::undistortImage(QImage src)
+{
+    Mat image = this->QImage2Mat(src);
+    Mat imageUndistorted;
+    undistort(image,imageUndistorted,this->m_intrinsic,m_distCoeffs);
+    return this->Mat2QImage(imageUndistorted);
+}
+
+/* Function Mat2QImage
+ * -------------------------------
+ * transforms a opencv's Mat to a Qt's QImage
+ *
+ * src : matrix to transform
+ *
+ * return -> the input Mat as a QImage
+*/
+QImage Camera::Mat2QImage(Mat const& src)
+{
+     Mat temp;
+     cvtColor(src, temp,CV_BGR2RGB); // cvtColor Makes a copt, that what i need
+     QImage dest((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
+     dest.bits(); // enforce deep copy, see documentation
+     // of QImage::QImage ( const uchar * data, int width, int height, Format format )
+     return dest;
+}
+
+/* Function QImage2Mat
+ * -------------------------------
+ * transforms a Qt's QImage to opencv's Mat
+ *
+ * src : QImage to tranform
+ *
+ * return -> the input QImage as Mat
+*/
+Mat Camera::QImage2Mat(QImage const& src)
+{
+     Mat tmp(src.height(),src.width(),CV_8UC3,(uchar*)src.bits(),src.bytesPerLine());
+     cvtColor(tmp, tmp,CV_BGR2RGB);
+     return tmp;
+}
+
+/* Private Function odd2Even
+ * -------------------------------
+ * transforms a odd number into an even number
+ * if a even number is given, the same number will be
+ * returned
+ *
+ * num : odd number
+ *
+ * return -> even number
+*/
+int Camera::odd2Even(int num)
+{
+    if(num%2 != 0)
+        num = num - 1;
+    else
+        num = num;
+    return num;
+}
