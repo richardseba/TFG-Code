@@ -79,77 +79,69 @@ MainWindow::~MainWindow()
 */
 void MainWindow::on_captureButton_clicked()
 {
-    QImage *qImage;
-    bool ret;
+    QImage *ImgR,*ImgL;
+    bool retL = false,retR = false;
+
     if(ui->checkBox_capture_left->isChecked())
-    {
-        qImage = this->m_cameraL->single_grab_image(ret);
-
-        if(ret)
-        {
-            QImage copy;
-            if(ui->checkBox_undistort->isChecked())
-            {
-                copy = this->m_cameraL->undistortMapImage(*qImage, CV_INTER_LINEAR);
-                ui->label_display1->setPixmap(QPixmap::fromImage(copy));
-                if(ui->checkBox_save->isChecked())
-                    this->saveImage(copy);
-            }
-            else
-            {
-                ui->label_display1->setPixmap(QPixmap::fromImage(*qImage));                
-                if(ui->checkBox_save->isChecked())
-                    this->saveImage(*qImage);
-            }
-
-            ui->label_display1->show();
-
-            delete[] qImage->bits();
-            delete qImage;
-            qImage = NULL;
-        }
-        else
-        {
-            QMessageBox Msgbox;
-            Msgbox.setIcon(Msgbox.Information);
-            Msgbox.setText("<big>Warning</big> <p>\n\n No image recieved</p>");
-            Msgbox.exec();
-        }
-    }
+        ImgL = this->m_cameraL->single_grab_image(retL);
 
     if(ui->checkBox_capture_right->isChecked())
+        ImgR = this->m_cameraR->single_grab_image(retR);
+
+    if(retL)
     {
-        qImage = this->m_cameraR->single_grab_image(ret);
-        if(ret)
+        QImage copy;
+        if(ui->checkBox_undistort->isChecked())
         {
-            QImage copy;
-            if(ui->checkBox_undistort->isChecked())
-            {
-                copy = this->m_cameraR->undistortMapImage(*qImage, CV_INTER_LINEAR);
-                ui->label_display2->setPixmap(QPixmap::fromImage(copy));
-                if(ui->checkBox_save->isChecked())
-                    this->saveImage(copy);
-            }
-            else
-            {
-                ui->label_display2->setPixmap(QPixmap::fromImage(*qImage));
-                if(ui->checkBox_save->isChecked())
-                    this->saveImage(*qImage);
-            }
-
-            ui->label_display2->show();
-
-            delete[] qImage->bits();
-            delete qImage;
-            qImage = NULL;
+            copy = this->m_cameraL->undistortMapImage(*ImgL, CV_INTER_LINEAR);
+            ui->label_display1->setPixmap(QPixmap::fromImage(copy));
+            if(ui->checkBox_save->isChecked())
+                this->saveImage(copy);
         }
         else
         {
-            QMessageBox Msgbox;
-            Msgbox.setIcon(Msgbox.Information);
-            Msgbox.setText("<big>Warning</big> <p>\n\n No image recieved</p>");
-            Msgbox.exec();
+            ui->label_display1->setPixmap(QPixmap::fromImage(*ImgL));
+            if(ui->checkBox_save->isChecked())
+                this->saveImage(*ImgL);
         }
+
+        ui->label_display1->show();
+
+        delete[] ImgL->bits();
+        delete ImgL;
+        ImgL = NULL;
+    }
+    else
+    {
+        qDebug() << "no left image recieved";
+    }
+
+    if(retR)
+    {
+        QImage copy;
+        if(ui->checkBox_undistort->isChecked())
+        {
+            copy = this->m_cameraR->undistortMapImage(*ImgR, CV_INTER_LINEAR);
+            ui->label_display2->setPixmap(QPixmap::fromImage(copy));
+            if(ui->checkBox_save->isChecked())
+                this->saveImage(copy);
+        }
+        else
+        {
+            ui->label_display2->setPixmap(QPixmap::fromImage(*ImgR));
+            if(ui->checkBox_save->isChecked())
+                this->saveImage(*ImgR);
+        }
+
+        ui->label_display2->show();
+
+        delete[] ImgR->bits();
+        delete ImgR;
+        ImgR = NULL;
+    }
+    else
+    {
+        qDebug() << "no right image recieved";
     }
 }
 
