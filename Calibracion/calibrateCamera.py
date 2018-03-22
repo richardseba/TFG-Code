@@ -31,7 +31,7 @@ class calibrateCamera:
         self.objpoints = [] # 3d point in real world space
         self.imgpoints = [] # 2d points in image plane.
     
-        images = glob.glob(str(ImageDirectory)+"/*.tiff")    
+        images = glob.glob(str(ImageDirectory)+"/*.png")    
         
         for name in images:
             print name

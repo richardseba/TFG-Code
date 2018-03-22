@@ -69,7 +69,7 @@ void process (const char* file_1,const char* file_2) {
   param.postprocess_only_left = true; 
   //Elas elas(param);
   
-  Elas elas(Elas::setting::CVC);
+  Elas elas(Elas::setting::MIDDLEBURY);
   elas.process(I1.bits(),I2.bits(),D1_data,D2_data,dims);
 
   // find maximum disparity for scaling output disparity images to [0..255]

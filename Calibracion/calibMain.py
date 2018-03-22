@@ -10,10 +10,10 @@ reload(cc)
 
 def main():
     cameraL = cc.calibrateCamera()
-    cameraL.calibrateCamera((11,7),"./Camera Left")
+    cameraL.calibrateCamera((11,7),"./Camera Left",1,True,True)
     
     cameraR = cc.calibrateCamera()
-    cameraR.calibrateCamera((11,7),"./Camera Right")
+    cameraR.calibrateCamera((11,7),"./Camera Right",1,True,True)
     
     cc.saveNumpyMatrix("cameraLmatrix.txt",cameraL.matrix)
     cc.saveNumpyMatrix("cameraLdist.txt",cameraL.dist)
