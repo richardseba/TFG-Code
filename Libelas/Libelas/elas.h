@@ -105,25 +105,25 @@ public:
 
         //CVC parameters
       } else if(s==CVC) {
-          disp_min              = 5;
+          disp_min              = 0;
           disp_max              = 255;
-          support_threshold     = 0.97;
+          support_threshold     = 0.8;
           support_texture       = 10;
-          candidate_stepsize    = 10;
+          candidate_stepsize    = 5;
           incon_window_size     = 5;
           incon_threshold       = 5;
           incon_min_support     = 5;
           add_corners           = 1;
-          grid_size             = 10;
-          beta                  = 0.02;
-          gamma                 = 3;
-          sigma                 = 1;
+          grid_size             = 40;
+          beta                  = 0.00;
+          gamma                 = 0;
+          sigma                 = 0;
           sradius               = 2;
-          match_texture         = 4;
+          match_texture         = 1;
           lr_threshold          = 2;
           speckle_sim_threshold = 1;
-          speckle_size          = 40;
-          ipol_gap_width        = 4;
+          speckle_size          = 200;
+          ipol_gap_width        = 3;
           filter_median         = 0;
           filter_adaptive_mean  = 1;
           postprocess_only_left = 1;
