@@ -11,6 +11,7 @@
 #include <QImageWriter>
 #include <pylon/PylonIncludes.h>
 #include <GenICamFwd.h>
+#include "utils.h"
 
 #include <pylon/usb/BaslerUsbInstantCamera.h>
 typedef Pylon::CBaslerUsbInstantCamera Camera_t;
@@ -31,7 +32,7 @@ const int MAX_VECTOR_COEFF_LENGHT = 8;
  * -------------------------------
  * This class is used to simplify the use of the basler camera
  * api. It's build to work with all the basler camera portfolio.
- * Also allow us to undistort an image using the initialized
+ * Also allow us to undistort an image using precalculated
  * camera calibration params.
 */
 class Camera
@@ -73,9 +74,6 @@ public:
 
     QImage undistortImage(QImage src);
 private:
-    Mat QImage2Mat(QImage const& src);
-    QImage Mat2QImage(Mat const& src);
-    int odd2Even(int num);
     bool m_isInitUndistort;
 
     CInstantCamera* m_pylon_camera;

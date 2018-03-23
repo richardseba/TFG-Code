@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     ../Libelas/Libelas/elas.cpp \
     ../Libelas/Libelas/filter.cpp \
     ../Libelas/Libelas/matrix.cpp \
-    ../Libelas/Libelas/triangle.cpp
+    ../Libelas/Libelas/triangle.cpp \
+    utils.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -43,7 +44,8 @@ HEADERS  += mainwindow.h \
     ../Libelas/Libelas/matrix.h \
     ../Libelas/Libelas/timer.h \
     ../Libelas/Libelas/triangle.h \
-    ../Libelas/Libelas/image.h
+    ../Libelas/Libelas/image.h \
+    utils.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \

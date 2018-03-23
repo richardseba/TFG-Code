@@ -539,12 +539,11 @@ QImage Camera::undistortMapImage(QImage src, int interpolation)
     //this->crono.restart();
 
     Mat imageUndistorted;
-    Mat image = this->QImage2Mat(src);
+    Mat image = QImage2Mat(src);
 
     remap( image, imageUndistorted, this->m_map1, this->m_map2, interpolation , BORDER_CONSTANT );
 
-    //return this->Mat2QImage(Mat(imageUndistorted,Rect(50,50,1200-100,1200-100)   ));
-    return this->Mat2QImage(imageUndistorted);
+    return Mat2QImage(imageUndistorted);
 }
 
 /* Function undistortImage
@@ -557,60 +556,9 @@ QImage Camera::undistortMapImage(QImage src, int interpolation)
 */
 QImage Camera::undistortImage(QImage src)
 {
-    Mat image = this->QImage2Mat(src);
+    Mat image = QImage2Mat(src);
     Mat imageUndistorted;
     undistort(image,imageUndistorted,this->m_intrinsic,m_distCoeffs);
-    return this->Mat2QImage(imageUndistorted);
+    return Mat2QImage(imageUndistorted);
 }
 
-/* Function Mat2QImage
- * -------------------------------
- * transforms a opencv's Mat to a Qt's QImage
- *
- * src : matrix to transform
- *
- * return -> the input Mat as a QImage
-*/
-QImage Camera::Mat2QImage(Mat const& src)
-{
-     Mat temp;
-     cvtColor(src, temp,CV_BGR2RGB); // cvtColor Makes a copt, that what i need
-     QImage dest((const uchar *) temp.data, temp.cols, temp.rows, temp.step, QImage::Format_RGB888);
-     dest.bits(); // enforce deep copy, see documentation
-     // of QImage::QImage ( const uchar * data, int width, int height, Format format )
-     return dest;
-}
-
-/* Function QImage2Mat
- * -------------------------------
- * transforms a Qt's QImage to opencv's Mat
- *
- * src : QImage to tranform
- *
- * return -> the input QImage as Mat
-*/
-Mat Camera::QImage2Mat(QImage const& src)
-{
-     Mat tmp(src.height(),src.width(),CV_8UC3,(uchar*)src.bits(),src.bytesPerLine());
-     cvtColor(tmp, tmp,CV_BGR2RGB);
-     return tmp;
-}
-
-/* Private Function odd2Even
- * -------------------------------
- * transforms a odd number into an even number
- * if a even number is given, the same number will be
- * returned
- *
- * num : odd number
- *
- * return -> even number
-*/
-int Camera::odd2Even(int num)
-{
-    if(num%2 != 0)
-        num = num - 1;
-    else
-        num = num;
-    return num;
-}
