@@ -43,22 +43,24 @@ class calibrateCamera:
             print ret
             if(ret == True):
                 self.objpoints.append(objp*chessBoardSize)
-        
-                corners2 = cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
-                self.imgpoints.append(corners2)
+                
+                cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
+                self.imgpoints.append(corners)
                 
                 if(showImages):
                     # Draw and display the corners
-                    gray = cv2.drawChessboardCorners(gray, chessboard, corners2,ret)
+                    cv2.drawChessboardCorners(gray, chessboard, corners,ret)
                     cv2.imshow(str(name),gray)
                     cv2.waitKey(0)
                     
             cv2.destroyAllWindows()
+            
         ret, self.matrix, self.dist, self.rotation, self.translation = cv2.calibrateCamera(self.objpoints, self.imgpoints, gray.shape[::-1],None,None)
         
-        np.savez(str(ImageDirectory)+"./cameraCalibration",matrix=self.matrix,dist=self.dist, 
-                 rotation=self.rotation, translation=self.translation,imgpoints=self.imgpoints,
-                 objpoints=self.objpoints)
+#        np.savez(str(ImageDirectory)+"./cameraCalibration",matrix=self.matrix,dist=self.dist, 
+#                 rotation=self.rotation, translation=self.translation,imgpoints=self.imgpoints,
+#                 objpoints=self.objpoints)
+
         
     def undistort(self,image,showImages=False):
         """
@@ -68,13 +70,17 @@ class calibrateCamera:
         
         newcameramtx, roi=cv2.getOptimalNewCameraMatrix(self.matrix,self.dist,(w,h),1,(w,h))
         
-        result = cv2.undistort(image, self.matrix, self.dist, None, newcameramtx)
+#        result = cv2.undistort(image, self.matrix, self.dist, None,newcameramtx)
+        
+        mapx,mapy = cv2.initUndistortRectifyMap(self.matrix,self.dist,None,newcameramtx,(w,h),5)
+        result = cv2.remap(image,mapx,mapy,cv2.INTER_LINEAR)
         
         x,y,w,h = roi
         result = result[y:y+h, x:x+w]
         
         
         if(showImages):
+            cv2.imwrite('calibresult.png',result)
             cv2.imshow("undistort",result)
             cv2.waitKey(0)
         return result    
