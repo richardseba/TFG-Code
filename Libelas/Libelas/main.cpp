@@ -26,6 +26,7 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 #include "image.h"
 #include <algorithm>
 
+
 #include <QImage>
 
 using namespace std;

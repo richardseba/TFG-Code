@@ -65,6 +65,7 @@ CONFIG(debug, debug|release) {
             C:\opencv\build\x86\vc12\lib\opencv_imgproc2413d.lib \
             C:\opencv\build\x86\vc12\lib\opencv_highgui2413d.lib \
             C:\opencv\build\x86\vc12\lib\opencv_ml2413d.lib \
+            C:\opencv\build\x86\vc12\lib\opencv_features2d243d.lib \
              C:\opencv\build\x86\vc12\lib\opencv_calib3d2413d.lib \
             -L$$(PYLON_DEV_DIR)/lib/Win32 \
             -lPylonBase_MD_VC120_v5_0 \
@@ -77,6 +78,7 @@ CONFIG(debug, debug|release) {
             C:\opencv\build\x86\vc12\lib\opencv_imgproc2413.lib \
             C:\opencv\build\x86\vc12\lib\opencv_highgui2413.lib \
             C:\opencv\build\x86\vc12\lib\opencv_ml2413.lib \
+            C:\opencv\build\x86\vc12\lib\opencv_features2d243.lib\
             C:\opencv\build\x86\vc12\lib\opencv_calib3d2413.lib \
             -L$$(PYLON_DEV_DIR)/lib/Win32 \
             -lPylonBase_MD_VC120_v5_0 \
