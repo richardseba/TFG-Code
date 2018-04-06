@@ -19,27 +19,34 @@ public:
                       char* imgFilePath, char* imgsFilename, char* imgExtension);
     CameraCalibration(char* configFileName);
 
-    void calibrateFromFile();
+    void calibrateFromFile(char* configFileName);
     void calibrateFromImages(int boardWidth, int boardHeight, int numImgs,float squareSize,
                              char* imgFilePath, char* imgsFilename, char* imgExtension);
 
     bool isCalibrated();
+
     Mat getIntrinsicMatrix();
-    Mat getDistorsionMatrix();
+    Mat getDistorsionVector();
 
-    void saveParamsInFile();
+    bool saveParamsInFile(char* configFileName);
+
 private:
-    void loadFromFile();
-    void loadFromImages();
-    double computeReprojectionErrors();
+    void loadFromImagesPoints(int boardWidth, int boardHeight, int numImgs,float squareSize,
+                              char* imgFilePath, char* imgsFilename, char* imgExtension);
+    double computeReprojectionErrors(const vector< Mat >& rvecs, const vector< Mat >& tvecs);
 
-    bool m_isInitialized;
+    bool m_isCalibrated;
     Mat m_intrinsicMatrix;
-    Mat m_distorsionMatrix;
+    Mat m_distorsionVector;
 
     int m_boardWidth;
     int m_boardHeight;
     int m_squareSize;
+    double m_calibrationError;
+
+    vector< vector< Point3f > > m_objectPoints;
+    vector< vector< Point2f > > m_imagePoints;
+    Mat::size m_imageSize;
 };
 
 #endif // CAMERACALIBRATION_H

@@ -103,5 +103,6 @@ void makeCalibration()
       fs << "board_width" << board_width;
       fs << "board_height" << board_height;
       fs << "square_size" << square_size;
+
       printf("Done Calibration\n");
 }
