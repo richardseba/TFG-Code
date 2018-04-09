@@ -17,9 +17,14 @@ bool CameraCalibration::isCalibrated()
     return m_isCalibrated;
 }
 
-Mat CameraCalibration::getDistorsionMatrix()
+bool CameraCalibration::isInitUndistort()
 {
-    return m_distorsionMatrix;
+    return m_isInitUndistort;
+}
+
+Mat CameraCalibration::getDistorsionVector()
+{
+    return m_distorsionVector;
 }
 
 Mat CameraCalibration::getIntrinsicMatrix()
@@ -38,20 +43,24 @@ void CameraCalibration::calibrateFromFile(char *configFileName)
     fs["boardHeight"] >> m_boardHeight;
     fs["squareSize"] >> m_squareSize;
     fs["calibrationError"] >> m_calibrationError;
+    fs["imageSize"] >> m_imageSize;
 
     cout <<  "Calibration error: " << m_calibrationError << "\n";
 
-    if(m_intrinsicMatrix != NULL && m_distorsionVector != NULL)
+    if(m_intrinsicMatrix.data != NULL && m_distorsionVector.data != NULL)
         m_isCalibrated = true;
 }
 
 void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int numImgs, float squareSize,
                                             char *imgFilePath, char *imgsFilename, char *imgExtension)
 {
+    m_boardWidth = boardWidth;
+    m_boardHeight = boardHeight;
+    m_squareSize = squareSize;
+
     vector< Mat > rvecs, tvecs;
     m_isCalibrated = false;
-    loadFromImagesPoints(boardWidth, boardHeight, numImgs, squareSize,
-                         imgFilePath, imgsFilename, imgExtension);
+    loadFromImagesPoints(numImgs, imgFilePath, imgsFilename, imgExtension);
 
     printf("Starting Calibration\n");
     int flag = 0;
@@ -62,16 +71,16 @@ void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int
 
     cout << "Calibration error: " << computeReprojectionErrors(rvecs, tvecs) << "\n";
 
-    if(m_intrinsicMatrix != NULL && m_distorsionVector != NULL)
+    if(m_intrinsicMatrix.data != NULL && m_distorsionVector.data != NULL)
         m_isCalibrated = true;
 }
 
-void CameraCalibration::loadFromImagesPoints(int boardWidth, int boardHeight, int numImgs,float squareSize,
-                                             char* imgFilePath, char* imgsFilename, char* imgExtension)
+void CameraCalibration::loadFromImagesPoints(int numImgs, char* imgFilePath, char* imgsFilename,
+                                             char* imgExtension)
 {
     Mat img, gray;
     vector< Point2f > corners;
-    Size boardSize = Size(boardWidth, boardHeight);
+    Size boardSize = Size(m_boardWidth, m_boardHeight);
 
     for (int k = 1; k <= numImgs; k++) {
       char imgFile[100];
@@ -93,9 +102,9 @@ void CameraCalibration::loadFromImagesPoints(int boardWidth, int boardHeight, in
       }
 
       vector< Point3f > obj;
-      for (int i = 0; i < board_height; i++)
-        for (int j = 0; j < board_width; j++)
-          obj.push_back(Point3f((float)j * squareSize, (float)i * square_size, 0));
+      for (int i = 0; i < m_boardHeight; i++)
+        for (int j = 0; j < m_boardWidth; j++)
+          obj.push_back(Point3f((float)j * m_squareSize, (float)i * m_squareSize, 0));
 
       if (found) {
         cout << k << ". Found corners!" << "\n";
@@ -128,7 +137,7 @@ double CameraCalibration::computeReprojectionErrors(const vector<Mat> &rvecs, co
   return m_calibrationError;
 }
 
-bool saveParamsInFile(char* configFileName)
+bool CameraCalibration::saveParamsInFile(char* configFileName)
 {
     bool saved = false;
     if(isCalibrated()) {
@@ -140,8 +149,48 @@ bool saveParamsInFile(char* configFileName)
         fs << "boardHeight" << m_boardHeight;
         fs << "squareSize" << m_squareSize;
         fs << "calibrationError" << m_calibrationError;
+        fs << "imageSize" << m_imageSize;
 
         saved = true;
     }
     return saved;
 }
+
+void CameraCalibration::initUndistortImage()
+{
+    if(this->isCalibrated())
+    {
+        Mat R;
+        cv::initUndistortRectifyMap(m_intrinsicMatrix, m_distorsionVector, R, m_intrinsicMatrix,
+                                    m_imageSize, CV_32F, m_mapx, m_mapy);
+    }
+}
+
+Mat CameraCalibration::undistort(Mat imgIn)
+{
+    Mat imgOut;
+    if(this->isInitUndistort())
+        cv::remap(imgIn, imgOut, m_mapx, m_mapy, cv::INTER_LINEAR);
+    return imgOut;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

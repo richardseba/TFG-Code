@@ -23,14 +23,16 @@ SOURCES += \
     undistort_rectify.cpp \
     calib_stereo.cpp \
     calibtemp.cpp \
-    cameracalibration.cpp
+    cameracalibration.cpp \
+    stereocalibration.cpp
 
 HEADERS += \
     utils.h \
     undistort_rectify.h \
     calib_stereo.h \
     calibtemp.h \
-    cameracalibration.h
+    cameracalibration.h \
+    stereocalibration.h
 
 win32 {
     INCLUDEPATH += C:\opencv\build\include\

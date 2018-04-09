@@ -196,7 +196,7 @@ void MainWindow::frameTimeEvent()
     left = ui->checkBox_continous_left->isChecked();
     right = ui->checkBox_continous_right->isChecked();
 
-    if(left && right)
+    if(left && false)
     {
         QImage *qImageL = this->m_cameraL->grab_image(left);
         QImage *qImageR = this->m_cameraR->grab_image(right);

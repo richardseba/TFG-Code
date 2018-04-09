@@ -22,31 +22,38 @@ public:
     void calibrateFromFile(char* configFileName);
     void calibrateFromImages(int boardWidth, int boardHeight, int numImgs,float squareSize,
                              char* imgFilePath, char* imgsFilename, char* imgExtension);
-
-    bool isCalibrated();
-
-    Mat getIntrinsicMatrix();
-    Mat getDistorsionVector();
+    void initUndistortImage();
+    Mat undistort(Mat imgIn);
 
     bool saveParamsInFile(char* configFileName);
 
+    bool isCalibrated();
+    bool isInitUndistort();
+
+    Mat getIntrinsicMatrix();
+    Mat getDistorsionVector();
 private:
-    void loadFromImagesPoints(int boardWidth, int boardHeight, int numImgs,float squareSize,
-                              char* imgFilePath, char* imgsFilename, char* imgExtension);
+    void loadFromImagesPoints(int numImgs,char* imgFilePath, char* imgsFilename, char* imgExtension);
+
     double computeReprojectionErrors(const vector< Mat >& rvecs, const vector< Mat >& tvecs);
 
     bool m_isCalibrated;
+    bool m_isInitUndistort;
+
     Mat m_intrinsicMatrix;
     Mat m_distorsionVector;
 
     int m_boardWidth;
     int m_boardHeight;
-    int m_squareSize;
+    float m_squareSize;
     double m_calibrationError;
 
-    vector< vector< Point3f > > m_objectPoints;
-    vector< vector< Point2f > > m_imagePoints;
-    Mat::size m_imageSize;
+    vector< vector<Point3f> > m_objectPoints;
+    vector< vector<Point2f> > m_imagePoints;
+    Size m_imageSize;
+
+    Mat m_mapx;
+    Mat m_mapy;
 };
 
 #endif // CAMERACALIBRATION_H
