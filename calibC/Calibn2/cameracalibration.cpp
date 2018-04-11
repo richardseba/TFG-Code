@@ -1,5 +1,7 @@
 #include "cameracalibration.h"
 
+CameraCalibration::CameraCalibration(){}
+
 CameraCalibration::CameraCalibration(int boardWidth, int boardHeight, int numImgs,float squareSize,
                                      char* imgFilePath, char* imgsFilename, char* imgExtension)
 {

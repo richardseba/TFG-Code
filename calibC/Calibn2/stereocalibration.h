@@ -6,6 +6,7 @@
 class StereoCalibration
 {
 public:
+    StereoCalibration();
     StereoCalibration(CameraCalibration camLeft, CameraCalibration CamRight, int boardWidth, int boardHeight,
                       int numImgs, float squareSize, char* leftImgDir, char* rightImgDir,
                       char* leftImgFilename, char* rightImgFilename, char* extension);
@@ -19,19 +20,23 @@ public:
     void calibrateStereoFromFile(CameraCalibration camLeft, CameraCalibration CamRight, char* stereoConfig);
 
     void initUndistortImage();
-    void undistort(Mat imgLeftIn,Mat imgRightIn, Mat imgLeftOut, Mat imgRightOut);
+    Mat undistortLeft(Mat imgLeftIn);
+    Mat undistortRight(Mat imgRightIn);
 
     bool saveParamsInFile(char* configFileName);
 
     bool isCalibrated();
     bool isInitUndistort();
+
 private:
-    void loadFromImagesPoints(int boardWidth, int boardHeight, int numImgs, float squareSize,
-                              char* leftImgDir, char* rightImgDir, char* leftImgFilename,
+    void loadFromImagesPoints(int numImgs, char* leftImgDir, char* rightImgDir, char* leftImgFilename,
                               char* rightImgFilename, char* extension);
 
     CameraCalibration m_camRight;
     CameraCalibration m_camLeft;
+    int m_boardWidth;
+    int m_boardHeight;
+    float m_squareSize;
 
     bool m_isCalibrated;
     bool m_isInitUndistort;
@@ -48,6 +53,8 @@ private:
     Mat m_P2;
 
     Mat m_Q;
+
+    Mat m_lMapX, m_lMapY, m_rMapX, m_rMapY;
 
     vector< vector<Point3f> > m_objectPoints;
     vector< vector<Point2f> > m_leftImagePoints;
