@@ -42,8 +42,8 @@ void stereo()
     imgLeft = imread(leftimg_filename, CV_LOAD_IMAGE_COLOR);
     imgRight = imread(rightimg_filename, CV_LOAD_IMAGE_COLOR);
 
-    imgLU = stereoCalib.undistortLeft(imgLeft);
-    imgRU = stereoCalib.undistortRight(imgRight);
+    imgLU = stereoCalib.undistortLeft(imgLeft, cv::INTER_LINEAR);
+    imgRU = stereoCalib.undistortRight(imgRight, cv::INTER_LINEAR);
 
     imwrite("imgLU.png", imgLU);
     imwrite("imgRU.png", imgRU);

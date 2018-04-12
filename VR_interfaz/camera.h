@@ -13,6 +13,9 @@
 #include <GenICamFwd.h>
 #include "utils.h"
 
+#include "../calibC/Calibn2/cameracalibration.h"
+
+
 #include <pylon/usb/BaslerUsbInstantCamera.h>
 typedef Pylon::CBaslerUsbInstantCamera Camera_t;
 using namespace Basler_UsbCameraParams;
@@ -32,8 +35,8 @@ const int MAX_VECTOR_COEFF_LENGHT = 8;
  * -------------------------------
  * This class is used to simplify the use of the basler camera
  * api. It's build to work with all the basler camera portfolio.
- * Also allow us to undistort an image using precalculated
- * camera calibration params.
+ * It uses the CalibrationCamera class to save and undistort its own
+ * calibration
 */
 class Camera
 {
@@ -68,6 +71,7 @@ public:
 
     void initCamParametersFromYALM(QString filename);
     bool initCalibParams(QString intrinsicFilename,QString distCoeffsFilename );
+    CameraCalibration getCalibration();
     void initUndistortMap(Size imageSize);
 
     QImage undistortMapImage(QImage src, int interpolation);
@@ -76,6 +80,7 @@ public:
 private:
     bool m_isInitUndistort;
 
+    CameraCalibration m_calib;
     CInstantCamera* m_pylon_camera;
     Mat m_map1;
     Mat m_map2;

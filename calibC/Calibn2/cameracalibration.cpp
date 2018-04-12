@@ -168,11 +168,11 @@ void CameraCalibration::initUndistortImage()
     }
 }
 
-Mat CameraCalibration::undistort(Mat imgIn)
+Mat CameraCalibration::undistort(Mat imgIn, int interpolation)
 {
     Mat imgOut;
     if(this->isInitUndistort())
-        cv::remap(imgIn, imgOut, m_mapx, m_mapy, cv::INTER_LINEAR);
+        cv::remap(imgIn, imgOut, m_mapx, m_mapy, interpolation);
     return imgOut;
 }
 
