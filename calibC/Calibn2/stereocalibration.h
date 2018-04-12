@@ -55,7 +55,6 @@ private:
     Mat m_Q;
 
     Mat m_lMapX, m_lMapY, m_rMapX, m_rMapY;
-
     vector< vector<Point3f> > m_objectPoints;
     vector< vector<Point2f> > m_leftImagePoints;
     vector< vector<Point2f> > m_rightImagePoints;

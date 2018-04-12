@@ -73,6 +73,7 @@ void load_image_points(int board_width, int board_height, int num_imgs, float sq
       v1.push_back(Point2f((double)imagePoints1[i][j].x, (double)imagePoints1[i][j].y));
       v2.push_back(Point2f((double)imagePoints2[i][j].x, (double)imagePoints2[i][j].y));
     }
+    cout << v1.size() << " " << v2.size() << "\n";
     left_img_points.push_back(v1);
     right_img_points.push_back(v2);
   }
@@ -80,13 +81,13 @@ void load_image_points(int board_width, int board_height, int num_imgs, float sq
 
 void calibrateStereo()
 {
-  char leftcalib_file[] = "./calibLeft.txt";
-  char rightcalib_file[] = "./calibRight.txt";
+  char leftcalib_file[] = "./calibLeftOLD.txt";
+  char rightcalib_file[] = "./calibRightOLD.txt";
   char leftimg_dir[] = "../../../Dataset/Calib/left/";
   char rightimg_dir[] = "../../../Dataset/Calib/right/";
   char leftimg_filename[] = "";
   char rightimg_filename[] = "";
-  char out_file[] = "./stereoCalib.txt";
+  char out_file[] = "./stereoCalibOLD.txt";
   char extension[] = "png";
   int num_imgs = 25;
 

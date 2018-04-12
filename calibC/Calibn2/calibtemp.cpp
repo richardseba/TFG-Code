@@ -73,9 +73,9 @@ void makeCalibration()
 {
     int board_width, board_height, num_imgs;
     float square_size;
-    char imgs_directory[] = "../../../Dataset/Calib/right/";
+    char imgs_directory[] = "../../../Dataset/Calib/left/";
     char imgs_filename[]  = "";
-    char out_file[] = "calibRight.txt";
+    char out_file[] = "calibLeftOLD.txt";
     char extension[] = "png";
 
       board_width = 11;

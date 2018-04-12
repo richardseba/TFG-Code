@@ -32,9 +32,9 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
     flag |= CV_CALIB_FIX_INTRINSIC;
 
     stereoCalibrate(m_objectPoints, m_leftImagePoints, m_rightImagePoints, camLeft.getIntrinsicMatrix(),
-                    camLeft.getIntrinsicMatrix(), CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(),
+                    camLeft.getDistorsionVector(), CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(),
                     m_imageSize, m_R, m_T, m_E, m_F);
-    cout << "he pasado por aqui\n";
+
     stereoRectify(camLeft.getIntrinsicMatrix(), camLeft.getDistorsionVector(),
                   CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(), m_imageSize, m_R, m_T, m_R1,
                   m_R2, m_P1, m_P2, m_Q, CALIB_ZERO_DISPARITY,0.993);
@@ -71,6 +71,7 @@ void StereoCalibration::loadFromImagesPoints(int numImgs, char *leftImgDir, char
                                              char *leftImgFilename, char *rightImgFilename, char *extension)
 {
     Mat img1,img2, gray1, gray2;
+
     vector< Point2f > corners1, corners2;
     vector< vector< Point2f > > imagePoints1, imagePoints2;
 
@@ -121,14 +122,13 @@ void StereoCalibration::loadFromImagesPoints(int numImgs, char *leftImgDir, char
         cout << i << " WARNING Corners not found, Corner1: " << found1 << " Corner2: " << found2 << endl;
       }
     }
-    cout << "media calibracipn \n";
+
     for (int i = 0; i < imagePoints1.size(); i++) {
       vector< Point2f > v1, v2;
       for (int j = 0; j < imagePoints1[i].size(); j++) {
         v1.push_back(Point2f((double)imagePoints1[i][j].x, (double)imagePoints1[i][j].y));
         v2.push_back(Point2f((double)imagePoints2[i][j].x, (double)imagePoints2[i][j].y));
       }
-      cout << "more calibracipn \n";
       m_leftImagePoints.push_back(v1);
       m_rightImagePoints.push_back(v2);
     }
