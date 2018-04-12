@@ -175,6 +175,16 @@ void StereoCalibration::initUndistortImage()
     m_isInitUndistort = true;
 }
 
+void StereoCalibration::initUndistortImage(Size imageSize)
+{
+    m_isInitUndistort = false;
+    cv::initUndistortRectifyMap(m_camLeft.getIntrinsicMatrix(), m_camLeft.getDistorsionVector(),
+                                m_R1, m_P1, imageSize, CV_32F, m_lMapX, m_lMapY);
+    cv::initUndistortRectifyMap(m_camRight.getIntrinsicMatrix(), m_camRight.getDistorsionVector(),
+                                m_R2, m_P2, imageSize, CV_32F, m_rMapX, m_rMapY);
+    m_isInitUndistort = true;
+}
+
 Mat StereoCalibration::undistortLeft(Mat imgLeftIn, int interpolation)
 {
     Mat imgOut;

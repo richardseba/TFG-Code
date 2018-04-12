@@ -28,8 +28,6 @@ using namespace Pylon;
 using namespace GENAPI_NAMESPACE; //To use the basler api
 using namespace cv;               //To use opencv
 
-const int INTRINSICS_MAT_SIZE = 3;
-const int MAX_VECTOR_COEFF_LENGHT = 8;
 
 /* Class Camera
  * -------------------------------
@@ -70,15 +68,15 @@ public:
     bool isGrabbing();
 
     void initCamParametersFromYALM(QString filename);
-    bool initCalibParams(QString intrinsicFilename,QString distCoeffsFilename );
-    CameraCalibration getCalibration();
-    void initUndistortMap(Size imageSize);
+    bool initCalibParams(QString calibConfigFile);
 
+    CameraCalibration getCalibration();
+    void setCalibration(CameraCalibration calib);
+
+    void initUndistortMap(Size imageSize);
     QImage undistortMapImage(QImage src, int interpolation);
 
-    QImage undistortImage(QImage src);
 private:
-    bool m_isInitUndistort;
 
     CameraCalibration m_calib;
     CInstantCamera* m_pylon_camera;

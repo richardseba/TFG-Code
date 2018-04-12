@@ -20,6 +20,7 @@ public:
     void calibrateStereoFromFile(CameraCalibration camLeft, CameraCalibration CamRight, char* stereoConfig);
 
     void initUndistortImage();
+    void initUndistortImage(Size imageSize);
     Mat undistortLeft(Mat imgLeftIn, int interpolation);
     Mat undistortRight(Mat imgRightIn, int interpolation);
 

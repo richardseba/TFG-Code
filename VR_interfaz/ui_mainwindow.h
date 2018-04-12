@@ -81,7 +81,7 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         layoutWidget = new QWidget(centralWidget);
         layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(310, 510, 803, 151));
+        layoutWidget->setGeometry(QRect(152, 510, 1071, 141));
         horizontalLayout_8 = new QHBoxLayout(layoutWidget);
         horizontalLayout_8->setSpacing(6);
         horizontalLayout_8->setContentsMargins(11, 11, 11, 11);

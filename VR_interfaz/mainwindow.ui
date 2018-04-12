@@ -20,10 +20,10 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>152</x>
       <y>510</y>
-      <width>803</width>
-      <height>151</height>
+      <width>1071</width>
+      <height>141</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_8">

@@ -34,8 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->m_cameraR->initCamParametersFromYALM("./camRconfig.yml");
     this->m_cameraL->initCamParametersFromYALM("./camLconfig.yml");
 
-    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./cameraLmatrix.txt","./cameraRdist.txt");
-    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./cameraRmatrix.txt","./cameraLdist.txt");
+    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./calibLeft.txt");
+    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./calibRight.txt");
 
     ui->checkBox_undistort->setEnabled(this->m_calibParams_loaded);
     ui->checkBox_undistort->setChecked(false);
@@ -46,10 +46,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameTimeEvent()));
     connect(this->m_loadCalibDialog,SIGNAL(accepted()),SLOT(acceptedCalibParamsEvent()));
 
-    if(this->m_calibParams_loaded)
+    if(m_calibParams_loaded)
     {
-        this->m_cameraR->initUndistortMap(Size(MAP_WIDTH,MAP_HIGHT));
-        this->m_cameraL->initUndistortMap(Size(MAP_WIDTH,MAP_HIGHT));
+        Rect roi = this->m_cameraL->getCurrentROIRect();
+        this->m_cameraR->initUndistortMap(Size(roi.width,roi.height));
+        this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
     }
 
 }
@@ -293,6 +294,7 @@ void MainWindow::on_pushButton_loadCalibration_clicked()
 */
 void MainWindow::acceptedCalibParamsEvent()
 {
+    /*
     this->m_cameraL->initCalibParams(this->m_loadCalibDialog->getCamR_matrix_path(),
                                                   this->m_loadCalibDialog->getCamR_distorsion_path());
 
@@ -303,13 +305,14 @@ void MainWindow::acceptedCalibParamsEvent()
 
     if(initialized)
     {
-        this->m_cameraR->initUndistortMap(Size(MAP_WIDTH,MAP_HIGHT));
-        this->m_cameraL->initUndistortMap(Size(MAP_WIDTH,MAP_HIGHT));
+        this->m_cameraR->initUndistortMap(Size(roi.width,roi.height));
+        this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
     }
 
     this->m_calibParams_loaded = initialized;
     this->ui->checkBox_undistort->setEnabled(initialized);
     this->ui->checkBox_undistort->setChecked(ui->checkBox_undistort->isChecked()&&initialized);
+    */
 }
 
 /* Private slot on_pushButton_Fullscreen_clicked
