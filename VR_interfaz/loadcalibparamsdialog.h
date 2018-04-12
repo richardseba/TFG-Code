@@ -25,20 +25,17 @@ public:
     explicit LoadCalibParamsDialog(QWidget *parent = 0);
     ~LoadCalibParamsDialog();
 
-    QString getCamL_matrix_path();
-    QString getCamL_distorsion_path();
-    QString getCamR_matrix_path();
-    QString getCamR_distorsion_path();
+    QString getCamLConfigPath();
+    QString getCamRConfigPath();
+    QString getStereoConfigPath();
 
 private slots:
     void on_pushButton_load_clicked();
     void on_pushButton_cancel_clicked();
 
-    void on_pushButton_distR_clicked();
     void on_pushButton_matrixR_clicked();
-
-    void on_pushButton_distL_clicked();
     void on_pushButton_matrixL_clicked();
+    void on_pushButton_stereo_clicked();
 
 private:
     Ui::LoadCalibParamsDialog *ui;

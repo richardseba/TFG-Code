@@ -77,6 +77,8 @@ private:
 
     Camera* m_cameraL;
     Camera* m_cameraR;
+    StereoCalibration m_stereoCalib;
+
     QTimer* m_timer;
     bool m_is_recording;
     bool m_calibParams_loaded;

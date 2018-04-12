@@ -294,17 +294,19 @@ void MainWindow::on_pushButton_loadCalibration_clicked()
 */
 void MainWindow::acceptedCalibParamsEvent()
 {
-    /*
-    this->m_cameraL->initCalibParams(this->m_loadCalibDialog->getCamR_matrix_path(),
-                                                  this->m_loadCalibDialog->getCamR_distorsion_path());
+    CameraCalibration camLeft(this->m_loadCalibDialog->getCamLConfigPath().toLatin1().data());
+    CameraCalibration camRight(this->m_loadCalibDialog->getCamRConfigPath().toLatin1().data());
 
-    this->m_cameraR->initCalibParams(this->m_loadCalibDialog->getCamL_matrix_path(),
-                                                  this->m_loadCalibDialog->getCamL_distorsion_path());
+    m_cameraL->setCalibration(camLeft);
+    m_cameraR->setCalibration(camRight);
 
-    bool initialized = this->m_cameraR->getIsinitUndistort()&&this->m_cameraL->getIsinitUndistort();
+    m_stereoCalib.calibrateStereoFromFile(camLeft,camRight,this->m_loadCalibDialog->getStereoConfigPath().toLatin1().data());
+
+    bool initialized = camLeft.isCalibrated()&&camRight.isCalibrated();
 
     if(initialized)
     {
+        Rect roi = m_cameraL->getCurrentROIRect();
         this->m_cameraR->initUndistortMap(Size(roi.width,roi.height));
         this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
     }
@@ -312,7 +314,6 @@ void MainWindow::acceptedCalibParamsEvent()
     this->m_calibParams_loaded = initialized;
     this->ui->checkBox_undistort->setEnabled(initialized);
     this->ui->checkBox_undistort->setChecked(ui->checkBox_undistort->isChecked()&&initialized);
-    */
 }
 
 /* Private slot on_pushButton_Fullscreen_clicked

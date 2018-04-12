@@ -45,40 +45,28 @@ void LoadCalibParamsDialog::on_pushButton_cancel_clicked()
     this->reject();
 }
 
-/* Public Function getCamL_matrix_path
+/* Public Function getCamLConfigPath
  * -------------------------------
  * returns the current calibration matrix file path for the left camera
 */
-QString LoadCalibParamsDialog::getCamL_matrix_path()
+QString LoadCalibParamsDialog::getCamLConfigPath()
 {
     return ui->lineEdit_matrixL->text();
 }
 
-/* Public Function getCamL_distorsion_path
- * -------------------------------
- * returns the current distortion vector file path for the left camera
-*/
-QString LoadCalibParamsDialog::getCamL_distorsion_path()
-{
-    return ui->lineEdit_distL->text();
-}
-
-/* Public Function getCamL_matrix_path
+/* Public Function getCamRConfigPath
  * -------------------------------
  * returns the current calibration matrix file path for the right camera
 */
-QString LoadCalibParamsDialog::getCamR_matrix_path()
+QString LoadCalibParamsDialog::getCamRConfigPath()
 {
     return ui->lineEdit_matrixR->text();
 }
 
-/* Public Function getCamL_distorsion_path
- * -------------------------------
- * returns the current distortion vector file path for the right camera
-*/
-QString LoadCalibParamsDialog::getCamR_distorsion_path()
+
+QString LoadCalibParamsDialog::getStereoConfigPath()
 {
-    return ui->lineEdit_distR->text();
+    return ui->lineEdit_stereoCalib->text();
 }
 
 /* Private slot on_pushButton_matrixR_clicked
@@ -91,30 +79,12 @@ void LoadCalibParamsDialog::on_pushButton_matrixR_clicked()
 {
     QString path = QFileDialog::getOpenFileName(
                 this,
-                tr("Open Calibration intrinsics of Camera Right"),
+                tr("Open Calibration file of Camera Right"),
                 "",
-                tr("Text Files (*.txt);;All Files (*)" )
+                tr("YAML Files (*.yml);;Text Files (*.txt);;All Files (*)" )
                 );
     ui->lineEdit_matrixR->setText(path);
 }
-
-/* Private slot on_pushButton_distR_clicked
- * -------------------------------
- * slot called when the distortion right camera path button is clicked
- * it opens a file explorer dialog to allow the user to search
- * for the desired file path
-*/
-void LoadCalibParamsDialog::on_pushButton_distR_clicked()
-{
-    QString path = QFileDialog::getOpenFileName(
-                this,
-                tr("Open Calibration distorsion of Camera Right"),
-                "",
-                tr("Text Files (*.txt);;All Files (*)" )
-                );
-    ui->lineEdit_distR->setText(path);
-}
-
 
 /* Private slot on_pushButton_matrixL_clicked
  * -------------------------------
@@ -126,26 +96,20 @@ void LoadCalibParamsDialog::on_pushButton_matrixL_clicked()
 {
     QString path = QFileDialog::getOpenFileName(
                 this,
-                tr("Open Calibration intrinsics of Camera Left"),
+                tr("Open Calibration file of Camera Left"),
                 "",
-                tr("Text Files (*.txt);;All Files (*)" )
+                tr("YAML Files (*.yml);;Text Files (*.txt);;All Files (*)" )
                 );
     ui->lineEdit_matrixL->setText(path);
 }
 
-/* Private slot on_pushButton_distL_clicked
- * -------------------------------
- * slot called when the distortion left camera path button is clicked
- * it opens a file explorer dialog to allow the user to search
- * for the desired file path
-*/
-void LoadCalibParamsDialog::on_pushButton_distL_clicked()
+void LoadCalibParamsDialog::on_pushButton_stereo_clicked()
 {
     QString path = QFileDialog::getOpenFileName(
                 this,
-                tr("Open Calibration distorsion of Camera Left"),
+                tr("Open Calibration file for the stereo parameters"),
                 "",
-                tr("Text Files (*.txt);;All Files (*)" )
+                tr("YAML Files (*.yml);;Text Files (*.txt);;All Files (*)" )
                 );
-    ui->lineEdit_distL->setText(path);
+    ui->lineEdit_stereoCalib->setText(path);
 }

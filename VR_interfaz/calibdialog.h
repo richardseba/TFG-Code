@@ -3,7 +3,8 @@
 
 #include <QDialog>
 #include <QFileDialog>
-#include "QProcess"
+#include "../calibC/Calibn2/cameracalibration.h"
+#include "../calibC/Calibn2/stereocalibration.h"
 
 namespace Ui {
 class CalibDialog;
@@ -32,10 +33,13 @@ private slots:
     void on_pushButton_calibrate_clicked();
     void on_pushButton_Cancel_clicked();
 
-    void on_pushButton_pythonexe_clicked();
-    void on_pushButton_script_clicked();
-
 private:
+    CameraCalibration m_leftCam;
+    CameraCalibration m_rightCam;
+    StereoCalibration m_stereoCalib;
+
+    QString m_leftPath;
+    QString m_rightPath;
     Ui::CalibDialog *ui;
 };
 
