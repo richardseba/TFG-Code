@@ -81,7 +81,7 @@ void CalibDialog::on_pushButton_calibrate_clicked()
     m_leftCam.calibrateFromImages(ui->spinBox_row->value(),ui->spinBox_col->value(),ui->spinBox_numImg->value(),
                                   ui->spinBox_squareSize->value(),m_leftPath.toLatin1().data(),namefile,extension);
 
-    m_rightCam.calibrateFromImages(ui->spinBox_col->value(),ui->spinBox_row->value(),ui->spinBox_numImg->value(),
+    m_rightCam.calibrateFromImages(ui->spinBox_row->value(),ui->spinBox_col->value(),ui->spinBox_numImg->value(),
                                    ui->spinBox_squareSize->value(), m_rightPath.toLatin1().data(),namefile,extension);
 
     m_stereoCalib.calibrateStereoFromImage(m_leftCam,m_rightCam,ui->spinBox_col->value(),ui->spinBox_row->value(),

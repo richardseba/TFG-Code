@@ -34,10 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
     this->m_cameraR->initCamParametersFromYALM("./camRconfig.yml");
     this->m_cameraL->initCamParametersFromYALM("./camLconfig.yml");
 
-    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./calibLeft.txt");
-    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./calibRight.txt");
+    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./calibLeft.yml");
+    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./calibRight.yml");
 
-    char stereoCalibFile[] = "./calibStereo.txt";
+    char stereoCalibFile[] = "./calibStereo.yml";
     this->m_stereoCalib.calibrateStereoFromFile(m_cameraL->getCalibration(),m_cameraR->getCalibration(),stereoCalibFile);
     this->m_calibParams_loaded&=m_stereoCalib.isCalibrated();
 
@@ -101,8 +101,8 @@ void MainWindow::on_captureButton_clicked()
         QImage copy;
         if(ui->checkBox_undistort->isChecked())
         {
-            copy = this->m_cameraL->undistortMapImage(*ImgL, CV_INTER_LINEAR);
-            //copy = this->m_stereoCalib.undistortLeft(*ImgL, CV_INTER_LINEAR);
+            //copy = this->m_cameraL->undistortMapImage(*ImgL, CV_INTER_LINEAR);
+            copy = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(*ImgL), CV_INTER_LINEAR));
             ui->label_display1->setPixmap(QPixmap::fromImage(copy));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(copy);
@@ -130,8 +130,8 @@ void MainWindow::on_captureButton_clicked()
         QImage copy;
         if(ui->checkBox_undistort->isChecked())
         {
-            copy = this->m_cameraR->undistortMapImage(*ImgR, CV_INTER_LINEAR);
-            //copy = this->m_stereoCalib.undistortRight(*ImgL, CV_INTER_LINEAR);
+            //copy = this->m_cameraR->undistortMapImage(*ImgR, CV_INTER_LINEAR);
+            copy = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(*ImgR), CV_INTER_LINEAR));
             ui->label_display2->setPixmap(QPixmap::fromImage(copy));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(copy);
@@ -206,13 +206,17 @@ void MainWindow::frameTimeEvent()
     left = ui->checkBox_continous_left->isChecked();
     right = ui->checkBox_continous_right->isChecked();
 
-    if(left && false)
+    if(left && right)
     {
         QImage *qImageL = this->m_cameraL->grab_image(left);
         QImage *qImageR = this->m_cameraR->grab_image(right);
         if(left && right)
         {
-            this->processDisparity(qImageR,qImageL);
+
+            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_LINEAR));
+            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(*qImageR),CV_INTER_LINEAR));
+
+            this->processDisparity(&qImageLU,&qImageRU);
         }
         delete[] qImageL->bits();
         delete qImageL;
@@ -508,6 +512,8 @@ void MainWindow::on_switchCamera_pushButton_clicked()
     temp = m_cameraL;
     m_cameraL = m_cameraR;
     m_cameraR = temp;
+
+    qDebug() <<"WARNING! Stereo undistort will not work!\n";
 }
 
 void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
@@ -540,7 +546,7 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     param.postprocess_only_left = true;
     //Elas elas(param);
 
-    Elas elas(Elas::setting::CVC);
+    Elas elas(Elas::setting::MIDDLEBURY);
     elas.process(I1.bits(),I2.bits(),D1_data,D2_data,dims);
 
     // find maximum disparity for scaling output disparity images to [0..255]

@@ -60,6 +60,11 @@ void CameraCalibration::calibrateFromFile(char *configFileName)
 void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int numImgs, float squareSize,
                                             char *imgFilePath, char *imgsFilename, char *imgExtension)
 {
+    cout << imgFilePath << " " << imgsFilename << "\n";
+    cout << boardWidth << " " << boardHeight << "\n";
+    cout << numImgs << "\n";
+    cout << squareSize << "\n";
+
     m_isInitUndistort = false;
     m_boardWidth = boardWidth;
     m_boardHeight = boardHeight;

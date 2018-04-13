@@ -6,9 +6,9 @@
 
 void calib()
 {
-    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/Calib/left";
+    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/Calib/right";
     char imgs_filename[]  = "";
-    char out_file[] = "calibLeft.txt";
+    char out_file[] = "calibRightOLD.txt";
     char extension[] = "png";
 
     CameraCalibration* cam1 = new CameraCalibration(11,7,25,1,imgs_directory,imgs_filename,extension);
@@ -52,7 +52,7 @@ void stereo()
 int main(int argc, char const **argv)
 {
     printf("Starting the program\n");
-    int phase = 3;
+    int phase = 2;
     switch (phase) {
     case 0:
         makeCalibration();

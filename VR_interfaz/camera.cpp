@@ -454,12 +454,7 @@ void Camera::initUndistortMap(Size imageSize)
 */
 QImage Camera::undistortMapImage(QImage src, int interpolation)
 {
-    //this->crono.restart();
-
-    Mat imageUndistorted;
-    Mat image = QImage2Mat(src);
-    imageUndistorted = m_calib.undistort(image,interpolation);
-    return Mat2QImage(imageUndistorted);
+    return Mat2QImage(m_calib.undistort(QImage2Mat(src),interpolation));
 }
 
 CameraCalibration Camera::getCalibration()
