@@ -84,8 +84,8 @@ void StereoCalibration::loadFromImagesPoints(int numImgs, char *leftImgDir, char
 
     for (int i = 1; i <= numImgs; i++) {
       char left_img[100], right_img[100];
-      sprintf(left_img, "%s%s%d.%s", leftImgDir, leftImgFilename, i, extension);
-      sprintf(right_img, "%s%s%d.%s", rightImgDir, rightImgFilename, i, extension);
+      sprintf(left_img, "%s/%s%d.%s", leftImgDir, leftImgFilename, i, extension);
+      sprintf(right_img, "%s/%s%d.%s", rightImgDir, rightImgFilename, i, extension);
       cout << left_img <<"\n" << right_img << "\n";
       img1 = imread(left_img, CV_LOAD_IMAGE_COLOR);
       img2 = imread(right_img, CV_LOAD_IMAGE_COLOR);
@@ -167,12 +167,7 @@ bool StereoCalibration::saveParamsInFile(char* configFileName)
 
 void StereoCalibration::initUndistortImage()
 {
-    m_isInitUndistort = false;
-    cv::initUndistortRectifyMap(m_camLeft.getIntrinsicMatrix(), m_camLeft.getDistorsionVector(),
-                                m_R1, m_P1, m_imageSize, CV_32F, m_lMapX, m_lMapY);
-    cv::initUndistortRectifyMap(m_camRight.getIntrinsicMatrix(), m_camRight.getDistorsionVector(),
-                                m_R2, m_P2, m_imageSize, CV_32F, m_rMapX, m_rMapY);
-    m_isInitUndistort = true;
+    this->initUndistortImage(m_imageSize);
 }
 
 void StereoCalibration::initUndistortImage(Size imageSize)

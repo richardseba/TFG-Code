@@ -6,7 +6,7 @@
 
 void calib()
 {
-    char imgs_directory[] = "../../../Dataset/Calib/left/";
+    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/Calib/left";
     char imgs_filename[]  = "";
     char out_file[] = "calibLeft.txt";
     char extension[] = "png";
@@ -23,8 +23,8 @@ void stereo()
     CameraCalibration camLeft(lConfig);
     CameraCalibration camRight(rConfig);
 
-    char leftimg_path[] = "../../../Dataset/Calib/left/";
-    char rightimg_path[] = "../../../Dataset/Calib/right/";
+    char leftimg_path[] = "../../../Dataset/Calib/left";
+    char rightimg_path[] = "../../../Dataset/Calib/right";
     char leftimg_filename[] = "../../../Dataset/Calib/left/1.png";
     char rightimg_filename[] = "../../../Dataset/Calib/right/1.png";
     char calib_file[] = "./stereoCalib.txt";

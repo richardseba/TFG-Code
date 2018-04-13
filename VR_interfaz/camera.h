@@ -49,6 +49,7 @@ public:
     void stopGrabbing();
     bool hasImage();
     bool getIsinitUndistort();
+    bool isCalibrated();
 
     void setBinning(int binningValueHorizontal,int binningValueVertical);
     void setflipYOutput(bool flip);

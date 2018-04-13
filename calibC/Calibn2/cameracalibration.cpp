@@ -67,6 +67,7 @@ void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int
 
     vector< Mat > rvecs, tvecs;
     m_isCalibrated = false;
+
     loadFromImagesPoints(numImgs, imgFilePath, imgsFilename, imgExtension);
 
     printf("Starting Calibration\n");
@@ -80,6 +81,7 @@ void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int
 
     if(m_intrinsicMatrix.data != NULL && m_distorsionVector.data != NULL)
         m_isCalibrated = true;
+
 }
 
 void CameraCalibration::loadFromImagesPoints(int numImgs, char* imgFilePath, char* imgsFilename,
@@ -91,7 +93,7 @@ void CameraCalibration::loadFromImagesPoints(int numImgs, char* imgFilePath, cha
 
     for (int k = 1; k <= numImgs; k++) {
       char imgFile[100];
-      sprintf(imgFile, "%s%s%d.%s", imgFilePath, imgsFilename, k, imgExtension);
+      sprintf(imgFile, "%s/%s%d.%s", imgFilePath, imgsFilename, k, imgExtension);
       cout << imgFile <<" ";
       img = imread(imgFile, CV_LOAD_IMAGE_COLOR);
       m_imageSize = img.size();

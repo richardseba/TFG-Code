@@ -472,3 +472,8 @@ void Camera::setCalibration(CameraCalibration calib)
     m_calib = calib;
 }
 
+bool Camera::isCalibrated()
+{
+    return m_calib.isCalibrated();
+}
+

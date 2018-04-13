@@ -281,13 +281,13 @@ public:
 
         label_display1 = new QLabel(centralWidget);
         label_display1->setObjectName(QStringLiteral("label_display1"));
-        label_display1->setGeometry(QRect(100, 30, 601, 451));
+        label_display1->setGeometry(QRect(130, 30, 581, 451));
         label_display1->setFrameShape(QFrame::Box);
         label_display1->setMidLineWidth(0);
         label_display1->setScaledContents(true);
         label_display2 = new QLabel(centralWidget);
         label_display2->setObjectName(QStringLiteral("label_display2"));
-        label_display2->setGeometry(QRect(724, 31, 571, 451));
+        label_display2->setGeometry(QRect(714, 30, 581, 451));
         label_display2->setFrameShape(QFrame::Box);
         label_display2->setScaledContents(true);
         MainWindow->setCentralWidget(centralWidget);

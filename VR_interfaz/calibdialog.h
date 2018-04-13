@@ -3,6 +3,9 @@
 
 #include <QDialog>
 #include <QFileDialog>
+#include <QDebug>
+#include "QMessageBox"
+
 #include "../calibC/Calibn2/cameracalibration.h"
 #include "../calibC/Calibn2/stereocalibration.h"
 
@@ -25,6 +28,10 @@ class CalibDialog : public QDialog
 public:
     explicit CalibDialog(QWidget *parent = 0);
     ~CalibDialog();
+
+    CameraCalibration getLeftCalibration();
+    CameraCalibration getRightCalibration();
+    StereoCalibration getStereoCalibration();
 
 private slots:
     void on_pushButton_leftpath_clicked();
