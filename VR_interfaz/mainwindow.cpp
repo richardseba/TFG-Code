@@ -34,22 +34,30 @@ MainWindow::MainWindow(QWidget *parent) :
     this->m_cameraR->initCamParametersFromYALM("./camRconfig.yml");
     this->m_cameraL->initCamParametersFromYALM("./camLconfig.yml");
 
-    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./cameraLmatrix.txt","./cameraRdist.txt");
-    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./cameraRmatrix.txt","./cameraLdist.txt");
+    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./calibLeft.yml");
+    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./calibRight.yml");
+
+    char stereoCalibFile[] = "./calibStereo.yml";
+    this->m_stereoCalib.calibrateStereoFromFile(m_cameraL->getCalibration(),m_cameraR->getCalibration(),stereoCalibFile);
+    this->m_calibParams_loaded&=m_stereoCalib.isCalibrated();
 
     ui->checkBox_undistort->setEnabled(this->m_calibParams_loaded);
     ui->checkBox_undistort->setChecked(false);
 
     this->m_timer = new QTimer(this);
     this->m_loadCalibDialog = new LoadCalibParamsDialog(this);
+    this->m_calibDialog = new CalibDialog(this);
 
     connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameTimeEvent()));
     connect(this->m_loadCalibDialog,SIGNAL(accepted()),SLOT(acceptedCalibParamsEvent()));
+    connect(this->m_calibDialog,SIGNAL(accepted()),SLOT(on_acceptedCalibrationFromFile()));
 
-    if(this->m_calibParams_loaded)
+    if(m_calibParams_loaded)
     {
-        this->m_cameraR->initUndistortMap(Size(MAP_WIDTH,MAP_HIGHT));
-        this->m_cameraL->initUndistortMap(Size(MAP_WIDTH,MAP_HIGHT));
+        Rect roi = this->m_cameraL->getCurrentROIRect();
+        this->m_cameraR->initUndistortMap(Size(roi.width,roi.height));
+        this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
+        this->m_stereoCalib.initUndistortImage(Size(roi.width,roi.height));
     }
 
 }
@@ -75,7 +83,7 @@ MainWindow::~MainWindow()
  * -------------------------------
  * function called when the capture button is clicked, grabs and show an image
  * of the selected cameras.
- * Raise a messagebox warning when the camera doesn't grab an image.
+ * Prints a warning when the camera doesn't grab an image.
 */
 void MainWindow::on_captureButton_clicked()
 {
@@ -93,7 +101,8 @@ void MainWindow::on_captureButton_clicked()
         QImage copy;
         if(ui->checkBox_undistort->isChecked())
         {
-            copy = this->m_cameraL->undistortMapImage(*ImgL, CV_INTER_LINEAR);
+            //copy = this->m_cameraL->undistortMapImage(*ImgL, CV_INTER_LINEAR);
+            copy = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(*ImgL), CV_INTER_LINEAR));
             ui->label_display1->setPixmap(QPixmap::fromImage(copy));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(copy);
@@ -121,7 +130,8 @@ void MainWindow::on_captureButton_clicked()
         QImage copy;
         if(ui->checkBox_undistort->isChecked())
         {
-            copy = this->m_cameraR->undistortMapImage(*ImgR, CV_INTER_LINEAR);
+            //copy = this->m_cameraR->undistortMapImage(*ImgR, CV_INTER_LINEAR);
+            copy = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(*ImgR), CV_INTER_LINEAR));
             ui->label_display2->setPixmap(QPixmap::fromImage(copy));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(copy);
@@ -185,7 +195,7 @@ void MainWindow::on_recordingButton_clicked()
 /* Private slot frameTimeEvent
  * -------------------------------
  * function called every time that the m_timer timesout.
- * it grabs and updates the assigned label.
+ * it grabs and updates the assigned pixmap.
 */
 void MainWindow::frameTimeEvent()
 {
@@ -196,13 +206,17 @@ void MainWindow::frameTimeEvent()
     left = ui->checkBox_continous_left->isChecked();
     right = ui->checkBox_continous_right->isChecked();
 
-    if(left && false)
+    if(left && right)
     {
         QImage *qImageL = this->m_cameraL->grab_image(left);
         QImage *qImageR = this->m_cameraR->grab_image(right);
         if(left && right)
         {
-            this->processDisparity(qImageR,qImageL);
+
+            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_LINEAR));
+            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(*qImageR),CV_INTER_LINEAR));
+
+            this->processDisparity(&qImageLU,&qImageRU);
         }
         delete[] qImageL->bits();
         delete qImageL;
@@ -273,7 +287,7 @@ bool MainWindow::saveImage(QImage qImage)
 */
 void MainWindow::on_exeButton_clicked()
 {
-    this->m_calibDialog.show();
+    this->m_calibDialog->show();
 }
 
 /* Private slot on_pushButton_loadCalibration_clicked
@@ -286,6 +300,28 @@ void MainWindow::on_pushButton_loadCalibration_clicked()
     this->m_loadCalibDialog->show();
 }
 
+void MainWindow::on_acceptedCalibrationFromFile()
+{
+    m_cameraL->setCalibration(m_calibDialog->getLeftCalibration());
+    m_cameraR->setCalibration(m_calibDialog->getRightCalibration());
+
+    m_stereoCalib = m_calibDialog->getStereoCalibration();
+
+    bool initialized = m_cameraL->isCalibrated()&&m_cameraR->isCalibrated()&&m_stereoCalib.isCalibrated();
+
+    if(initialized)
+    {
+        Rect roi = m_cameraL->getCurrentROIRect();
+        this->m_cameraR->initUndistortMap(Size(roi.width,roi.height));
+        this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
+        this->m_stereoCalib.initUndistortImage(Size(roi.width,roi.height));
+    }
+
+    this->m_calibParams_loaded = initialized;
+    this->ui->checkBox_undistort->setEnabled(initialized);
+    this->ui->checkBox_undistort->setChecked(ui->checkBox_undistort->isChecked()&&initialized);
+}
+
 /* Private slot acceptedCalibParamsEvent
  * -------------------------------
  * function called when the load calibration dialog is accepted.
@@ -293,18 +329,22 @@ void MainWindow::on_pushButton_loadCalibration_clicked()
 */
 void MainWindow::acceptedCalibParamsEvent()
 {
-    this->m_cameraL->initCalibParams(this->m_loadCalibDialog->getCamR_matrix_path(),
-                                                  this->m_loadCalibDialog->getCamR_distorsion_path());
+    CameraCalibration camLeft(this->m_loadCalibDialog->getCamLConfigPath().toLatin1().data());
+    CameraCalibration camRight(this->m_loadCalibDialog->getCamRConfigPath().toLatin1().data());
 
-    this->m_cameraR->initCalibParams(this->m_loadCalibDialog->getCamL_matrix_path(),
-                                                  this->m_loadCalibDialog->getCamL_distorsion_path());
+    m_cameraL->setCalibration(camLeft);
+    m_cameraR->setCalibration(camRight);
 
-    bool initialized = this->m_cameraR->getIsinitUndistort()&&this->m_cameraL->getIsinitUndistort();
+    m_stereoCalib.calibrateStereoFromFile(camLeft,camRight,this->m_loadCalibDialog->getStereoConfigPath().toLatin1().data());
+
+    bool initialized = camLeft.isCalibrated()&&camRight.isCalibrated()&&m_stereoCalib.isCalibrated();
 
     if(initialized)
     {
-        this->m_cameraR->initUndistortMap(Size(MAP_WIDTH,MAP_HIGHT));
-        this->m_cameraL->initUndistortMap(Size(MAP_WIDTH,MAP_HIGHT));
+        Rect roi = m_cameraL->getCurrentROIRect();
+        this->m_cameraR->initUndistortMap(Size(roi.width,roi.height));
+        this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
+        this->m_stereoCalib.initUndistortImage(Size(roi.width,roi.height));
     }
 
     this->m_calibParams_loaded = initialized;
@@ -472,6 +512,8 @@ void MainWindow::on_switchCamera_pushButton_clicked()
     temp = m_cameraL;
     m_cameraL = m_cameraR;
     m_cameraR = temp;
+
+    qDebug() <<"WARNING! Stereo undistort will not work!\n";
 }
 
 void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
@@ -504,7 +546,7 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     param.postprocess_only_left = true;
     //Elas elas(param);
 
-    Elas elas(Elas::setting::CVC);
+    Elas elas(Elas::setting::MIDDLEBURY);
     elas.process(I1.bits(),I2.bits(),D1_data,D2_data,dims);
 
     // find maximum disparity for scaling output disparity images to [0..255]

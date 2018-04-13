@@ -1,6 +1,10 @@
 #include "stereocalibration.h"
 
-StereoCalibration::StereoCalibration(){}
+StereoCalibration::StereoCalibration()
+{
+    m_isCalibrated = false;
+    m_isInitUndistort = false;
+}
 
 StereoCalibration::StereoCalibration(CameraCalibration camLeft, CameraCalibration CamRight, int boardWidth, int boardHeight,
                                      int numImgs, float squareSize, char* leftImgDir, char* rightImgDir,
@@ -20,6 +24,7 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
                                                  char *leftImgDir, char *rightImgDir, char *leftImgFilename,
                                                  char *rightImgFilename, char *extension)
 {
+    m_isCalibrated = false;
     m_camLeft = camLeft;
     m_camRight = CamRight;
     m_boardHeight = boardHeight;
@@ -38,7 +43,7 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
     stereoRectify(camLeft.getIntrinsicMatrix(), camLeft.getDistorsionVector(),
                   CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(), m_imageSize, m_R, m_T, m_R1,
                   m_R2, m_P1, m_P2, m_Q, CALIB_ZERO_DISPARITY,0.993);
-
+    m_isCalibrated = true;
 }
 
 void StereoCalibration::calibrateStereoFromFile(CameraCalibration camLeft, CameraCalibration CamRight, char *stereoConfig)
@@ -79,8 +84,8 @@ void StereoCalibration::loadFromImagesPoints(int numImgs, char *leftImgDir, char
 
     for (int i = 1; i <= numImgs; i++) {
       char left_img[100], right_img[100];
-      sprintf(left_img, "%s%s%d.%s", leftImgDir, leftImgFilename, i, extension);
-      sprintf(right_img, "%s%s%d.%s", rightImgDir, rightImgFilename, i, extension);
+      sprintf(left_img, "%s/%s%d.%s", leftImgDir, leftImgFilename, i, extension);
+      sprintf(right_img, "%s/%s%d.%s", rightImgDir, rightImgFilename, i, extension);
       cout << left_img <<"\n" << right_img << "\n";
       img1 = imread(left_img, CV_LOAD_IMAGE_COLOR);
       img2 = imread(right_img, CV_LOAD_IMAGE_COLOR);
@@ -162,25 +167,32 @@ bool StereoCalibration::saveParamsInFile(char* configFileName)
 
 void StereoCalibration::initUndistortImage()
 {
+    this->initUndistortImage(m_imageSize);
+}
+
+void StereoCalibration::initUndistortImage(Size imageSize)
+{
     m_isInitUndistort = false;
     cv::initUndistortRectifyMap(m_camLeft.getIntrinsicMatrix(), m_camLeft.getDistorsionVector(),
-                                m_R1, m_P1, m_imageSize, CV_32F, m_lMapX, m_lMapY);
+                                m_R1, m_P1, imageSize, CV_32F, m_lMapX, m_lMapY);
     cv::initUndistortRectifyMap(m_camRight.getIntrinsicMatrix(), m_camRight.getDistorsionVector(),
-                                m_R2, m_P2, m_imageSize, CV_32F, m_rMapX, m_rMapY);
+                                m_R2, m_P2, imageSize, CV_32F, m_rMapX, m_rMapY);
     m_isInitUndistort = true;
 }
 
-Mat StereoCalibration::undistortLeft(Mat imgLeftIn)
+Mat StereoCalibration::undistortLeft(Mat imgLeftIn, int interpolation)
 {
     Mat imgOut;
-    cv::remap(imgLeftIn, imgOut, m_lMapX, m_lMapY, cv::INTER_LINEAR);
+    if(this->isCalibrated() && this->isInitUndistort())
+        cv::remap(imgLeftIn, imgOut, m_lMapX, m_lMapY, interpolation);
     return imgOut;
 }
 
-Mat StereoCalibration::undistortRight(Mat imgRightIn)
+Mat StereoCalibration::undistortRight(Mat imgRightIn, int interpolation)
 {
     Mat imgOut;
-    cv::remap(imgRightIn, imgOut, m_rMapX, m_rMapY, cv::INTER_LINEAR);
+    if(this->isCalibrated() && this->isInitUndistort())
+        cv::remap(imgRightIn, imgOut, m_rMapX, m_rMapY, interpolation);
     return imgOut;
 }
 

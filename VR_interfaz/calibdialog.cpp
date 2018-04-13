@@ -37,6 +37,7 @@ void CalibDialog::on_pushButton_leftpath_clicked()
                                                  QFileDialog::ShowDirsOnly
                                                  | QFileDialog::DontResolveSymlinks);
     ui->lineEdit_left->setText(dir);
+    m_leftPath = dir;
 }
 
 /* Private slot on_pushButton_rightpath_clicked
@@ -52,6 +53,7 @@ void CalibDialog::on_pushButton_rightpath_clicked()
                                                  QFileDialog::ShowDirsOnly
                                                  | QFileDialog::DontResolveSymlinks);
     ui->lineEdit_right->setText(dir);
+    m_rightPath = dir;
 }
 
 /* Private slot on_pushButton_calibrate_clicked
@@ -61,19 +63,51 @@ void CalibDialog::on_pushButton_rightpath_clicked()
 */
 void CalibDialog::on_pushButton_calibrate_clicked()
 {
-    QProcess process;
-    QStringList params;
-    params << ui->lineEdit_script->text();
-    params << QVariant(ui->spinBox_col->value()).toString();
-    params << QVariant(ui->spinBox_row->value()).toString();
-    params << ui->lineEdit_left->text().replace("\\","/");
-    params << ui->lineEdit_right->text().replace("\\","/");
+    m_leftPath = ui->lineEdit_left->text();
+    m_rightPath = ui->lineEdit_right->text();
 
-//    process.start(ui->lineEdit_python->text(),params);
-//    process.waitForFinished();
-//    qDebug() << process.readAllStandardOutput();
-    process.startDetached(ui->lineEdit_python->text(),params);
-    this->accept();
+    m_leftPath.replace("\\","/");
+    m_rightPath.replace("\\","/");
+
+    qDebug() << m_leftPath.toLatin1().data();
+    qDebug() << m_rightPath.toLatin1().data();
+    qDebug() << ui->spinBox_col->value() << ui->spinBox_row->value();
+    qDebug() << ui->spinBox_numImg->value();
+    qDebug() << ui->spinBox_squareSize->value();
+
+    char namefile[] = "";
+    char extension[] = "png";
+
+    m_leftCam.calibrateFromImages(ui->spinBox_row->value(),ui->spinBox_col->value(),ui->spinBox_numImg->value(),
+                                  ui->spinBox_squareSize->value(),m_leftPath.toLatin1().data(),namefile,extension);
+
+    m_rightCam.calibrateFromImages(ui->spinBox_row->value(),ui->spinBox_col->value(),ui->spinBox_numImg->value(),
+                                   ui->spinBox_squareSize->value(), m_rightPath.toLatin1().data(),namefile,extension);
+
+    m_stereoCalib.calibrateStereoFromImage(m_leftCam,m_rightCam,ui->spinBox_col->value(),ui->spinBox_row->value(),
+                                           ui->spinBox_numImg->value(),ui->spinBox_squareSize->value(),
+                                           m_leftPath.toLatin1().data(),m_rightPath.toLatin1().data(),namefile,
+                                           namefile,extension);
+
+    if(!m_leftCam.isCalibrated() || !m_rightCam.isCalibrated() || !m_stereoCalib.isCalibrated())
+    {
+        QMessageBox Msgbox;
+        Msgbox.setIcon(Msgbox.Warning);
+        Msgbox.setText("<big>Warning</big> <p>\n\n Cameras not calibrated sucessfully</p>");
+        Msgbox.exec();
+        this->reject();
+    } else {
+        //this has to be moved to the calib dialog ui to allow customization in de namefiles
+        char leftOut[] = "calibLeft.yml";
+        char rightOut[] = "calibRight.yml";
+        char stereoOut[] = "calibStereo.yml";
+
+        m_leftCam.saveParamsInFile(leftOut);
+        m_rightCam.saveParamsInFile(rightOut);
+        m_stereoCalib.saveParamsInFile(stereoOut);
+
+        this->accept();
+    }
 }
 
 /* Private slot on_pushButton_Cancel_clicked
@@ -87,35 +121,25 @@ void CalibDialog::on_pushButton_Cancel_clicked()
     this->reject();
 }
 
-/* Private slot on_pushButton_pythonexe_clicked
- * -------------------------------
- * slot called when the python exe button is clicked
- * it opens a file explorer dialog.
-*/
-void CalibDialog::on_pushButton_pythonexe_clicked()
+CameraCalibration CalibDialog::getLeftCalibration()
 {
-    QString path = QFileDialog::getOpenFileName(
-                this,
-                tr("Open Python Executable"),
-                "",
-                tr("Executable (*.exe);;All Files (*)" )
-                );
-    ui->lineEdit_python->setText(path);
+    return m_leftCam;
+}
+CameraCalibration CalibDialog::getRightCalibration()
+{
+    return m_rightCam;
 }
 
-/* Private slot on_pushButton_pythonexe_clicked
- * -------------------------------
- * slot called when the script button is clicked
- * it opens a file explorer dialog to let the user set the file path
- * for the script that will calculate the calibration parameters
-*/
-void CalibDialog::on_pushButton_script_clicked()
+StereoCalibration CalibDialog::getStereoCalibration()
 {
-    QString path = QFileDialog::getOpenFileName(
-                this,
-                tr("Open Python Calibration Script"),
-                "",
-                tr("Python Files (*.py);;Python compiled Files (*.pyc);;All Files (*)" )
-                );
-    ui->lineEdit_script->setText(path);
+    return m_stereoCalib;
 }
+
+
+
+
+
+
+
+
+

@@ -6,9 +6,9 @@
 
 void calib()
 {
-    char imgs_directory[] = "../../../Dataset/Calib/left/";
+    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/Calib/right";
     char imgs_filename[]  = "";
-    char out_file[] = "calibLeft.txt";
+    char out_file[] = "calibRightOLD.txt";
     char extension[] = "png";
 
     CameraCalibration* cam1 = new CameraCalibration(11,7,25,1,imgs_directory,imgs_filename,extension);
@@ -23,8 +23,8 @@ void stereo()
     CameraCalibration camLeft(lConfig);
     CameraCalibration camRight(rConfig);
 
-    char leftimg_path[] = "../../../Dataset/Calib/left/";
-    char rightimg_path[] = "../../../Dataset/Calib/right/";
+    char leftimg_path[] = "../../../Dataset/Calib/left";
+    char rightimg_path[] = "../../../Dataset/Calib/right";
     char leftimg_filename[] = "../../../Dataset/Calib/left/1.png";
     char rightimg_filename[] = "../../../Dataset/Calib/right/1.png";
     char calib_file[] = "./stereoCalib.txt";
@@ -42,8 +42,8 @@ void stereo()
     imgLeft = imread(leftimg_filename, CV_LOAD_IMAGE_COLOR);
     imgRight = imread(rightimg_filename, CV_LOAD_IMAGE_COLOR);
 
-    imgLU = stereoCalib.undistortLeft(imgLeft);
-    imgRU = stereoCalib.undistortRight(imgRight);
+    imgLU = stereoCalib.undistortLeft(imgLeft, cv::INTER_LINEAR);
+    imgRU = stereoCalib.undistortRight(imgRight, cv::INTER_LINEAR);
 
     imwrite("imgLU.png", imgLU);
     imwrite("imgRU.png", imgRU);
@@ -52,7 +52,7 @@ void stereo()
 int main(int argc, char const **argv)
 {
     printf("Starting the program\n");
-    int phase = 3;
+    int phase = 2;
     switch (phase) {
     case 0:
         makeCalibration();

@@ -6,6 +6,7 @@
 #include "opencv2/highgui/highgui.hpp"
 
 #include "QImage"
+#include "QDebug"
 
 using namespace cv;               //To use opencv
 

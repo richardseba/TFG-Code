@@ -57,6 +57,7 @@ private slots:
     void acceptedCalibParamsEvent();
 
     void on_exeButton_clicked();
+    void on_acceptedCalibrationFromFile();
     void on_pushButton_loadCalibration_clicked();
 
     void on_pushButton_Fullscreen_clicked();
@@ -77,12 +78,14 @@ private:
 
     Camera* m_cameraL;
     Camera* m_cameraR;
+    StereoCalibration m_stereoCalib;
+
     QTimer* m_timer;
     bool m_is_recording;
     bool m_calibParams_loaded;
 
     SelectCameraParamsDialog m_cameraParamsDialog;
-    CalibDialog m_calibDialog;
+    CalibDialog* m_calibDialog;
     LoadCalibParamsDialog* m_loadCalibDialog;
     VrFullscreenViewer* m_screen; //distroyed automatically when exited
 

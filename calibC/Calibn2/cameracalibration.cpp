@@ -1,6 +1,9 @@
 #include "cameracalibration.h"
 
-CameraCalibration::CameraCalibration(){}
+CameraCalibration::CameraCalibration()
+{
+    m_isInitUndistort = false;
+}
 
 CameraCalibration::CameraCalibration(int boardWidth, int boardHeight, int numImgs,float squareSize,
                                      char* imgFilePath, char* imgsFilename, char* imgExtension)
@@ -37,6 +40,7 @@ Mat CameraCalibration::getIntrinsicMatrix()
 void CameraCalibration::calibrateFromFile(char *configFileName)
 {
     m_isCalibrated = false;
+    m_isInitUndistort = false;
 
     FileStorage fs(configFileName, FileStorage::READ);
     fs["IntrinsicMat"] >> m_intrinsicMatrix;
@@ -47,7 +51,7 @@ void CameraCalibration::calibrateFromFile(char *configFileName)
     fs["calibrationError"] >> m_calibrationError;
     fs["imageSize"] >> m_imageSize;
 
-    cout <<  "Calibration error: " << m_calibrationError << "\n";
+    //cout <<  "Calibration error: " << m_calibrationError << "\n";
 
     if(m_intrinsicMatrix.data != NULL && m_distorsionVector.data != NULL)
         m_isCalibrated = true;
@@ -56,12 +60,19 @@ void CameraCalibration::calibrateFromFile(char *configFileName)
 void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int numImgs, float squareSize,
                                             char *imgFilePath, char *imgsFilename, char *imgExtension)
 {
+    cout << imgFilePath << " " << imgsFilename << "\n";
+    cout << boardWidth << " " << boardHeight << "\n";
+    cout << numImgs << "\n";
+    cout << squareSize << "\n";
+
+    m_isInitUndistort = false;
     m_boardWidth = boardWidth;
     m_boardHeight = boardHeight;
     m_squareSize = squareSize;
 
     vector< Mat > rvecs, tvecs;
     m_isCalibrated = false;
+
     loadFromImagesPoints(numImgs, imgFilePath, imgsFilename, imgExtension);
 
     printf("Starting Calibration\n");
@@ -75,6 +86,7 @@ void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int
 
     if(m_intrinsicMatrix.data != NULL && m_distorsionVector.data != NULL)
         m_isCalibrated = true;
+
 }
 
 void CameraCalibration::loadFromImagesPoints(int numImgs, char* imgFilePath, char* imgsFilename,
@@ -86,7 +98,7 @@ void CameraCalibration::loadFromImagesPoints(int numImgs, char* imgFilePath, cha
 
     for (int k = 1; k <= numImgs; k++) {
       char imgFile[100];
-      sprintf(imgFile, "%s%s%d.%s", imgFilePath, imgsFilename, k, imgExtension);
+      sprintf(imgFile, "%s/%s%d.%s", imgFilePath, imgsFilename, k, imgExtension);
       cout << imgFile <<" ";
       img = imread(imgFile, CV_LOAD_IMAGE_COLOR);
       m_imageSize = img.size();
@@ -160,19 +172,25 @@ bool CameraCalibration::saveParamsInFile(char* configFileName)
 
 void CameraCalibration::initUndistortImage()
 {
+    initUndistortImage(m_imageSize);
+}
+void CameraCalibration::initUndistortImage(Size imageSize)
+{
     if(this->isCalibrated())
     {
+        m_isInitUndistort = false;
         Mat R;
         cv::initUndistortRectifyMap(m_intrinsicMatrix, m_distorsionVector, R, m_intrinsicMatrix,
-                                    m_imageSize, CV_32F, m_mapx, m_mapy);
+                                    imageSize, CV_32F, m_mapx, m_mapy);
+        m_isInitUndistort = true;
     }
 }
 
-Mat CameraCalibration::undistort(Mat imgIn)
+Mat CameraCalibration::undistort(Mat imgIn, int interpolation)
 {
     Mat imgOut;
     if(this->isInitUndistort())
-        cv::remap(imgIn, imgOut, m_mapx, m_mapy, cv::INTER_LINEAR);
+        cv::remap(imgIn, imgOut, m_mapx, m_mapy, interpolation);
     return imgOut;
 }
 

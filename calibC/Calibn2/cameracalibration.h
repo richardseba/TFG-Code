@@ -24,7 +24,8 @@ public:
     void calibrateFromImages(int boardWidth, int boardHeight, int numImgs,float squareSize,
                              char* imgFilePath, char* imgsFilename, char* imgExtension);
     void initUndistortImage();
-    Mat undistort(Mat imgIn);
+    void initUndistortImage(Size imageSize);
+    Mat undistort(Mat imgIn, int interpolation);
 
     bool saveParamsInFile(char* configFileName);
 

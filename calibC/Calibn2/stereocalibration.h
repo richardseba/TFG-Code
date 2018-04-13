@@ -20,8 +20,9 @@ public:
     void calibrateStereoFromFile(CameraCalibration camLeft, CameraCalibration CamRight, char* stereoConfig);
 
     void initUndistortImage();
-    Mat undistortLeft(Mat imgLeftIn);
-    Mat undistortRight(Mat imgRightIn);
+    void initUndistortImage(Size imageSize);
+    Mat undistortLeft(Mat imgLeftIn, int interpolation);
+    Mat undistortRight(Mat imgRightIn, int interpolation);
 
     bool saveParamsInFile(char* configFileName);
 

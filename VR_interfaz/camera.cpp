@@ -22,7 +22,6 @@ Camera::Camera(int num_cam)
     PylonInitialize();
     CTlFactory& tlFactory = CTlFactory::GetInstance();
     DeviceInfoList_t devices;
-    this->m_isInitUndistort = false;
 
     int num_cameras = tlFactory.EnumerateDevices(devices);
     if(num_cameras-1 >= num_cam)
@@ -96,13 +95,14 @@ bool Camera::hasImage()
 
 /* Function getIsinitUndistort
  * -------------------------------
- * return the current value of m_isInitUndistort
+ * return the a boolean that indicates if the camera calibration is
+ * initizelized
  *
- * return : current value of m_isInitUndistort
+ * return : current boolean value
 */
 bool Camera::getIsinitUndistort()
 {
-    return this->m_isInitUndistort;
+    return m_calib.isInitUndistort();
 }
 
 /* Function setBinning
@@ -123,9 +123,9 @@ void Camera::setBinning(int binningValueHorizontal,int binningValueVertical)
     this->m_pylon_camera->Open();
 
     INodeMap& nodemap = m_pylon_camera->GetNodeMap();
-    if(binningValueHorizontal>0&&binningValueHorizontal<=4)
+    if(binningValueHorizontal>0 && binningValueHorizontal<=4)
         CIntegerPtr(nodemap.GetNode("BinningHorizontal"))->SetValue(binningValueHorizontal);
-    if(binningValueVertical>0&&binningValueVertical<=4)
+    if(binningValueVertical>0 && binningValueVertical<=4)
         CIntegerPtr(nodemap.GetNode("BinningVertical"))->SetValue(binningValueVertical);
 
 }
@@ -426,91 +426,10 @@ void Camera::initCamParametersFromYALM(QString filename)
  * return -> boolean indicates if the calibration paramenters have been loaded
  *          successfully.
 */
-bool Camera::initCalibParams(QString intrinsicFilename,QString distCoeffsFilename)
+bool Camera::initCalibParams(QString calibConfigFile)
 {
-    this->m_isInitUndistort = true;
-
-    this->m_intrinsic = Mat(INTRINSICS_MAT_SIZE,INTRINSICS_MAT_SIZE, CV_64F);
-    this->m_distCoeffs = Mat(1,MAX_VECTOR_COEFF_LENGHT, CV_64F);
-
-    for(int h=0;h<MAX_VECTOR_COEFF_LENGHT;h++)
-        this->m_distCoeffs.at<double>(0,h) = 0;
-
-    //Intrinsic matrix initialization
-    QFile filemat(intrinsicFilename);
-    if(!filemat.open(QIODevice::ReadOnly)) {
-        this->m_isInitUndistort = false;
-    }
-    QTextStream inmat(&filemat);
-    int i = 0;
-    bool error = false;
-    while(!inmat.atEnd() && !error) {
-        QString line = inmat.readLine();
-        QStringList fields = line.split(",");
-
-        if(fields.size()==INTRINSICS_MAT_SIZE && i<INTRINSICS_MAT_SIZE)
-        {
-            for(int j=0; j<fields.size();j++)
-            {
-                this->m_intrinsic.at<double>(i,j) = QString(fields[j]).toDouble();
-            }
-        }else
-        {
-            error = true;
-            QMessageBox Msgbox;
-            Msgbox.setIcon(Msgbox.Warning);
-            Msgbox.setText("<big>Warning</big> <p>Matrix incorrect</p>");
-            Msgbox.exec();
-        }
-        i++;
-    }
-    this->m_isInitUndistort &=!error;
-    filemat.close();
-
-    error = false;
-    //distorsion coefficients initialitation
-    QFile file(distCoeffsFilename);
-    if(!file.open(QIODevice::ReadOnly)) {
-        this->m_isInitUndistort = false;
-    }
-    QTextStream indist(&file);
-    if(!indist.atEnd()){
-            QString line = indist.readLine();
-            QStringList fields = line.split(",");
-         //allowed distortion coefficients vector sizes
-        if(fields.size()==4 || fields.size()== 5 || fields.size() == 8)
-        {
-            for(int j=0; j<fields.size();j++)
-            {
-                 this->m_distCoeffs.at<double>(0,j) = QString(fields[j]).toDouble();
-            }
-        }
-        else
-        {
-            error = true;
-            QMessageBox Msgbox;
-            Msgbox.setIcon(Msgbox.Warning);
-            Msgbox.setText("<big>Warning</big> <p>Distortion vector incorrect</p>");
-            Msgbox.exec();
-        }
-    }else
-    {
-        //the file is empty or doesn't exist
-        error = true;
-    }
-    file.close();
-    this->m_isInitUndistort &=!error;
-
-    if(!m_isInitUndistort)
-    {
-        QMessageBox Msgbox;
-        Msgbox.setIcon(Msgbox.Warning);
-        Msgbox.setText("<big>Warning</big> <p>The loading of the calibration parameters failed</p> <p> Check if the file exists or if it's corrupted</p>");
-        Msgbox.exec();
-
-    }
-
-    return this->m_isInitUndistort;
+    m_calib.calibrateFromFile(calibConfigFile.toLatin1().data());
+    return m_calib.isCalibrated();
 }
 
 /* Function initUndistortMap
@@ -521,8 +440,7 @@ bool Camera::initCalibParams(QString intrinsicFilename,QString distCoeffsFilenam
 */
 void Camera::initUndistortMap(Size imageSize)
 {
-    Mat indenity = Mat::eye(3, 3, CV_64F);
-    initUndistortRectifyMap(this->m_intrinsic,this->m_distCoeffs,indenity,this->m_intrinsic,imageSize,CV_16SC2,this->m_map1,this->m_map2);
+    m_calib.initUndistortImage(imageSize);
 }
 
 /* Function undistortMapImage
@@ -536,29 +454,21 @@ void Camera::initUndistortMap(Size imageSize)
 */
 QImage Camera::undistortMapImage(QImage src, int interpolation)
 {
-    //this->crono.restart();
-
-    Mat imageUndistorted;
-    Mat image = QImage2Mat(src);
-
-    remap( image, imageUndistorted, this->m_map1, this->m_map2, interpolation , BORDER_CONSTANT );
-
-    return Mat2QImage(imageUndistorted);
+    return Mat2QImage(m_calib.undistort(QImage2Mat(src),interpolation));
 }
 
-/* Function undistortImage
- * -------------------------------
- * function used to undistort an image
- *
- * src : image used to perform the undistortion
- *
- * return -> the input image undistorted
-*/
-QImage Camera::undistortImage(QImage src)
+CameraCalibration Camera::getCalibration()
 {
-    Mat image = QImage2Mat(src);
-    Mat imageUndistorted;
-    undistort(image,imageUndistorted,this->m_intrinsic,m_distCoeffs);
-    return Mat2QImage(imageUndistorted);
+    return m_calib;
+}
+
+void Camera::setCalibration(CameraCalibration calib)
+{
+    m_calib = calib;
+}
+
+bool Camera::isCalibrated()
+{
+    return m_calib.isCalibrated();
 }
 
