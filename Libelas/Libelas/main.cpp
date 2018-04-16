@@ -28,6 +28,8 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 
 #include <QImage>
+#include <QDebug>
+#include <QTime>
 
 using namespace std;
 
@@ -112,7 +114,8 @@ void process (const char* file_1,const char* file_2) {
 }
 
 int main (int argc, char** argv) {
-
+    QTime crono = QTime();
+    crono.start();
   // run demo
   if (argc==2 && !strcmp(argv[1],"demo")) {
     process("img/cones_left.pgm",   "img/cones_right.pgm");
@@ -123,6 +126,7 @@ int main (int argc, char** argv) {
     process("img/urban3_left.pgm",  "img/urban3_right.pgm");
     process("img/urban4_left.pgm",  "img/urban4_right.pgm");
     cout << "... done!" << endl;
+    qDebug() << crono.restart()/1000.0;
 
   // compute disparity from input pair
   } else if (argc==3) {

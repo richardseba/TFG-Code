@@ -81,6 +81,8 @@ private:
     StereoCalibration m_stereoCalib;
 
     QTimer* m_timer;
+    QTime* m_time;
+    float m_meanfps;
     bool m_is_recording;
     bool m_calibParams_loaded;
 
