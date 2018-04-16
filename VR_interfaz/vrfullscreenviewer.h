@@ -94,8 +94,6 @@ private:
     QThread m_threadL;
 
     bool m_useUndistort;
-    int m_width;
-    int m_height;
 
     //User Interface
     //VrUI* m_interface;
