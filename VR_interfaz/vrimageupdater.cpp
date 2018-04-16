@@ -36,7 +36,7 @@ VRimageUpdater::~VRimageUpdater()
  * will save it as the most recent image.
  * It will also undistort this image if the flag isundistorted is true
 */
-void VRimageUpdater::frameUpdateEvent2()
+void VRimageUpdater::frameUpdateEvent()
 {
     //this->m_crono.restart();
 

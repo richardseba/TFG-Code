@@ -31,13 +31,13 @@ MainWindow::MainWindow(QWidget *parent) :
     this->m_cameraL = new Camera(1);
 
     //Loading the yaml is optional
-    this->m_cameraR->initCamParametersFromYALM("./camRconfig.yml");
-    this->m_cameraL->initCamParametersFromYALM("./camLconfig.yml");
+    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
+    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
 
-    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./calibLeft.yml");
-    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./calibRight.yml");
+    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./configFiles/calibLeft.yml");
+    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./configFiles/calibRight.yml");
 
-    char stereoCalibFile[] = "./calibStereo.yml";
+    char stereoCalibFile[] = "./configFiles/calibStereo.yml";
     this->m_stereoCalib.calibrateStereoFromFile(m_cameraL->getCalibration(),m_cameraR->getCalibration(),stereoCalibFile);
     this->m_calibParams_loaded&=m_stereoCalib.isCalibrated();
 
@@ -397,7 +397,7 @@ void MainWindow::showVRViewer(int screen)
         ui->groupBox_cameraParams->setEnabled(false);
 
         this->m_timer->stop();
-        this->m_screen = new VrFullscreenViewer(this->m_cameraR,this->m_cameraL);
+        this->m_screen = new VrFullscreenViewer(this->m_cameraL,this->m_cameraR);
         connect(this->m_screen,SIGNAL(destroyed(QObject*)),SLOT(fullscreen_closing()));
         this->m_screen->showFullScreen(screen);
     }

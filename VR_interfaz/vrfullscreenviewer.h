@@ -26,6 +26,17 @@
 #include "QTime"
 //#include <math.h>
 
+typedef struct vrParameters {
+    int offsetLeftX;
+    int offsetLeftY;
+
+    int offsetRightX;
+    int offsetRightY;
+
+    int screenWidth;
+    int screenHeight;
+} vrParameters;
+
 
 /* Class VrFullscreenViewer
  * -------------------------------
@@ -53,6 +64,11 @@ signals:
     void zoomOut(float zoom);
 private:
     void initScene();
+    void saveUserParameters(QString filename);
+    void loadUserParameters(QString filename);
+    void updateUserParamInFrame();
+    int m_currentUserParam;
+
 
     Camera* m_cameraL;
     Camera* m_cameraR;
@@ -87,17 +103,7 @@ private:
     //QGraphicsRectItem* m_rectangle;
     float m_mean;
 
-    int m_offsetLeftX;
-    int m_offsetLeftY;
-
-    int m_offsetRightX;
-    int m_offsetRightY;
-
-    int m_screenWidth;
-    int m_screenHeight;
-
-    // int m_offsetLeftCamera;
-    // int m_offsetRightCamera;
+    vrParameters m_params;
 
 protected:
     void keyPressEvent(QKeyEvent *event);

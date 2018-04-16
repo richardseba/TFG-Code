@@ -22,7 +22,7 @@ QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_VRimageUpdater_t {
     QByteArrayData data[8];
-    char stringdata0[80];
+    char stringdata0[79];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -38,12 +38,12 @@ QT_MOC_LITERAL(3, 33, 8), // "updating"
 QT_MOC_LITERAL(4, 42, 6), // "zoomIn"
 QT_MOC_LITERAL(5, 49, 4), // "zoom"
 QT_MOC_LITERAL(6, 54, 7), // "zoomOut"
-QT_MOC_LITERAL(7, 62, 17) // "frameUpdateEvent2"
+QT_MOC_LITERAL(7, 62, 16) // "frameUpdateEvent"
 
     },
     "VRimageUpdater\0setUpdatingEvent\0\0"
     "updating\0zoomIn\0zoom\0zoomOut\0"
-    "frameUpdateEvent2"
+    "frameUpdateEvent"
 };
 #undef QT_MOC_LITERAL
 
@@ -84,7 +84,7 @@ void VRimageUpdater::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 0: _t->setUpdatingEvent((*reinterpret_cast< bool(*)>(_a[1]))); break;
         case 1: _t->zoomIn((*reinterpret_cast< float(*)>(_a[1]))); break;
         case 2: _t->zoomOut((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 3: _t->frameUpdateEvent2(); break;
+        case 3: _t->frameUpdateEvent(); break;
         default: ;
         }
     }

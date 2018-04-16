@@ -6,14 +6,16 @@
 */
 VrFullscreenViewer::VrFullscreenViewer()
 {
-    this->m_offsetLeftX = 0;
-    this->m_offsetLeftY = 0;
+    this->m_params.offsetLeftX = 0;
+    this->m_params.offsetLeftY = 0;
 
-    this->m_offsetRightX = 0;
-    this->m_offsetRightY = 0;
+    this->m_params.offsetRightX = 0;
+    this->m_params.offsetRightY = 0;
 
-    this->m_screenWidth = 0;
-    this->m_screenHeight = 0;
+    this->m_params.screenWidth = 0;
+    this->m_params.screenHeight = 0;
+
+    m_currentUserParam=1;
 
     this->m_timer = new QTimer(this);
     connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameUpdateEvent()));
@@ -35,9 +37,10 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR)
     this->setAttribute(Qt::WA_DeleteOnClose);
 
     m_mean = 1.0;
+    m_currentUserParam = 1;
 
-    this->m_offsetLeftX = 0;
-    this->m_offsetLeftY = 0;
+    this->m_params.offsetLeftX = 0;
+    this->m_params.offsetLeftY = 0;
 
     QRect rec =  desk->screenGeometry();
     this->m_height = rec.height();
@@ -96,9 +99,6 @@ VrFullscreenViewer::~VrFullscreenViewer()
 */
 void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
 {
-    QString filename("./UserPerfil.yml");
-    FileStorage fs (filename.toStdString(), FileStorage::WRITE);
-
     switch (event->key())
     {
     case Qt::Key_Plus:
@@ -113,18 +113,6 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         if(this->m_timer->isActive())
             this->m_timer->stop();
         this->close();
-
-        // Write user profile.
-        // Camera on the left
-        fs << "OffsetLeftX" << m_offsetLeftX;
-        fs << "OffsetLeftY" << m_offsetLeftY;
-        // Camera on the right
-        fs << "OffsetRightX" << m_offsetRightX;
-        fs << "OffsetRightY" << m_offsetRightY;
-        // Screen size
-        fs << "ScreenWidth" << m_screenWidth;
-        fs << "ScreenHeight" << m_screenHeight;
-
         break;
     case Qt::Key_U:
         //Use or not undistort in the images outputed by the camera
@@ -134,59 +122,99 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     //Key events to move the window of the left camera - WASD keys
     case Qt::Key_W:
-        this->m_frameR.moveBy(0,-5);
-        m_offsetLeftY = m_offsetLeftY - 5;
+        this->m_frameL.moveBy(0,-5);
+        m_params.offsetLeftY = m_params.offsetLeftY - 5;
         break;
     case Qt::Key_A:
-        this->m_frameR.moveBy(-5,0);
-        m_offsetLeftX = m_offsetLeftX - 5;
+        this->m_frameL.moveBy(-5,0);
+        m_params.offsetLeftX = m_params.offsetLeftX - 5;
         break;
     case Qt::Key_S:
-        this->m_frameR.moveBy(0,5);
-        m_offsetLeftY = m_offsetLeftY + 5;
+        this->m_frameL.moveBy(0,5);
+        m_params.offsetLeftY = m_params.offsetLeftY + 5;
         break;
     case Qt::Key_D:
-        this->m_frameR.moveBy(5,0);
-        m_offsetLeftX = m_offsetLeftX + 5;
+        this->m_frameL.moveBy(5,0);
+        m_params.offsetLeftX = m_params.offsetLeftX + 5;
         break;
     //Key events to move the Frame Counter with the arrow keys
     case Qt::Key_Up:        
         // m_fpsCounter->moveByOffset(0,-5);
-        m_screenHeight = m_screenHeight - 10;
+        m_params.screenHeight = m_params.screenHeight - 10;
         break;
     case Qt::Key_Down:        
         // m_fpsCounter->moveByOffset(0,5);
-        m_screenHeight = m_screenHeight + 10;
+        m_params.screenHeight = m_params.screenHeight + 10;
         break;
     case Qt::Key_Left:        
         // m_fpsCounter->moveByOffset(-5,0);
-        m_screenWidth = m_screenWidth - 10;
+        m_params.screenWidth = m_params.screenWidth - 10;
         break;
     case Qt::Key_Right:        
         // m_fpsCounter->moveByOffset(5,0);
-        m_screenWidth = m_screenWidth + 10;
+        m_params.screenWidth = m_params.screenWidth + 10;
         break;
     //Key events to move the window of the right camera - IJKL keys
     case Qt::Key_I:
-        this->m_frameL.moveBy(0,-5);
-        m_offsetRightY = m_offsetRightY - 5;
+        this->m_frameR.moveBy(0,-5);
+        m_params.offsetRightY = m_params.offsetRightY - 5;
         break;
     case Qt::Key_K:
-        this->m_frameL.moveBy(0,5);
-        m_offsetRightY = m_offsetRightY + 5;;
+        this->m_frameR.moveBy(0,5);
+        m_params.offsetRightY = m_params.offsetRightY + 5;;
         break;
     case Qt::Key_J:
-        this->m_frameL.moveBy(-5,0);
-        m_offsetRightX = m_offsetRightX - 5;
+        this->m_frameR.moveBy(-5,0);
+        m_params.offsetRightX = m_params.offsetRightX - 5;
         break;
     case Qt::Key_L:
-        this->m_frameL.moveBy(5,0);
-        m_offsetRightX = m_offsetRightX + 5;
+        this->m_frameR.moveBy(5,0);
+        m_params.offsetRightX = m_params.offsetRightX + 5;
+        break;
+    case Qt::Key_1:
+        if(m_currentUserParam == 1)
+            saveUserParameters("./configFiles/UserParam1.yml");
+        else
+        {
+            m_currentUserParam = 1;
+            loadUserParameters("./configFiles/UserParam1.yml");
+            updateUserParamInFrame();
+        }
+        break;
+    case Qt::Key_2:
+        if(m_currentUserParam == 2)
+            saveUserParameters("./configFiles/UserParam2.yml");
+        else
+        {
+            m_currentUserParam = 2;
+            loadUserParameters("./configFiles/UserParam2.yml");
+            updateUserParamInFrame();
+        }
+        break;
+    case Qt::Key_3:
+        if(m_currentUserParam == 3)
+            saveUserParameters("./configFiles/UserParam3.yml");
+        else
+        {
+            m_currentUserParam = 3;
+            loadUserParameters("./configFiles/UserParam3.yml");
+            updateUserParamInFrame();
+        }
+        break;
+    case Qt::Key_4:
+        if(m_currentUserParam == 4)
+            saveUserParameters("./configFiles/UserParam4.yml");
+        else
+        {
+            m_currentUserParam = 4;
+            loadUserParameters("./configFiles/UserParam4.yml");
+            updateUserParamInFrame();
+        }
         break;
     default:
         break;
     }
-    //qDebug() << m_rectangle->pos();
+//    qDebug() << m_currentUserParam;
 }
 
 /* Function initScene
@@ -216,25 +244,17 @@ void VrFullscreenViewer::initScene()
     //This offset depends on the cameras and headset position
     //for that reason it can be move manually with the WASD keys
 
-    this->m_frameR.setPos(35,0);
-    this->m_frameL.setPos(imageWidth,0);
+    this->m_frameL.setPos(35,0);
+    this->m_frameR.setPos(imageWidth,0);
 
-    QString filename("./UserPerfil.yml");
-    FileStorage fs(filename.toStdString(), FileStorage::READ);
-    fs["OffsetLeftX"] >> m_offsetLeftX;
-    fs["OffsetLeftY"] >> m_offsetLeftY;
+    m_currentUserParam = 1;
+    loadUserParameters("./configFiles/UserParam1.yml");
 
-    fs["OffsetRightX"] >> m_offsetRightX;
-    fs["OffsetRightY"] >> m_offsetRightY;
+    this->m_frameR.moveBy( m_params.offsetRightX, 0);
+    this->m_frameR.moveBy(0, m_params.offsetRightY);
 
-    fs["ScreenWidth"] >> m_screenWidth;
-    fs["ScreenHeight"] >> m_screenHeight;
-
-    this->m_frameR.moveBy( m_offsetLeftX, 0);
-    this->m_frameR.moveBy(0, m_offsetLeftY);
-
-    this->m_frameL.moveBy( m_offsetRightX, 0);
-    this->m_frameL.moveBy(0, m_offsetRightY);
+    this->m_frameL.moveBy( m_params.offsetLeftX, 0);
+    this->m_frameL.moveBy(0, m_params.offsetLeftY);
 
     this->setScene(&this->m_scene);
 
@@ -252,7 +272,7 @@ void VrFullscreenViewer::initScene()
 
     m_fpsCounter->setPos(600,450);
     m_fpsCounter->setOffset(imageWidth,0);
-    this->scene()->addItem(m_fpsCounter);
+    //this->scene()->addItem(m_fpsCounter);
 
     //this->m_interface = new VrUI();
     //this->scene()->addItem(this->m_interface);
@@ -269,8 +289,8 @@ void VrFullscreenViewer::initScene()
     imageUpdaterR = new VRimageUpdater(m_cameraR, &m_timeR, false, this->m_useUndistort);
     imageUpdaterL = new VRimageUpdater(m_cameraL, &m_timeL, false, this->m_useUndistort);
 
-    connect(&m_timeR, SIGNAL (timeout()), imageUpdaterR, SLOT (frameUpdateEvent2()));
-    connect(&m_timeL, SIGNAL (timeout()), imageUpdaterL, SLOT (frameUpdateEvent2()));
+    connect(&m_timeR, SIGNAL (timeout()), imageUpdaterR, SLOT (frameUpdateEvent()));
+    connect(&m_timeL, SIGNAL (timeout()), imageUpdaterL, SLOT (frameUpdateEvent()));
 
     connect(this,SIGNAL(setUpdatingL(bool)),imageUpdaterL,SLOT(setUpdatingEvent(bool)));
     connect(this,SIGNAL(setUpdatingR(bool)),imageUpdaterR,SLOT(setUpdatingEvent(bool)));
@@ -334,7 +354,7 @@ void VrFullscreenViewer::frameUpdateEvent()
     // this->m_scene.setSceneRect(0,0,imageWidth+m_frameL.pixmap().width(),imageHeight);
     // this->m_scene.setSceneRect(0,0, 2 * imageWidth,imageHeight);
 
-    this->m_scene.setSceneRect(0,0,2 * imageWidth + m_screenWidth, imageHeight + m_screenHeight);
+    this->m_scene.setSceneRect(0,0,2 * imageWidth + m_params.screenWidth, imageHeight + m_params.screenHeight);
 
     // qDebug() << "Paso5" << sceneRect();
 
@@ -360,6 +380,48 @@ void VrFullscreenViewer::showFullScreen(int screenSelector)
 
     QGraphicsView::showFullScreen();
 }
+
+void VrFullscreenViewer::saveUserParameters(QString filename)
+{
+    FileStorage fs (filename.toStdString(), FileStorage::WRITE);
+    fs << "OffsetLeftX" << m_params.offsetLeftX;
+    fs << "OffsetLeftY" << m_params.offsetLeftY;
+    // Camera on the right
+    fs << "OffsetRightX" << m_params.offsetRightX;
+    fs << "OffsetRightY" << m_params.offsetRightY;
+    // Screen size
+    fs << "ScreenWidth" << m_params.screenWidth;
+    fs << "ScreenHeight" << m_params.screenHeight;
+}
+
+void VrFullscreenViewer::loadUserParameters(QString filename)
+{
+    FileStorage fs(filename.toStdString(), FileStorage::READ);
+    fs["OffsetLeftX"] >> m_params.offsetLeftX;
+    fs["OffsetLeftY"] >> m_params.offsetLeftY;
+
+    fs["OffsetRightX"] >> m_params.offsetRightX;
+    fs["OffsetRightY"] >> m_params.offsetRightY;
+
+    fs["ScreenWidth"] >> m_params.screenWidth;
+    fs["ScreenHeight"] >> m_params.screenHeight;
+
+}
+
+void VrFullscreenViewer::updateUserParamInFrame()
+{
+//    this->m_frameL.setOffset(,m_params.offsetLeftY);
+    this->m_frameL.setPos(35+m_params.offsetLeftX,m_params.offsetLeftY);
+    qDebug() << m_currentUserParam;
+    qDebug() << m_params.offsetLeftX << m_params.offsetLeftY;
+
+  //  this->m_frameR.setOffset(m_params.offsetRightX,m_params.offsetRightY);
+    this->m_frameR.setPos(1100+m_params.offsetRightX,m_params.offsetRightY);
+    qDebug() << m_params.offsetRightX << m_params.offsetRightY;
+}
+
+
+
 
 
 
