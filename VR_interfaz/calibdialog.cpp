@@ -98,9 +98,9 @@ void CalibDialog::on_pushButton_calibrate_clicked()
         this->reject();
     } else {
         //this has to be moved to the calib dialog ui to allow customization in de namefiles
-        char leftOut[] = "calibLeft.yml";
-        char rightOut[] = "calibRight.yml";
-        char stereoOut[] = "calibStereo.yml";
+        char leftOut[] = "./calibLeft.yml";
+        char rightOut[] = "./calibRight.yml";
+        char stereoOut[] = "./calibStereo.yml";
 
         m_leftCam.saveParamsInFile(leftOut);
         m_rightCam.saveParamsInFile(rightOut);

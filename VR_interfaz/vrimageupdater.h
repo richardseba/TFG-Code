@@ -33,8 +33,9 @@ public slots:
     void zoomIn(float zoom);
     void zoomOut(float zoom);
 private slots:
-    void frameUpdateEvent2();
+    void frameUpdateEvent();
 private:
+    void updateUserParamInFrame();
     bool m_mirrored;
     bool m_isUndistorted;
 

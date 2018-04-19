@@ -31,13 +31,13 @@ MainWindow::MainWindow(QWidget *parent) :
     this->m_cameraL = new Camera(1);
 
     //Loading the yaml is optional
-    this->m_cameraR->initCamParametersFromYALM("./camRconfig.yml");
-    this->m_cameraL->initCamParametersFromYALM("./camLconfig.yml");
+    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
+    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
 
-    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./calibLeft.yml");
-    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./calibRight.yml");
+    this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./configFiles/calibLeft.yml");
+    this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./configFiles/calibRight.yml");
 
-    char stereoCalibFile[] = "./calibStereo.yml";
+    char stereoCalibFile[] = "./configFiles/calibStereo.yml";
     this->m_stereoCalib.calibrateStereoFromFile(m_cameraL->getCalibration(),m_cameraR->getCalibration(),stereoCalibFile);
     this->m_calibParams_loaded&=m_stereoCalib.isCalibrated();
 
@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->checkBox_undistort->setChecked(false);
 
     this->m_timer = new QTimer(this);
+    this->m_time = new QTime();
     this->m_loadCalibDialog = new LoadCalibParamsDialog(this);
     this->m_calibDialog = new CalibDialog(this);
 
@@ -165,6 +166,7 @@ void MainWindow::on_recordingButton_clicked()
 {
     if(this->m_is_recording)
     {   
+        m_time->restart();
         this->m_cameraR->stopGrabbing();
         this->m_cameraL->stopGrabbing();
 
@@ -180,7 +182,7 @@ void MainWindow::on_recordingButton_clicked()
         this->m_cameraR->startGrabbing();
         this->m_cameraL->startGrabbing();
 
-        qDebug() << this->m_cameraL->isGrabbing();
+        m_time->restart();
 
         ui->recordingButton->setText("Stop");
         ui->pushButton_Fullscreen->setEnabled(false);
@@ -224,6 +226,11 @@ void MainWindow::frameTimeEvent()
         delete[] qImageR->bits();
         delete qImageR;
         qImageR = NULL;
+
+        float currentfps = 1000.0/m_time->restart();
+        m_meanfps = (currentfps+m_meanfps)/2;
+        qDebug() << m_meanfps;
+
     }
     else
     {
@@ -274,8 +281,8 @@ bool MainWindow::saveImage(QImage qImage)
     QString imagePath = QFileDialog::getSaveFileName(
                     this,
                     tr("Save File"),
-                    "",
-                    tr("JPEG (*.jpg *.jpeg);;PNG (*.png)" )
+                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100/1.png",
+                    tr("PNG (*.png);;JPEG (*.jpg *.jpeg)" )
                     );
     return qImage.save(imagePath);
 }
@@ -390,7 +397,7 @@ void MainWindow::showVRViewer(int screen)
         ui->groupBox_cameraParams->setEnabled(false);
 
         this->m_timer->stop();
-        this->m_screen = new VrFullscreenViewer(this->m_cameraR,this->m_cameraL);
+        this->m_screen = new VrFullscreenViewer(this->m_cameraL,this->m_cameraR);
         connect(this->m_screen,SIGNAL(destroyed(QObject*)),SLOT(fullscreen_closing()));
         this->m_screen->showFullScreen(screen);
     }
@@ -461,6 +468,17 @@ void MainWindow::acceptedCamParamsRightEvent()
     this->m_cameraR->startGrabbing();
 
     this->m_cameraParamsDialog.disconnect();
+
+    if(m_calibParams_loaded)
+    {
+        Rect roiR = m_cameraR->getCurrentROIRect();
+        this->m_cameraR->initUndistortMap(Size(roiR.width,roiR.height));
+
+        Rect roiL = m_cameraL->getCurrentROIRect();
+        this->m_cameraL->initUndistortMap(Size(roiL.width,roiL.height));
+
+        this->m_stereoCalib.initUndistortImage(Size(roiR.width,roiR.height));
+    }
 }
 
 /* Private slot on_changeParamsR_pushButton_clicked
@@ -497,6 +515,17 @@ void MainWindow::acceptedCamParamsLeftEvent()
     this->m_cameraL->startGrabbing();
 
     this->m_cameraParamsDialog.disconnect();
+
+    if(m_calibParams_loaded)
+    {
+        Rect roiR = m_cameraR->getCurrentROIRect();
+        this->m_cameraR->initUndistortMap(Size(roiR.width,roiR.height));
+
+        Rect roiL = m_cameraL->getCurrentROIRect();
+        this->m_cameraL->initUndistortMap(Size(roiL.width,roiL.height));
+
+        this->m_stereoCalib.initUndistortImage(Size(roiL.width,roiL.height));
+    }
 }
 
 
