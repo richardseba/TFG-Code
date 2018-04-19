@@ -280,9 +280,23 @@
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBox_saveVideo">
+    <property name="geometry">
+     <rect>
+      <x>990</x>
+      <y>670</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Record into disk</string>
+    </property>
+   </widget>
    <zorder>label_display1</zorder>
    <zorder>label_display2</zorder>
    <zorder>layoutWidget</zorder>
+   <zorder>checkBox_saveVideo</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

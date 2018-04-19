@@ -170,6 +170,10 @@ void MainWindow::on_recordingButton_clicked()
         this->m_cameraR->stopGrabbing();
         this->m_cameraL->stopGrabbing();
 
+        qDebug() << "Ending video";
+        m_video.release();
+
+
         ui->recordingButton->setText("Start");
         this->m_is_recording = false;
         this->m_timer->stop();
@@ -179,6 +183,9 @@ void MainWindow::on_recordingButton_clicked()
     }
     else
     {
+        qDebug() << "start" << m_video.open("./out1.avi",-1,14, Size(1100,1100));
+
+        qDebug() << m_video.isOpened();
         this->m_cameraR->startGrabbing();
         this->m_cameraL->startGrabbing();
 
@@ -212,7 +219,7 @@ void MainWindow::frameTimeEvent()
     {
         QImage *qImageL = this->m_cameraL->grab_image(left);
         QImage *qImageR = this->m_cameraR->grab_image(right);
-        if(left && right)
+        if(left && right && !ui->checkBox_saveVideo->isChecked())
         {
 
             QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_LINEAR));
@@ -220,6 +227,16 @@ void MainWindow::frameTimeEvent()
 
             this->processDisparity(&qImageLU,&qImageRU);
         }
+        if(left && right && ui->checkBox_saveVideo->isChecked())
+        {
+
+            Mat im1 = QImage2Mat(*qImageL);
+            Mat im2 = QImage2Mat(*qImageR);
+
+            m_video << im1;
+
+        }
+
         delete[] qImageL->bits();
         delete qImageL;
         qImageL = NULL;
@@ -601,6 +618,23 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     free(D1_data);
     free(D2_data);
 }
+
+void saveVideo(Mat im1,Mat im2)
+{
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

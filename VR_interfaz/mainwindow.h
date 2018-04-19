@@ -73,6 +73,7 @@ private slots:
 
 private:
     bool saveImage(QImage qImage);
+    void saveVideo(Mat im1,Mat im2);
     void showVRViewer(int screen=0);
     void processDisparity(QImage* Im1,QImage* Im2);
 
@@ -85,11 +86,16 @@ private:
     float m_meanfps;
     bool m_is_recording;
     bool m_calibParams_loaded;
+    bool m_savingOn;
 
     SelectCameraParamsDialog m_cameraParamsDialog;
     CalibDialog* m_calibDialog;
     LoadCalibParamsDialog* m_loadCalibDialog;
     VrFullscreenViewer* m_screen; //distroyed automatically when exited
+
+    //video things
+
+    VideoWriter m_video;
 
     Ui::MainWindow *ui;
 

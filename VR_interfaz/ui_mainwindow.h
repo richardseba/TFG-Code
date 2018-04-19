@@ -69,6 +69,7 @@ public:
     QPushButton *recordingButton;
     QLabel *label_display1;
     QLabel *label_display2;
+    QCheckBox *checkBox_saveVideo;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -290,10 +291,14 @@ public:
         label_display2->setGeometry(QRect(714, 30, 581, 451));
         label_display2->setFrameShape(QFrame::Box);
         label_display2->setScaledContents(true);
+        checkBox_saveVideo = new QCheckBox(centralWidget);
+        checkBox_saveVideo->setObjectName(QStringLiteral("checkBox_saveVideo"));
+        checkBox_saveVideo->setGeometry(QRect(990, 670, 131, 31));
         MainWindow->setCentralWidget(centralWidget);
         label_display1->raise();
         label_display2->raise();
         layoutWidget->raise();
+        checkBox_saveVideo->raise();
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
@@ -327,6 +332,7 @@ public:
         recordingButton->setText(QApplication::translate("MainWindow", "Start", nullptr));
         label_display1->setText(QString());
         label_display2->setText(QString());
+        checkBox_saveVideo->setText(QApplication::translate("MainWindow", "Record into disk", nullptr));
     } // retranslateUi
 
 };

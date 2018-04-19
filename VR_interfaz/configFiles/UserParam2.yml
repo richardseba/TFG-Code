@@ -1,7 +1,7 @@
 %YAML:1.0
-OffsetLeftX: 175
-OffsetLeftY: 5
-OffsetRightX: 1080
-OffsetRightY: 0
+OffsetLeftX: 0
+OffsetLeftY: -35
+OffsetRightX: 1100
+OffsetRightY: -40
 ScreenWidth: 380
 ScreenHeight: 40
