@@ -245,10 +245,6 @@ void VrFullscreenViewer::initScene()
     this->scene()->addItem(&this->m_frameR);
     this->scene()->addItem(&this->m_frameL);
 
-    //Rectangle interface infront of the images
-    //m_rectangle = this->scene()->addRect(QRect(imageWidth+600,450,300,300));
-    //this->scene()->addRect(QRect(600,450,300,300));
-
     QFont panelFont("Helvetica [Cronyx]",25,12,false );
 
     m_fpsCounter = new QGraphicsTextItemVR("## FPS",0,0,0,0,panelFont);
