@@ -170,6 +170,7 @@ void MainWindow::on_recordingButton_clicked()
         this->m_cameraR->stopGrabbing();
         this->m_cameraL->stopGrabbing();
 
+        if(ui->checkBox_saveVideo->isChecked())
         qDebug() << "Ending video";
         m_videoL.release();
         m_videoR.release();
@@ -184,9 +185,11 @@ void MainWindow::on_recordingButton_clicked()
     }
     else
     {
-        qDebug() << "start" << m_videoL.open("./outL.avi",-1,35, Size(1100,1100));
-        qDebug() << "start" << m_videoR.open("./outR.avi",-1,35, Size(1100,1100));
-        qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
+        if(ui->checkBox_saveVideo->isChecked()){
+            m_videoL.open("./outL.avi",-1,8, Size(1100,1100));
+            m_videoR.open("./outR.avi",-1,8, Size(1100,1100));
+            qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
+        }
         this->m_cameraR->startGrabbing();
         this->m_cameraL->startGrabbing();
 
@@ -236,7 +239,6 @@ void MainWindow::frameTimeEvent()
 
             m_videoL << im1;
             m_videoR << im2;
-
         }
 
         delete[] qImageL->bits();
