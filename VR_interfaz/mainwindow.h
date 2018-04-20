@@ -95,7 +95,11 @@ private:
 
     //video things
 
-    VideoWriter m_video;
+    VideoWriter m_videoL;
+    VideoWriter m_videoR;
+
+    Vector<Mat> m_vectorVideoL;
+    Vector<Mat> m_vectorVideoR;
 
     Ui::MainWindow *ui;
 

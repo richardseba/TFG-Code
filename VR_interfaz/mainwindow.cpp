@@ -171,7 +171,8 @@ void MainWindow::on_recordingButton_clicked()
         this->m_cameraL->stopGrabbing();
 
         qDebug() << "Ending video";
-        m_video.release();
+        m_videoL.release();
+        m_videoR.release();
 
 
         ui->recordingButton->setText("Start");
@@ -183,9 +184,9 @@ void MainWindow::on_recordingButton_clicked()
     }
     else
     {
-        qDebug() << "start" << m_video.open("./out1.avi",-1,14, Size(1100,1100));
-
-        qDebug() << m_video.isOpened();
+        qDebug() << "start" << m_videoL.open("./outL.avi",-1,35, Size(1100,1100));
+        qDebug() << "start" << m_videoR.open("./outR.avi",-1,35, Size(1100,1100));
+        qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
         this->m_cameraR->startGrabbing();
         this->m_cameraL->startGrabbing();
 
@@ -233,7 +234,8 @@ void MainWindow::frameTimeEvent()
             Mat im1 = QImage2Mat(*qImageL);
             Mat im2 = QImage2Mat(*qImageR);
 
-            m_video << im1;
+            m_videoL << im1;
+            m_videoR << im2;
 
         }
 
@@ -618,13 +620,6 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     free(D1_data);
     free(D2_data);
 }
-
-void saveVideo(Mat im1,Mat im2)
-{
-
-
-}
-
 
 
 
