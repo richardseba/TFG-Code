@@ -28,9 +28,6 @@ using namespace cv;
 
 const int FRAME_TIMER = 0;
 
-const int MAP_WIDTH = 1200; //Ya se puede setear automaticamente !!!
-const int MAP_HIGHT = 1200; //Ya se puede setear automaticamente !!!
-
 namespace Ui {
 class MainWindow;
 }
@@ -97,9 +94,6 @@ private:
 
     VideoWriter m_videoL;
     VideoWriter m_videoR;
-
-    Vector<Mat> m_vectorVideoL;
-    Vector<Mat> m_vectorVideoR;
 
     Ui::MainWindow *ui;
 

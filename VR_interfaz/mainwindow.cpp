@@ -186,8 +186,10 @@ void MainWindow::on_recordingButton_clicked()
     else
     {
         if(ui->checkBox_saveVideo->isChecked()){
-            m_videoL.open("./outL.avi",-1,8, Size(1100,1100));
-            m_videoR.open("./outR.avi",-1,8, Size(1100,1100));
+            Rect rectL = m_cameraL->getCurrentROIRect();
+            Rect rectR = m_cameraR->getCurrentROIRect();
+            m_videoL.open("./outL.avi",-1,8, rectL.size());
+            m_videoR.open("./outR.avi",-1,8, rectR.size());
             qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
         }
         this->m_cameraR->startGrabbing();
