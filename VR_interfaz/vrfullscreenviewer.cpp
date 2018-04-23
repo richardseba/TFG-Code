@@ -83,135 +83,7 @@ VrFullscreenViewer::~VrFullscreenViewer()
     qDebug() << "fullscreen closed";
 }
 
-/* Function keyPressEvent
- * -------------------------------
- * function called when a key is pressed
- * if the plus key is press, the images of the viewer will zoom in
- * if the minus key is press, the images of the viewer will zoom out
- * if the key esc is press, the timer will stop and the widget will be closed.
- * if the key U is press, the undistort bool will change to the negate state.
- * the WASD key let you move the right frame
- * the arrow keys let you move the left interface
-*/
-void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
-{
-    switch (event->key())
-    {
-    case Qt::Key_Plus:
-         qDebug() << "Zoom in";
-         emit zoomIn(100);
-        break;
-    case Qt::Key_Minus:
-        qDebug() << "Zoom out";
-        emit zoomOut(100);
-        break;
-    case Qt::Key_Escape:
-        if(this->m_timer->isActive())
-            this->m_timer->stop();
-        this->close();
-        break;
-    case Qt::Key_U:
-        //Use or not undistort in the images outputed by the camera
-        m_useUndistort = !m_useUndistort;
-        this->imageUpdaterR->setIsUndistorted(this->m_useUndistort);
-        this->imageUpdaterL->setIsUndistorted(this->m_useUndistort);
-        break;
-    //Key events to move the window of the left camera - WASD keys
-    case Qt::Key_W:
-        this->m_frameL.moveBy(0,-5);
-        m_params.offsetLeftY = m_params.offsetLeftY - 5;
-        break;
-    case Qt::Key_A:
-        this->m_frameL.moveBy(-5,0);
-        m_params.offsetLeftX = m_params.offsetLeftX - 5;
-        break;
-    case Qt::Key_S:
-        this->m_frameL.moveBy(0,5);
-        m_params.offsetLeftY = m_params.offsetLeftY + 5;
-        break;
-    case Qt::Key_D:
-        this->m_frameL.moveBy(5,0);
-        m_params.offsetLeftX = m_params.offsetLeftX + 5;
-        break;
-    //Key events to move the Frame Counter with the arrow keys
-    case Qt::Key_Up:        
-        // m_fpsCounter->moveByOffset(0,-5);
-        m_params.screenHeight = m_params.screenHeight - 10;
-        break;
-    case Qt::Key_Down:        
-        // m_fpsCounter->moveByOffset(0,5);
-        m_params.screenHeight = m_params.screenHeight + 10;
-        break;
-    case Qt::Key_Left:        
-        // m_fpsCounter->moveByOffset(-5,0);
-        m_params.screenWidth = m_params.screenWidth - 10;
-        break;
-    case Qt::Key_Right:        
-        // m_fpsCounter->moveByOffset(5,0);
-        m_params.screenWidth = m_params.screenWidth + 10;
-        break;
-    //Key events to move the window of the right camera - IJKL keys
-    case Qt::Key_I:
-        this->m_frameR.moveBy(0,-5);
-        m_params.offsetRightY = m_params.offsetRightY - 5;
-        break;
-    case Qt::Key_K:
-        this->m_frameR.moveBy(0,5);
-        m_params.offsetRightY = m_params.offsetRightY + 5;;
-        break;
-    case Qt::Key_J:
-        this->m_frameR.moveBy(-5,0);
-        m_params.offsetRightX = m_params.offsetRightX - 5;
-        break;
-    case Qt::Key_L:
-        this->m_frameR.moveBy(5,0);
-        m_params.offsetRightX = m_params.offsetRightX + 5;
-        break;
-    case Qt::Key_1:
-        if(m_currentUserParam == 1)
-            saveUserParameters("./configFiles/UserParam1.yml");
-        else
-        {
-            m_currentUserParam = 1;
-            loadUserParameters("./configFiles/UserParam1.yml");
-            updateUserParamInFrame();
-        }
-        break;
-    case Qt::Key_2:
-        if(m_currentUserParam == 2)
-            saveUserParameters("./configFiles/UserParam2.yml");
-        else
-        {
-            m_currentUserParam = 2;
-            loadUserParameters("./configFiles/UserParam2.yml");
-            updateUserParamInFrame();
-        }
-        break;
-    case Qt::Key_3:
-        if(m_currentUserParam == 3)
-            saveUserParameters("./configFiles/UserParam3.yml");
-        else
-        {
-            m_currentUserParam = 3;
-            loadUserParameters("./configFiles/UserParam3.yml");
-            updateUserParamInFrame();
-        }
-        break;
-    case Qt::Key_4:
-        if(m_currentUserParam == 4)
-            saveUserParameters("./configFiles/UserParam4.yml");
-        else
-        {
-            m_currentUserParam = 4;
-            loadUserParameters("./configFiles/UserParam4.yml");
-            updateUserParamInFrame();
-        }
-        break;
-    default:
-        break;
-    }
-//    qDebug() << m_currentUserParam;
-}
+
 
 /* Function initScene
  * -------------------------------
@@ -383,6 +255,137 @@ void VrFullscreenViewer::updateUserParamInFrame()
     this->m_frameL.setPos(0+m_params.offsetLeftX,m_params.offsetLeftY);
 
     this->m_frameR.setPos(m_params.offsetRightX,m_params.offsetRightY);
+}
+
+/* Function keyPressEvent
+ * -------------------------------
+ * function called when a key is pressed
+ * if the plus key is press, the images of the viewer will zoom in
+ * if the minus key is press, the images of the viewer will zoom out
+ * if the key esc is press, the timer will stop and the widget will be closed.
+ * if the key U is press, the undistort bool will change to the negate state.
+ * the WASD key let you move the right frame
+ * the arrow keys let you move the left interface
+*/
+void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
+{
+    switch (event->key())
+    {
+    case Qt::Key_Plus:
+         qDebug() << "Zoom in";
+         emit zoomIn(100);
+        break;
+    case Qt::Key_Minus:
+        qDebug() << "Zoom out";
+        emit zoomOut(100);
+        break;
+    case Qt::Key_Escape:
+        if(this->m_timer->isActive())
+            this->m_timer->stop();
+        this->close();
+        break;
+    case Qt::Key_U:
+        //Use or not undistort in the images outputed by the camera
+        m_useUndistort = !m_useUndistort;
+        this->imageUpdaterR->setIsUndistorted(this->m_useUndistort);
+        this->imageUpdaterL->setIsUndistorted(this->m_useUndistort);
+        break;
+    //Key events to move the window of the left camera - WASD keys
+    case Qt::Key_W:
+        this->m_frameL.moveBy(0,-5);
+        m_params.offsetLeftY = m_params.offsetLeftY - 5;
+        break;
+    case Qt::Key_A:
+        this->m_frameL.moveBy(-5,0);
+        m_params.offsetLeftX = m_params.offsetLeftX - 5;
+        break;
+    case Qt::Key_S:
+        this->m_frameL.moveBy(0,5);
+        m_params.offsetLeftY = m_params.offsetLeftY + 5;
+        break;
+    case Qt::Key_D:
+        this->m_frameL.moveBy(5,0);
+        m_params.offsetLeftX = m_params.offsetLeftX + 5;
+        break;
+    //Key events to move the Frame Counter with the arrow keys
+    case Qt::Key_Up:
+        // m_fpsCounter->moveByOffset(0,-5);
+        m_params.screenHeight = m_params.screenHeight - 10;
+        break;
+    case Qt::Key_Down:
+        // m_fpsCounter->moveByOffset(0,5);
+        m_params.screenHeight = m_params.screenHeight + 10;
+        break;
+    case Qt::Key_Left:
+        // m_fpsCounter->moveByOffset(-5,0);
+        m_params.screenWidth = m_params.screenWidth - 10;
+        break;
+    case Qt::Key_Right:
+        // m_fpsCounter->moveByOffset(5,0);
+        m_params.screenWidth = m_params.screenWidth + 10;
+        break;
+    //Key events to move the window of the right camera - IJKL keys
+    case Qt::Key_I:
+        this->m_frameR.moveBy(0,-5);
+        m_params.offsetRightY = m_params.offsetRightY - 5;
+        break;
+    case Qt::Key_K:
+        this->m_frameR.moveBy(0,5);
+        m_params.offsetRightY = m_params.offsetRightY + 5;;
+        break;
+    case Qt::Key_J:
+        this->m_frameR.moveBy(-5,0);
+        m_params.offsetRightX = m_params.offsetRightX - 5;
+        break;
+    case Qt::Key_L:
+        this->m_frameR.moveBy(5,0);
+        m_params.offsetRightX = m_params.offsetRightX + 5;
+        break;
+    //Key events to change de user configuration
+    case Qt::Key_1:
+        if(m_currentUserParam == 1)
+            saveUserParameters("./configFiles/UserParam1.yml");
+        else
+        {
+            m_currentUserParam = 1;
+            loadUserParameters("./configFiles/UserParam1.yml");
+            updateUserParamInFrame();
+        }
+        break;
+    case Qt::Key_2:
+        if(m_currentUserParam == 2)
+            saveUserParameters("./configFiles/UserParam2.yml");
+        else
+        {
+            m_currentUserParam = 2;
+            loadUserParameters("./configFiles/UserParam2.yml");
+            updateUserParamInFrame();
+        }
+        break;
+    case Qt::Key_3:
+        if(m_currentUserParam == 3)
+            saveUserParameters("./configFiles/UserParam3.yml");
+        else
+        {
+            m_currentUserParam = 3;
+            loadUserParameters("./configFiles/UserParam3.yml");
+            updateUserParamInFrame();
+        }
+        break;
+    case Qt::Key_4:
+        if(m_currentUserParam == 4)
+            saveUserParameters("./configFiles/UserParam4.yml");
+        else
+        {
+            m_currentUserParam = 4;
+            loadUserParameters("./configFiles/UserParam4.yml");
+            updateUserParamInFrame();
+        }
+        break;
+    default:
+        break;
+    }
+//    qDebug() << m_currentUserParam;
 }
 
 
