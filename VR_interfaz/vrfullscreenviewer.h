@@ -93,6 +93,12 @@ private:
     QThread m_threadR;
     QThread m_threadL;
 
+    //demo
+    QImage* m_imgL;
+    QImage* m_imgR;
+    int m_currentImage;
+    bool m_isDemo;
+
     bool m_useUndistort;
 
     //User Interface

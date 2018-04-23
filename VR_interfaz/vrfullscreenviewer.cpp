@@ -16,6 +16,7 @@ VrFullscreenViewer::VrFullscreenViewer()
     this->m_params.screenHeight = 0;
 
     m_currentUserParam=1;
+    m_isDemo = false;
 
     this->m_timer = new QTimer(this);
     connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameUpdateEvent()));
@@ -38,6 +39,8 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR)
 
     m_mean = 1.0;
     m_currentUserParam = 1;
+    m_currentImage = 1;
+    m_isDemo = false;
 
     this->m_params.offsetLeftX = 0;
     this->m_params.offsetLeftY = 0;
@@ -170,17 +173,16 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
-    // qDebug() << "Paso1";
-
-    this->m_frameR.setPixmap(QPixmap::fromImage(this->imageUpdaterR->getNextFrame()));
-    this->m_frameL.setPixmap(QPixmap::fromImage(this->imageUpdaterL->getNextFrame()));
-
-    // qDebug() << "Paso2";
+    if(!m_isDemo){
+        this->m_frameR.setPixmap(QPixmap::fromImage(this->imageUpdaterR->getNextFrame()));
+        this->m_frameL.setPixmap(QPixmap::fromImage(this->imageUpdaterL->getNextFrame()));
+    } else {
+        this->m_frameL.setPixmap(QPixmap::fromImage(*m_imgL));
+        this->m_frameR.setPixmap(QPixmap::fromImage(*m_imgR));
+    }
 
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
     this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
-
-    // qDebug() << "Paso3";
 
     //this allow us to resize the scene when a change in the undistort setting is done
     int imageWidth = this->m_frameR.pixmap().width();    
@@ -191,23 +193,9 @@ void VrFullscreenViewer::frameUpdateEvent()
         imageHeight = this->m_frameL.pixmap().height();
     }
 
-    // qDebug() << "Paso4";
-    // qDebug() << "FrameR_width" << imageWidth;
-    // qDebug() << "Frame L_width" << m_frameL.pixmap().width();
-
-    // this->m_frameL.setPos(imageWidth - 100,0);
-
-    // Esta linea de aqui abajo es del Richard.
-    // this->m_scene.setSceneRect(0,0,imageWidth+m_frameL.pixmap().width(),imageHeight);
-    // this->m_scene.setSceneRect(0,0, 2 * imageWidth,imageHeight);
-
     this->m_scene.setSceneRect(0,0,2 * imageWidth + m_params.screenWidth, imageHeight + m_params.screenHeight);
 
-    // qDebug() << "Paso5" << sceneRect();
-
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
-
-    // qDebug() << "Paso6";
 }
 
 /* Function showFullScreen
@@ -381,6 +369,37 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             loadUserParameters("./configFiles/UserParam4.yml");
             updateUserParamInFrame();
         }
+        break;
+    case Qt::Key_8:
+        if(m_isDemo && m_currentImage == 1)
+            m_isDemo = false;
+        else {
+            m_isDemo = true;
+            m_currentImage = 1;
+        }
+        m_imgL = new QImage("./demo_images/im1L.png");
+        m_imgR = new QImage("./demo_images/im1R.png");
+        break;
+    case Qt::Key_9:
+        qDebug() << (m_isDemo && m_currentImage == 2);
+        if(m_isDemo && m_currentImage == 2)
+            m_isDemo = false;
+        else {
+            m_isDemo = true;
+            m_currentImage = 2;
+        }
+        m_imgL = new QImage("./demo_images/im2L.png");
+        m_imgR = new QImage("./demo_images/im2R.png");
+        break;
+    case Qt::Key_0:
+        if(m_isDemo && m_currentImage == 3)
+            m_isDemo = false;
+        else {
+            m_isDemo = true;
+            m_currentImage = 3;
+        }
+        m_imgL = new QImage("./demo_images/im3L.png");
+        m_imgR = new QImage("./demo_images/im3R.png");
         break;
     default:
         break;
