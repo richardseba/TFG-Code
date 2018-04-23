@@ -170,6 +170,18 @@ void MainWindow::on_recordingButton_clicked()
         this->m_cameraR->stopGrabbing();
         this->m_cameraL->stopGrabbing();
 
+        if(ui->radioButton_recordMemory->isChecked())
+        {
+            saveVideoFromMemory(m_vectorVideoL,m_videoL);
+            saveVideoFromMemory(m_vectorVideoR,m_videoR);
+            m_vectorVideoL.release();
+            m_vectorVideoR.release();
+        }
+        if(ui->checkBox_saveVideo->isChecked()){
+            m_videoL.release();
+            m_videoR.release();
+        }
+
         ui->recordingButton->setText("Start");
         this->m_is_recording = false;
         this->m_timer->stop();
@@ -179,6 +191,13 @@ void MainWindow::on_recordingButton_clicked()
     }
     else
     {
+        if(ui->checkBox_saveVideo->isChecked()){
+            Rect rectL = m_cameraL->getCurrentROIRect();
+            Rect rectR = m_cameraR->getCurrentROIRect();
+            m_videoL.open("./outL.avi",-1,FRAME_RATE_SAVE, rectL.size());
+            m_videoR.open("./outR.avi",-1,FRAME_RATE_SAVE, rectR.size());
+            qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
+        }
         this->m_cameraR->startGrabbing();
         this->m_cameraL->startGrabbing();
 
@@ -201,18 +220,22 @@ void MainWindow::on_recordingButton_clicked()
 */
 void MainWindow::frameTimeEvent()
 {
-    QImage *qImage = NULL;
-    bool ret;
+    QImage *qImageL = NULL;
+    QImage *qImageR = NULL;
 
     bool left,right;
     left = ui->checkBox_continous_left->isChecked();
     right = ui->checkBox_continous_right->isChecked();
 
+    if(left)
+        qImageL = this->m_cameraL->grab_image(left);
+    if(right)
+        qImageR = this->m_cameraR->grab_image(right);
+
+
     if(left && right)
     {
-        QImage *qImageL = this->m_cameraL->grab_image(left);
-        QImage *qImageR = this->m_cameraR->grab_image(right);
-        if(left && right)
+        if(!ui->checkBox_saveVideo->isChecked())
         {
 
             QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_LINEAR));
@@ -220,12 +243,19 @@ void MainWindow::frameTimeEvent()
 
             this->processDisparity(&qImageLU,&qImageRU);
         }
-        delete[] qImageL->bits();
-        delete qImageL;
-        qImageL = NULL;
-        delete[] qImageR->bits();
-        delete qImageR;
-        qImageR = NULL;
+        if(ui->checkBox_saveVideo->isChecked())
+        {
+            if(ui->radioButton_recordMemory->isChecked() && ((m_vectorVideoL.size()+m_vectorVideoR.size()) < MAX_FRAME_IN_MEMORY)) {
+                m_vectorVideoL.push_back(qImageL->copy());
+                m_vectorVideoR.push_back(qImageR->copy());
+            }
+            if(ui->radioButton_recordDisk->isChecked()){
+                Mat im1 = QImage2Mat(*qImageL);
+                Mat im2 = QImage2Mat(*qImageR);
+                m_videoL << im1;
+                m_videoR << im2;
+            }
+        }
 
         float currentfps = 1000.0/m_time->restart();
         m_meanfps = (currentfps+m_meanfps)/2;
@@ -234,36 +264,26 @@ void MainWindow::frameTimeEvent()
     }
     else
     {
-        if(ui->checkBox_continous_left->isChecked())
-        {
-            qImage = this->m_cameraL->grab_image(ret);
-
-            if(ret)
-            {
-                ui->label_display1->setPixmap(QPixmap::fromImage(*qImage));
-                ui->label_display1->show();
-
-                delete[] qImage->bits();
-                delete qImage;
-                qImage = NULL;
-            }
+        if(left) {
+            ui->label_display1->setPixmap(QPixmap::fromImage(*qImageL));
+            ui->label_display1->show();
         }
-
-        if(ui->checkBox_continous_right->isChecked())
-        {
-            qImage = this->m_cameraR->grab_image(ret);
-            if(ret)
-            {
-                ui->label_display2->setPixmap(QPixmap::fromImage(*qImage));
-                ui->label_display2->show();
-
-                delete[] qImage->bits();
-                delete qImage;
-                qImage = NULL;
-            }
+        if(right){
+            ui->label_display2->setPixmap(QPixmap::fromImage(*qImageR));
+            ui->label_display2->show();
         }
     }
 
+    if(qImageL!=NULL){
+        delete[] qImageL->bits();
+        delete qImageL;
+        qImageL = NULL;
+    }
+    if(qImageR!=NULL){
+        delete[] qImageR->bits();
+        delete qImageR;
+        qImageR = NULL;
+    }
 
 }
 
@@ -601,6 +621,24 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     free(D1_data);
     free(D2_data);
 }
+
+void MainWindow::saveVideoFromMemory(Vector<QImage> buffer, VideoWriter video)
+{
+    for(int i = 0; i < buffer.size(); i++) {
+        video << QImage2Mat(buffer[i]);
+        qDebug() << i+1 << "/" << buffer.size();
+    }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

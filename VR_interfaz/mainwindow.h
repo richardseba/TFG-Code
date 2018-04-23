@@ -28,8 +28,8 @@ using namespace cv;
 
 const int FRAME_TIMER = 0;
 
-const int MAP_WIDTH = 1200; //Ya se puede setear automaticamente !!!
-const int MAP_HIGHT = 1200; //Ya se puede setear automaticamente !!!
+const int FRAME_RATE_SAVE = 30;
+const int MAX_FRAME_IN_MEMORY = 450;
 
 namespace Ui {
 class MainWindow;
@@ -73,8 +73,10 @@ private slots:
 
 private:
     bool saveImage(QImage qImage);
+    void saveVideo(Mat im1,Mat im2);
     void showVRViewer(int screen=0);
     void processDisparity(QImage* Im1,QImage* Im2);
+    void saveVideoFromMemory(Vector<QImage> buffer,VideoWriter video);
 
     Camera* m_cameraL;
     Camera* m_cameraR;
@@ -85,11 +87,20 @@ private:
     float m_meanfps;
     bool m_is_recording;
     bool m_calibParams_loaded;
+    bool m_savingOn;
 
     SelectCameraParamsDialog m_cameraParamsDialog;
     CalibDialog* m_calibDialog;
     LoadCalibParamsDialog* m_loadCalibDialog;
     VrFullscreenViewer* m_screen; //distroyed automatically when exited
+
+    //video things
+
+    VideoWriter m_videoL;
+    VideoWriter m_videoR;
+
+    Vector<QImage> m_vectorVideoL;
+    Vector<QImage> m_vectorVideoR;
 
     Ui::MainWindow *ui;
 

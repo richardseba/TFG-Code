@@ -253,10 +253,6 @@ void VrFullscreenViewer::initScene()
     m_fpsCounter->setOffset(imageWidth,0);
     //this->scene()->addItem(m_fpsCounter);
 
-    //this->m_interface = new VrUI();
-    //this->scene()->addItem(this->m_interface);
-    //this->m_interface->setPos(500,500);
-
     delete[] qImageL->bits();
     delete qImageL;
     qImageL = NULL;
