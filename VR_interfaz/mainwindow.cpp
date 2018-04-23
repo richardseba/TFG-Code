@@ -170,25 +170,17 @@ void MainWindow::on_recordingButton_clicked()
         this->m_cameraR->stopGrabbing();
         this->m_cameraL->stopGrabbing();
 
-        if(ui->checkBox_saveVideo->isChecked())
-        qDebug() << "Ending video";
-
         if(ui->radioButton_recordMemory->isChecked())
         {
-            for(int i = 0; i < m_vectorVideoL.size(); i++){
-                m_videoL << QImage2Mat(m_vectorVideoL[i]);
-                qDebug() << i+1 << "/" << m_vectorVideoL.size();
-            }
-            for(int i = 0; i < m_vectorVideoR.size(); i++) {
-                m_videoR << QImage2Mat(m_vectorVideoR[i]);
-                qDebug() << i+1 << "/" << m_vectorVideoL.size();
-
-            }
+            saveVideoFromMemory(m_vectorVideoL,m_videoL);
+            saveVideoFromMemory(m_vectorVideoR,m_videoR);
+            m_vectorVideoL.release();
+            m_vectorVideoR.release();
         }
-
-        m_videoL.release();
-        m_videoR.release();
-
+        if(ui->checkBox_saveVideo->isChecked()){
+            m_videoL.release();
+            m_videoR.release();
+        }
 
         ui->recordingButton->setText("Start");
         this->m_is_recording = false;
@@ -228,18 +220,22 @@ void MainWindow::on_recordingButton_clicked()
 */
 void MainWindow::frameTimeEvent()
 {
-    QImage *qImage = NULL;
-    bool ret;
+    QImage *qImageL = NULL;
+    QImage *qImageR = NULL;
 
     bool left,right;
     left = ui->checkBox_continous_left->isChecked();
     right = ui->checkBox_continous_right->isChecked();
 
+    if(left)
+        qImageL = this->m_cameraL->grab_image(left);
+    if(right)
+        qImageR = this->m_cameraR->grab_image(right);
+
+
     if(left && right)
     {
-        QImage *qImageL = this->m_cameraL->grab_image(left);
-        QImage *qImageR = this->m_cameraR->grab_image(right);
-        if(left && right && !ui->checkBox_saveVideo->isChecked())
+        if(!ui->checkBox_saveVideo->isChecked())
         {
 
             QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_LINEAR));
@@ -247,7 +243,7 @@ void MainWindow::frameTimeEvent()
 
             this->processDisparity(&qImageLU,&qImageRU);
         }
-        if(left && right && ui->checkBox_saveVideo->isChecked())
+        if(ui->checkBox_saveVideo->isChecked())
         {
             if(ui->radioButton_recordMemory->isChecked() && ((m_vectorVideoL.size()+m_vectorVideoR.size()) < MAX_FRAME_IN_MEMORY)) {
                 m_vectorVideoL.push_back(qImageL->copy());
@@ -261,13 +257,6 @@ void MainWindow::frameTimeEvent()
             }
         }
 
-        delete[] qImageL->bits();
-        delete qImageL;
-        qImageL = NULL;
-        delete[] qImageR->bits();
-        delete qImageR;
-        qImageR = NULL;
-
         float currentfps = 1000.0/m_time->restart();
         m_meanfps = (currentfps+m_meanfps)/2;
         qDebug() << m_meanfps;
@@ -275,36 +264,26 @@ void MainWindow::frameTimeEvent()
     }
     else
     {
-        if(ui->checkBox_continous_left->isChecked())
-        {
-            qImage = this->m_cameraL->grab_image(ret);
-
-            if(ret)
-            {
-                ui->label_display1->setPixmap(QPixmap::fromImage(*qImage));
-                ui->label_display1->show();
-
-                delete[] qImage->bits();
-                delete qImage;
-                qImage = NULL;
-            }
+        if(left) {
+            ui->label_display1->setPixmap(QPixmap::fromImage(*qImageL));
+            ui->label_display1->show();
         }
-
-        if(ui->checkBox_continous_right->isChecked())
-        {
-            qImage = this->m_cameraR->grab_image(ret);
-            if(ret)
-            {
-                ui->label_display2->setPixmap(QPixmap::fromImage(*qImage));
-                ui->label_display2->show();
-
-                delete[] qImage->bits();
-                delete qImage;
-                qImage = NULL;
-            }
+        if(right){
+            ui->label_display2->setPixmap(QPixmap::fromImage(*qImageR));
+            ui->label_display2->show();
         }
     }
 
+    if(qImageL!=NULL){
+        delete[] qImageL->bits();
+        delete qImageL;
+        qImageL = NULL;
+    }
+    if(qImageR!=NULL){
+        delete[] qImageR->bits();
+        delete qImageR;
+        qImageR = NULL;
+    }
 
 }
 
