@@ -172,6 +172,20 @@ void MainWindow::on_recordingButton_clicked()
 
         if(ui->checkBox_saveVideo->isChecked())
         qDebug() << "Ending video";
+
+        if(ui->radioButton_recordMemory->isChecked())
+        {
+            for(int i = 0; i < m_vectorVideoL.size(); i++){
+                m_videoL << QImage2Mat(m_vectorVideoL[i]);
+                qDebug() << i+1 << "/" << m_vectorVideoL.size();
+            }
+            for(int i = 0; i < m_vectorVideoR.size(); i++) {
+                m_videoR << QImage2Mat(m_vectorVideoR[i]);
+                qDebug() << i+1 << "/" << m_vectorVideoL.size();
+
+            }
+        }
+
         m_videoL.release();
         m_videoR.release();
 
@@ -188,8 +202,8 @@ void MainWindow::on_recordingButton_clicked()
         if(ui->checkBox_saveVideo->isChecked()){
             Rect rectL = m_cameraL->getCurrentROIRect();
             Rect rectR = m_cameraR->getCurrentROIRect();
-            m_videoL.open("./outL.avi",-1,8, rectL.size());
-            m_videoR.open("./outR.avi",-1,8, rectR.size());
+            m_videoL.open("./outL.avi",-1,FRAME_RATE_SAVE, rectL.size());
+            m_videoR.open("./outR.avi",-1,FRAME_RATE_SAVE, rectR.size());
             qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
         }
         this->m_cameraR->startGrabbing();
@@ -238,9 +252,15 @@ void MainWindow::frameTimeEvent()
 
             Mat im1 = QImage2Mat(*qImageL);
             Mat im2 = QImage2Mat(*qImageR);
-
-            m_videoL << im1;
-            m_videoR << im2;
+            //qDebug() << (ui->radioButton_recordMemory->isChecked() && ((m_vectorVideoL.size()+m_vectorVideoR.size()) < MAX_FRAME_IN_MEMORY));
+            if(ui->radioButton_recordMemory->isChecked() && ((m_vectorVideoL.size()+m_vectorVideoR.size()) < MAX_FRAME_IN_MEMORY)) {
+                m_vectorVideoL.push_back(qImageL->copy());
+                m_vectorVideoR.push_back(qImageR->copy());
+            }
+            if(ui->radioButton_recordDisk->isChecked()){
+                m_videoL << im1;
+                m_videoR << im2;
+            }
         }
 
         delete[] qImageL->bits();
@@ -623,6 +643,14 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
 
     free(D1_data);
     free(D2_data);
+}
+
+void MainWindow::saveVideoFromMemory(Vector<QImage> buffer, VideoWriter video)
+{
+    for(int i = 0; i < buffer.size(); i++) {
+        video << QImage2Mat(buffer[i]);
+        qDebug() << i+1 << "/" << buffer.size();
+    }
 }
 
 
