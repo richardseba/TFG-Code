@@ -249,15 +249,13 @@ void MainWindow::frameTimeEvent()
         }
         if(left && right && ui->checkBox_saveVideo->isChecked())
         {
-
-            Mat im1 = QImage2Mat(*qImageL);
-            Mat im2 = QImage2Mat(*qImageR);
-            //qDebug() << (ui->radioButton_recordMemory->isChecked() && ((m_vectorVideoL.size()+m_vectorVideoR.size()) < MAX_FRAME_IN_MEMORY));
             if(ui->radioButton_recordMemory->isChecked() && ((m_vectorVideoL.size()+m_vectorVideoR.size()) < MAX_FRAME_IN_MEMORY)) {
                 m_vectorVideoL.push_back(qImageL->copy());
                 m_vectorVideoR.push_back(qImageR->copy());
             }
             if(ui->radioButton_recordDisk->isChecked()){
+                Mat im1 = QImage2Mat(*qImageL);
+                Mat im2 = QImage2Mat(*qImageR);
                 m_videoL << im1;
                 m_videoR << im2;
             }
