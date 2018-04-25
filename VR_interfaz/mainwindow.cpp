@@ -4,7 +4,9 @@
 #include "QDebug"
 #include "elas.h"
 #include "image.h"
+
 #include <QDateTime>
+#include <QProgressBar>
 
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
@@ -173,8 +175,13 @@ void MainWindow::on_recordingButton_clicked()
 
         if(ui->radioButton_recordMemory->isChecked())
         {
-            saveVideoFromMemory(m_vectorVideoL,m_videoL);
-            saveVideoFromMemory(m_vectorVideoR,m_videoR);
+            QProgressBar progress(this);
+            progress.setMaximum(m_vectorVideoL.size()+m_vectorVideoR.size());
+            progress.show();
+            progress.setFixedSize(250,50);
+
+            saveVideoFromMemory(m_vectorVideoL, m_videoL,&progress);
+            saveVideoFromMemory(m_vectorVideoR, m_videoR,&progress);
             m_vectorVideoL.release();
             m_vectorVideoR.release();
         }
@@ -629,11 +636,11 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     free(D2_data);
 }
 
-void MainWindow::saveVideoFromMemory(Vector<QImage> buffer, VideoWriter video)
+void MainWindow::saveVideoFromMemory(Vector<QImage> buffer, VideoWriter video, QProgressBar *progress)
 {
     for(int i = 0; i < buffer.size(); i++) {
         video << QImage2Mat(buffer[i]);
-        qDebug() << i+1 << "/" << buffer.size();
+        progress->setValue(progress->value()+1);
     }
 }
 

@@ -8,6 +8,7 @@
 #include "QMessageBox"
 #include "QFileDialog"
 #include "QProcess"
+#include <QProgressBar>
 
 #include <calibdialog.h>
 #include <loadcalibparamsdialog.h>
@@ -76,7 +77,7 @@ private:
     void saveVideo(Mat im1,Mat im2);
     void showVRViewer(int screen=0);
     void processDisparity(QImage* Im1,QImage* Im2);
-    void saveVideoFromMemory(Vector<QImage> buffer,VideoWriter video);
+    void saveVideoFromMemory(Vector<QImage> buffer,VideoWriter video, QProgressBar* progress);
 
     Camera* m_cameraL;
     Camera* m_cameraR;
