@@ -22,14 +22,13 @@ SOURCES += main.cpp\
     selectcameraparamsdialog.cpp \
     vrui.cpp \
     qgraphicstextitemvr.cpp \
-    ../Libelas/Libelas/descriptor.cpp \
-    ../Libelas/Libelas/elas.cpp \
-    ../Libelas/Libelas/filter.cpp \
-    ../Libelas/Libelas/matrix.cpp \
-    ../Libelas/Libelas/triangle.cpp \
     utils.cpp \
-    ../calibC/Calibn2/cameracalibration.cpp \
-    ../calibC/Calibn2/stereocalibration.cpp
+    cameracalibration.cpp \
+    descriptor.cpp \
+    elas.cpp \
+    filter.cpp \
+    stereocalibration.cpp \
+    triangle.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -40,16 +39,15 @@ HEADERS  += mainwindow.h \
     selectcameraparamsdialog.h \
     vrui.h \
     qgraphicstextitemvr.h \
-    ../Libelas/Libelas/descriptor.h \
-    ../Libelas/Libelas/elas.h \
-    ../Libelas/Libelas/filter.h \
-    ../Libelas/Libelas/matrix.h \
-    ../Libelas/Libelas/timer.h \
-    ../Libelas/Libelas/triangle.h \
-    ../Libelas/Libelas/image.h \
     utils.h \
-    ../calibC/Calibn2/cameracalibration.h \
-    ../calibC/Calibn2/stereocalibration.h
+    cameracalibration.h \
+    descriptor.h \
+    elas.h \
+    filter.h \
+    image.h \
+    stereocalibration.h \
+    timer.h \
+    triangle.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \
@@ -65,26 +63,26 @@ win32 {
 }
 
 CONFIG(debug, debug|release) {
-    LIBS += C:\opencv\build\x86\vc12\lib\opencv_core2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_imgproc2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_highgui2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_ml2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_features2d2413d.lib \
-             C:\opencv\build\x86\vc12\lib\opencv_calib3d2413d.lib \
-            -L$$(PYLON_DEV_DIR)/lib/Win32 \
+    LIBS += C:\opencv\build\x64\vc12\lib\opencv_core2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_imgproc2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_highgui2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_ml2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_features2d2413d.lib \
+             C:\opencv\build\x64\vc12\lib\opencv_calib3d2413d.lib \
+            -L$$(PYLON_DEV_DIR)/lib/x64 \
             -lPylonBase_MD_VC120_v5_0 \
             -lPylonUtility_MD_VC120_v5_0 \
             -lPylonC_MD_VC120 \
     }
     else
     {
-    LIBS += C:\opencv\build\x86\vc12\lib\opencv_core2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_imgproc2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_highgui2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_ml2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_features2d2413.lib\
-            C:\opencv\build\x86\vc12\lib\opencv_calib3d2413.lib \
-            -L$$(PYLON_DEV_DIR)/lib/Win32 \
+    LIBS += C:\opencv\build\x64\vc12\lib\opencv_core2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_imgproc2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_highgui2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_ml2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_features2d2413.lib\
+            C:\opencv\build\x64\vc12\lib\opencv_calib3d2413.lib \
+            -L$$(PYLON_DEV_DIR)/lib/x64 \
             -lPylonBase_MD_VC120_v5_0 \
             -lPylonUtility_MD_VC120_v5_0 \
             -lPylonC_MD_VC120 \

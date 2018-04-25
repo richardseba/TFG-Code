@@ -6,8 +6,8 @@
 #include <QDebug>
 #include "QMessageBox"
 
-#include "../calibC/Calibn2/cameracalibration.h"
-#include "../calibC/Calibn2/stereocalibration.h"
+#include "cameracalibration.h"
+#include "stereocalibration.h"
 
 namespace Ui {
 class CalibDialog;

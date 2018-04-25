@@ -2,8 +2,9 @@
 #include "ui_mainwindow.h"
 
 #include "QDebug"
-#include "../Libelas/Libelas/elas.h"
-#include "../Libelas/Libelas/image.h"
+#include "elas.h"
+#include "image.h"
+#include <QDateTime>
 
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
@@ -194,8 +195,15 @@ void MainWindow::on_recordingButton_clicked()
         if(ui->checkBox_saveVideo->isChecked()){
             Rect rectL = m_cameraL->getCurrentROIRect();
             Rect rectR = m_cameraR->getCurrentROIRect();
-            m_videoL.open("./outL.avi",-1,FRAME_RATE_SAVE, rectL.size());
-            m_videoR.open("./outR.avi",-1,FRAME_RATE_SAVE, rectR.size());
+
+            QDateTime now;
+            now = QDateTime::currentDateTime();
+            QString namefile = QString("./videos/") + QString(now.toString("hh_mm_ss"));
+//            namefile;//.append("L.avi");
+            qDebug() << namefile+QString("L.avi");
+
+            m_videoL.open((namefile+QString("L.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectL.size());
+            m_videoR.open((namefile+QString("R.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectR.size());
             qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
         }
         this->m_cameraR->startGrabbing();

@@ -13,7 +13,7 @@
 #include <GenICamFwd.h>
 #include "utils.h"
 
-#include "../calibC/Calibn2/cameracalibration.h"
+#include "cameracalibration.h"
 
 
 #include <pylon/usb/BaslerUsbInstantCamera.h>
