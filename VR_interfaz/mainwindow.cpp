@@ -198,9 +198,7 @@ void MainWindow::on_recordingButton_clicked()
 
             QDateTime now;
             now = QDateTime::currentDateTime();
-            QString namefile = QString("./videos/") + QString(now.toString("hh_mm_ss"));
-//            namefile;//.append("L.avi");
-            qDebug() << namefile+QString("L.avi");
+            QString namefile = QString("./videos/") + QString(now.toString("dd_mm_hh_mm_ss"));
 
             m_videoL.open((namefile+QString("L.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectL.size());
             m_videoR.open((namefile+QString("R.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectR.size());
@@ -256,7 +254,8 @@ void MainWindow::frameTimeEvent()
             if(ui->radioButton_recordMemory->isChecked() && ((m_vectorVideoL.size()+m_vectorVideoR.size()) < MAX_FRAME_IN_MEMORY)) {
                 m_vectorVideoL.push_back(qImageL->copy());
                 m_vectorVideoR.push_back(qImageR->copy());
-            }
+            }else if(((m_vectorVideoL.size()+m_vectorVideoR.size()) >= MAX_FRAME_IN_MEMORY))
+                on_recordingButton_clicked();
             if(ui->radioButton_recordDisk->isChecked()){
                 Mat im1 = QImage2Mat(*qImageL);
                 Mat im2 = QImage2Mat(*qImageR);
