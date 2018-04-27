@@ -31,6 +31,10 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
     m_boardWidth = boardWidth;
     m_squareSize = squareSize;
 
+    m_objectPoints.clear();
+    m_leftImagePoints.clear();
+    m_rightImagePoints.clear();
+
     loadFromImagesPoints(numImgs, leftImgDir, rightImgDir,leftImgFilename, rightImgFilename, extension);
 
     int flag = 0;

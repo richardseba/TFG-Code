@@ -42,6 +42,12 @@ void CameraCalibration::calibrateFromFile(char *configFileName)
     m_isCalibrated = false;
     m_isInitUndistort = false;
 
+    m_objectPoints.clear();
+    m_imagePoints.clear();
+
+    Mat m_mapx = Mat();
+    Mat m_mapy = Mat();
+
     FileStorage fs(configFileName, FileStorage::READ);
     fs["IntrinsicMat"] >> m_intrinsicMatrix;
     fs["DistorsionVector"] >> m_distorsionVector;
@@ -64,6 +70,13 @@ void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int
     cout << boardWidth << " " << boardHeight << "\n";
     cout << numImgs << "\n";
     cout << squareSize << "\n";
+
+    m_objectPoints.clear();
+    m_imagePoints.clear();
+
+    Mat m_mapx = Mat();
+    Mat m_mapy = Mat();
+
 
     m_isInitUndistort = false;
     m_boardWidth = boardWidth;
