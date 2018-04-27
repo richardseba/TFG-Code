@@ -95,6 +95,8 @@ private:
     LoadCalibParamsDialog* m_loadCalibDialog;
     VrFullscreenViewer* m_screen; //distroyed automatically when exited
 
+    int m_photosCaptured;
+
     //video things
 
     VideoWriter m_videoL;

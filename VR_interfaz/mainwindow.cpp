@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    this->m_photosCaptured = 0;
+
     this->m_is_recording = false;
     this->m_calibParams_loaded = true;
 
@@ -251,8 +253,8 @@ void MainWindow::frameTimeEvent()
         if(!ui->checkBox_saveVideo->isChecked())
         {
 
-            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_LINEAR));
-            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(*qImageR),CV_INTER_LINEAR));
+            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_CUBIC));
+            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(*qImageR),CV_INTER_CUBIC));
 
             this->processDisparity(&qImageLU,&qImageRU);
         }
@@ -312,12 +314,16 @@ void MainWindow::frameTimeEvent()
 */
 bool MainWindow::saveImage(QImage qImage)
 {
+    QString filename = QString::number(m_photosCaptured/2+1);
+    filename.append(".png");
     QString imagePath = QFileDialog::getSaveFileName(
                     this,
                     tr("Save File"),
-                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100/1.png",
+                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100/"+filename,
                     tr("PNG (*.png);;JPEG (*.jpg *.jpeg)" )
                     );
+    if(!imagePath.isEmpty() && !imagePath.isNull())
+        m_photosCaptured++;
     return qImage.save(imagePath);
 }
 
