@@ -43,7 +43,8 @@ CONFIG(debug, debug|release) {
             C:\opencv\build\x64\vc12\lib\opencv_imgproc2413d.lib \
             C:\opencv\build\x64\vc12\lib\opencv_highgui2413d.lib \
             C:\opencv\build\x64\vc12\lib\opencv_ml2413d.lib \
-             C:\opencv\build\x64\vc12\lib\opencv_calib3d2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_calib3d2413d.lib \
+
     }
     else
     {
