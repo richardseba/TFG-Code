@@ -31,13 +31,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->m_is_recording = false;
     this->m_calibParams_loaded = true;
-
+    qDebug() << "strt?";
     this->m_cameraR = new Camera(0);
     this->m_cameraL = new Camera(1);
-
+    qDebug() << "end?";
     //Loading the yaml is optional
-    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
-    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
+//    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
+//    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
 
     this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./configFiles/calibLeft.yml");
     this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./configFiles/calibRight.yml");
@@ -644,9 +644,12 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
 
 void MainWindow::saveVideoFromMemory(Vector<QImage> buffer, VideoWriter video, QProgressBar *progress)
 {
+//    qDebug() << buffer.size();
     for(int i = 0; i < buffer.size(); i++) {
         video << QImage2Mat(buffer[i]);
         progress->setValue(progress->value()+1);
+        progress->update();
+        //qDebug() << i << "/" << buffer.size();
     }
 }
 

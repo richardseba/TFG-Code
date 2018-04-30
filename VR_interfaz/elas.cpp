@@ -30,12 +30,12 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 using namespace std;
 
 void Elas::process (uint8_t* I1_,uint8_t* I2_,float* D1,float* D2,const int32_t* dims){
-  
+
   // get width, height and bytes per line
   width  = dims[0];
   height = dims[1];
   bpl    = width + 15-(width-1)%16;
-  
+
   // copy images to byte aligned memory
   I1 = (uint8_t*)_mm_malloc(bpl*height*sizeof(uint8_t),16);
   I2 = (uint8_t*)_mm_malloc(bpl*height*sizeof(uint8_t),16);
