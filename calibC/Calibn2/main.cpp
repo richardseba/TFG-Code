@@ -6,12 +6,14 @@
 
 void calib()
 {
-    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/Calib/right";
+    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100/right";
+//    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100/left";
     char imgs_filename[]  = "";
-    char out_file[] = "calibRightOLD.txt";
+    char out_file[] = "calibRight.txt";
+//    char out_file[] = "calibLeft.txt";
     char extension[] = "png";
 
-    CameraCalibration* cam1 = new CameraCalibration(11,7,25,1,imgs_directory,imgs_filename,extension);
+    CameraCalibration* cam1 = new CameraCalibration(11,7,13,1,imgs_directory,imgs_filename,extension);
    // CameraCalibration* cam1 = new CameraCalibration(out_file);
     cam1->saveParamsInFile(out_file);
 }
@@ -23,15 +25,15 @@ void stereo()
     CameraCalibration camLeft(lConfig);
     CameraCalibration camRight(rConfig);
 
-    char leftimg_path[] = "../../../Dataset/Calib/left";
-    char rightimg_path[] = "../../../Dataset/Calib/right";
-    char leftimg_filename[] = "../../../Dataset/Calib/left/1.png";
-    char rightimg_filename[] = "../../../Dataset/Calib/right/1.png";
+    char leftimg_path[] = "../../../../Dataset/1100x1100/left";
+    char rightimg_path[] = "../../../../Dataset/1100x1100/right";
+    char leftimg_filename[] = "../../../../Dataset/1100x1100/left/1.png";
+    char rightimg_filename[] = "../../../../Dataset/1100x1100/right/1.png";
     char calib_file[] = "./stereoCalib.txt";
     char img_prefix[]  = "";
     char extension[] = "png";
 
-    StereoCalibration stereoCalib(camLeft,camRight,11,7,25,1,leftimg_path,rightimg_path,
+    StereoCalibration stereoCalib(camLeft,camRight,11,7,13,1,leftimg_path,rightimg_path,
                                   img_prefix,img_prefix,extension);
     stereoCalib.saveParamsInFile(calib_file);
 
@@ -52,7 +54,7 @@ void stereo()
 int main(int argc, char const **argv)
 {
     printf("Starting the program\n");
-    int phase = 2;
+    int phase = 3;
     switch (phase) {
     case 0:
         makeCalibration();

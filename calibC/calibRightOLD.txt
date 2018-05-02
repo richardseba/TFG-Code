@@ -1,0 +1,19 @@
+%YAML:1.0
+IntrinsicMat: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 6.6008444795776086e+002, 0., 5.5133694156811544e+002, 0.,
+       6.6063884051928142e+002, 5.5788355422302925e+002, 0., 0., 1. ]
+DistorsionVector: !!opencv-matrix
+   rows: 1
+   cols: 5
+   dt: d
+   data: [ -2.9177486295875843e-001, 9.1998933930456286e-002,
+       -1.9504485463445716e-004, 1.9399341629346560e-004,
+       -1.3710405886477015e-002 ]
+boardWidth: 11
+boardHeight: 7
+squareSize: 1.
+calibrationError: 2.9352178885585911e-001
+imageSize: [ 1100, 1100 ]

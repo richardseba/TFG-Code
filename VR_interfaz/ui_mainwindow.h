@@ -73,7 +73,6 @@ public:
     QCheckBox *checkBox_saveVideo;
     QRadioButton *radioButton_recordMemory;
     QRadioButton *radioButton_recordDisk;
-    QCheckBox *checkBox;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -297,16 +296,13 @@ public:
         label_display2->setScaledContents(true);
         checkBox_saveVideo = new QCheckBox(centralWidget);
         checkBox_saveVideo->setObjectName(QStringLiteral("checkBox_saveVideo"));
-        checkBox_saveVideo->setGeometry(QRect(740, 690, 61, 31));
+        checkBox_saveVideo->setGeometry(QRect(600, 690, 121, 31));
         radioButton_recordMemory = new QRadioButton(centralWidget);
         radioButton_recordMemory->setObjectName(QStringLiteral("radioButton_recordMemory"));
         radioButton_recordMemory->setGeometry(QRect(960, 690, 131, 31));
         radioButton_recordDisk = new QRadioButton(centralWidget);
         radioButton_recordDisk->setObjectName(QStringLiteral("radioButton_recordDisk"));
-        radioButton_recordDisk->setGeometry(QRect(820, 690, 121, 31));
-        checkBox = new QCheckBox(centralWidget);
-        checkBox->setObjectName(QStringLiteral("checkBox"));
-        checkBox->setGeometry(QRect(650, 690, 81, 31));
+        radioButton_recordDisk->setGeometry(QRect(760, 690, 161, 31));
         MainWindow->setCentralWidget(centralWidget);
         label_display1->raise();
         label_display2->raise();
@@ -314,7 +310,6 @@ public:
         checkBox_saveVideo->raise();
         radioButton_recordMemory->raise();
         radioButton_recordDisk->raise();
-        checkBox->raise();
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
@@ -351,7 +346,6 @@ public:
         checkBox_saveVideo->setText(QApplication::translate("MainWindow", "Record", nullptr));
         radioButton_recordMemory->setText(QApplication::translate("MainWindow", "Record in memory", nullptr));
         radioButton_recordDisk->setText(QApplication::translate("MainWindow", "Record in disk", nullptr));
-        checkBox->setText(QApplication::translate("MainWindow", "Depth map", nullptr));
     } // retranslateUi
 
 };

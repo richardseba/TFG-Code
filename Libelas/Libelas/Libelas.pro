@@ -39,24 +39,24 @@ win32 {
 }
 
 CONFIG(debug, debug|release) {
-    LIBS += C:\opencv\build\x86\vc12\lib\opencv_core2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_imgproc2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_highgui2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_ml2413d.lib \
-             C:\opencv\build\x86\vc12\lib\opencv_calib3d2413d.lib \
-            -L$$(PYLON_DEV_DIR)/lib/Win32 \
+    LIBS += C:\opencv\build\x64\vc12\lib\opencv_core2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_imgproc2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_highgui2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_ml2413d.lib \
+             C:\opencv\build\x64\vc12\lib\opencv_calib3d2413d.lib \
+            -L$$(PYLON_DEV_DIR)/lib/x64 \
             -lPylonBase_MD_VC120_v5_0 \
             -lPylonUtility_MD_VC120_v5_0 \
             -lPylonC_MD_VC120 \
     }
     else
     {
-    LIBS += C:\opencv\build\x86\vc12\lib\opencv_core2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_imgproc2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_highgui2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_ml2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_calib3d2413.lib \
-            -L$$(PYLON_DEV_DIR)/lib/Win32 \
+    LIBS += C:\opencv\build\x64\vc12\lib\opencv_core2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_imgproc2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_highgui2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_ml2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_calib3d2413.lib \
+            -L$$(PYLON_DEV_DIR)/lib/x64 \
             -lPylonBase_MD_VC120_v5_0 \
             -lPylonUtility_MD_VC120_v5_0 \
             -lPylonC_MD_VC120 \

@@ -22,8 +22,9 @@ Camera::Camera(int num_cam)
     PylonInitialize();
     CTlFactory& tlFactory = CTlFactory::GetInstance();
     DeviceInfoList_t devices;
-
+//    qDebug() << "asdad";
     int num_cameras = tlFactory.EnumerateDevices(devices);
+
     if(num_cameras-1 >= num_cam)
     {
         this->m_pylon_camera = new CInstantCamera( CTlFactory::GetInstance().CreateDevice(devices[num_cam]));

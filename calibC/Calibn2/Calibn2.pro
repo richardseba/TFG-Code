@@ -39,17 +39,18 @@ win32 {
 }
 
 CONFIG(debug, debug|release) {
-    LIBS += C:\opencv\build\x86\vc12\lib\opencv_core2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_imgproc2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_highgui2413d.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_ml2413d.lib \
-             C:\opencv\build\x86\vc12\lib\opencv_calib3d2413d.lib \
+    LIBS += C:\opencv\build\x64\vc12\lib\opencv_core2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_imgproc2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_highgui2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_ml2413d.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_calib3d2413d.lib \
+
     }
     else
     {
-    LIBS += C:\opencv\build\x86\vc12\lib\opencv_core2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_imgproc2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_highgui2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_ml2413.lib \
-            C:\opencv\build\x86\vc12\lib\opencv_calib3d2413.lib \
+    LIBS += C:\opencv\build\x64\vc12\lib\opencv_core2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_imgproc2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_highgui2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_ml2413.lib \
+            C:\opencv\build\x64\vc12\lib\opencv_calib3d2413.lib \
     }

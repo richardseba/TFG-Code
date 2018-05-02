@@ -2,8 +2,11 @@
 #include "ui_mainwindow.h"
 
 #include "QDebug"
-#include "../Libelas/Libelas/elas.h"
-#include "../Libelas/Libelas/image.h"
+#include "elas.h"
+#include "image.h"
+
+#include <QDateTime>
+#include <QProgressBar>
 
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
@@ -24,15 +27,17 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    this->m_photosCaptured = 0;
+
     this->m_is_recording = false;
     this->m_calibParams_loaded = true;
-
+//    qDebug() << "strt?";
     this->m_cameraR = new Camera(0);
     this->m_cameraL = new Camera(1);
-
+//    qDebug() << "end?";
     //Loading the yaml is optional
-    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
-    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
+//    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
+//    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
 
     this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./configFiles/calibLeft.yml");
     this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./configFiles/calibRight.yml");
@@ -172,8 +177,13 @@ void MainWindow::on_recordingButton_clicked()
 
         if(ui->radioButton_recordMemory->isChecked())
         {
-            saveVideoFromMemory(m_vectorVideoL,m_videoL);
-            saveVideoFromMemory(m_vectorVideoR,m_videoR);
+            QProgressBar progress(this);
+            progress.setMaximum(m_vectorVideoL.size()+m_vectorVideoR.size());
+            progress.show();
+            progress.setFixedSize(250,50);
+
+            saveVideoFromMemory(m_vectorVideoL, m_videoL,&progress);
+            saveVideoFromMemory(m_vectorVideoR, m_videoR,&progress);
             m_vectorVideoL.release();
             m_vectorVideoR.release();
         }
@@ -194,8 +204,13 @@ void MainWindow::on_recordingButton_clicked()
         if(ui->checkBox_saveVideo->isChecked()){
             Rect rectL = m_cameraL->getCurrentROIRect();
             Rect rectR = m_cameraR->getCurrentROIRect();
-            m_videoL.open("./outL.avi",-1,FRAME_RATE_SAVE, rectL.size());
-            m_videoR.open("./outR.avi",-1,FRAME_RATE_SAVE, rectR.size());
+
+            QDateTime now;
+            now = QDateTime::currentDateTime();
+            QString namefile = QString("./videos/") + QString(now.toString("dd_mm_hh_mm_ss"));
+
+            m_videoL.open((namefile+QString("L.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectL.size());
+            m_videoR.open((namefile+QString("R.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectR.size());
             qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
         }
         this->m_cameraR->startGrabbing();
@@ -238,8 +253,8 @@ void MainWindow::frameTimeEvent()
         if(!ui->checkBox_saveVideo->isChecked())
         {
 
-            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_LINEAR));
-            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(*qImageR),CV_INTER_LINEAR));
+            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_CUBIC));
+            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(*qImageR),CV_INTER_CUBIC));
 
             this->processDisparity(&qImageLU,&qImageRU);
         }
@@ -248,7 +263,8 @@ void MainWindow::frameTimeEvent()
             if(ui->radioButton_recordMemory->isChecked() && ((m_vectorVideoL.size()+m_vectorVideoR.size()) < MAX_FRAME_IN_MEMORY)) {
                 m_vectorVideoL.push_back(qImageL->copy());
                 m_vectorVideoR.push_back(qImageR->copy());
-            }
+            }else if(((m_vectorVideoL.size()+m_vectorVideoR.size()) >= MAX_FRAME_IN_MEMORY))
+                on_recordingButton_clicked();
             if(ui->radioButton_recordDisk->isChecked()){
                 Mat im1 = QImage2Mat(*qImageL);
                 Mat im2 = QImage2Mat(*qImageR);
@@ -298,12 +314,16 @@ void MainWindow::frameTimeEvent()
 */
 bool MainWindow::saveImage(QImage qImage)
 {
+    QString filename = QString::number(m_photosCaptured/2+1);
+    filename.append(".png");
     QString imagePath = QFileDialog::getSaveFileName(
                     this,
                     tr("Save File"),
-                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100/1.png",
+                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100/"+filename,
                     tr("PNG (*.png);;JPEG (*.jpg *.jpeg)" )
                     );
+    if(!imagePath.isEmpty() && !imagePath.isNull())
+        m_photosCaptured++;
     return qImage.save(imagePath);
 }
 
@@ -622,11 +642,14 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     free(D2_data);
 }
 
-void MainWindow::saveVideoFromMemory(Vector<QImage> buffer, VideoWriter video)
+void MainWindow::saveVideoFromMemory(Vector<QImage> buffer, VideoWriter video, QProgressBar *progress)
 {
+//    qDebug() << buffer.size();
     for(int i = 0; i < buffer.size(); i++) {
         video << QImage2Mat(buffer[i]);
-        qDebug() << i+1 << "/" << buffer.size();
+        progress->setValue(progress->value()+1);
+        progress->update();
+        //qDebug() << i << "/" << buffer.size();
     }
 }
 

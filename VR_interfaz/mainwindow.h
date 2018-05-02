@@ -8,6 +8,7 @@
 #include "QMessageBox"
 #include "QFileDialog"
 #include "QProcess"
+#include <QProgressBar>
 
 #include <calibdialog.h>
 #include <loadcalibparamsdialog.h>
@@ -28,8 +29,9 @@ using namespace cv;
 
 const int FRAME_TIMER = 0;
 
-const int FRAME_RATE_SAVE = 30;
-const int MAX_FRAME_IN_MEMORY = 450;
+const int FRAME_RATE_SAVE = 34;
+const int MAX_FRAME_IN_MEMORY = 1000;
+//const int MAX_FRAME_IN_MEMORY = 450;
 
 namespace Ui {
 class MainWindow;
@@ -76,7 +78,7 @@ private:
     void saveVideo(Mat im1,Mat im2);
     void showVRViewer(int screen=0);
     void processDisparity(QImage* Im1,QImage* Im2);
-    void saveVideoFromMemory(Vector<QImage> buffer,VideoWriter video);
+    void saveVideoFromMemory(Vector<QImage> buffer,VideoWriter video, QProgressBar* progress);
 
     Camera* m_cameraL;
     Camera* m_cameraR;
@@ -93,6 +95,8 @@ private:
     CalibDialog* m_calibDialog;
     LoadCalibParamsDialog* m_loadCalibDialog;
     VrFullscreenViewer* m_screen; //distroyed automatically when exited
+
+    int m_photosCaptured;
 
     //video things
 
