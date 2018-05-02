@@ -22,7 +22,7 @@ Camera::Camera(int num_cam)
     PylonInitialize();
     CTlFactory& tlFactory = CTlFactory::GetInstance();
     DeviceInfoList_t devices;
-    qDebug() << "asdad";
+//    qDebug() << "asdad";
     int num_cameras = tlFactory.EnumerateDevices(devices);
 
     if(num_cameras-1 >= num_cam)
