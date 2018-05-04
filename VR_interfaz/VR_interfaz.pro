@@ -61,16 +61,11 @@ RESOURCES += \
 
 win32 {
     INCLUDEPATH += $$(PYLON_DEV_DIR)/include \
-    INCLUDEPATH += C:\opencv\build\include\
+    INCLUDEPATH += C:\opencv3.4\build\include\
 }
 
 CONFIG(debug, debug|release) {
-    LIBS += C:\opencv\build\x64\vc12\lib\opencv_core2413d.lib \
-            C:\opencv\build\x64\vc12\lib\opencv_imgproc2413d.lib \
-            C:\opencv\build\x64\vc12\lib\opencv_highgui2413d.lib \
-            C:\opencv\build\x64\vc12\lib\opencv_ml2413d.lib \
-            C:\opencv\build\x64\vc12\lib\opencv_features2d2413d.lib \
-             C:\opencv\build\x64\vc12\lib\opencv_calib3d2413d.lib \
+    LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib \
             -L$$(PYLON_DEV_DIR)/lib/x64 \
             -lPylonBase_MD_VC120_v5_0 \
             -lPylonUtility_MD_VC120_v5_0 \
@@ -78,12 +73,7 @@ CONFIG(debug, debug|release) {
     }
     else
     {
-    LIBS += C:\opencv\build\x64\vc12\lib\opencv_core2413.lib \
-            C:\opencv\build\x64\vc12\lib\opencv_imgproc2413.lib \
-            C:\opencv\build\x64\vc12\lib\opencv_highgui2413.lib \
-            C:\opencv\build\x64\vc12\lib\opencv_ml2413.lib \
-            C:\opencv\build\x64\vc12\lib\opencv_features2d2413.lib\
-            C:\opencv\build\x64\vc12\lib\opencv_calib3d2413.lib \
+    LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib \
             -L$$(PYLON_DEV_DIR)/lib/x64 \
             -lPylonBase_MD_VC120_v5_0 \
             -lPylonUtility_MD_VC120_v5_0 \

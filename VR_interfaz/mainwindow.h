@@ -78,7 +78,7 @@ private:
     void saveVideo(Mat im1,Mat im2);
     void showVRViewer(int screen=0);
     void processDisparity(QImage* Im1,QImage* Im2);
-    void saveVideoFromMemory(Vector<QImage> buffer,VideoWriter video, QProgressBar* progress);
+    void saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter video, QProgressBar* progress);
 
     Camera* m_cameraL;
     Camera* m_cameraR;
@@ -103,8 +103,8 @@ private:
     VideoWriter m_videoL;
     VideoWriter m_videoR;
 
-    Vector<QImage> m_vectorVideoL;
-    Vector<QImage> m_vectorVideoR;
+    std::vector<QImage> m_vectorVideoL;
+    std::vector<QImage> m_vectorVideoR;
 
     Ui::MainWindow *ui;
 

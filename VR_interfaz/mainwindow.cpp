@@ -184,8 +184,8 @@ void MainWindow::on_recordingButton_clicked()
 
             saveVideoFromMemory(m_vectorVideoL, m_videoL,&progress);
             saveVideoFromMemory(m_vectorVideoR, m_videoR,&progress);
-            m_vectorVideoL.release();
-            m_vectorVideoR.release();
+            m_vectorVideoL.clear();
+            m_vectorVideoR.clear();
         }
         if(ui->checkBox_saveVideo->isChecked()){
             m_videoL.release();
@@ -642,13 +642,14 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     free(D2_data);
 }
 
-void MainWindow::saveVideoFromMemory(Vector<QImage> buffer, VideoWriter video, QProgressBar *progress)
+void MainWindow::saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter video, QProgressBar *progress)
 {
 //    qDebug() << buffer.size();
     for(int i = 0; i < buffer.size(); i++) {
         video << QImage2Mat(buffer[i]);
         progress->setValue(progress->value()+1);
         progress->update();
+        this->update();
         //qDebug() << i << "/" << buffer.size();
     }
 }

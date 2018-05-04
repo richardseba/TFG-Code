@@ -42,7 +42,7 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
 
     stereoRectify(camLeft.getIntrinsicMatrix(), camLeft.getDistorsionVector(),
                   CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(), m_imageSize, m_R, m_T, m_R1,
-                  m_R2, m_P1, m_P2, m_Q, CALIB_ZERO_DISPARITY,0.9975);
+                  m_R2, m_P1, m_P2, m_Q, CALIB_ZERO_DISPARITY,0.9);
     m_isCalibrated = true;
 }
 

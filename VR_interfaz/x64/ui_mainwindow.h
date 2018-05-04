@@ -296,13 +296,13 @@ public:
         label_display2->setScaledContents(true);
         checkBox_saveVideo = new QCheckBox(centralWidget);
         checkBox_saveVideo->setObjectName(QStringLiteral("checkBox_saveVideo"));
-        checkBox_saveVideo->setGeometry(QRect(740, 690, 61, 31));
+        checkBox_saveVideo->setGeometry(QRect(600, 690, 121, 31));
         radioButton_recordMemory = new QRadioButton(centralWidget);
         radioButton_recordMemory->setObjectName(QStringLiteral("radioButton_recordMemory"));
         radioButton_recordMemory->setGeometry(QRect(960, 690, 131, 31));
         radioButton_recordDisk = new QRadioButton(centralWidget);
         radioButton_recordDisk->setObjectName(QStringLiteral("radioButton_recordDisk"));
-        radioButton_recordDisk->setGeometry(QRect(820, 690, 121, 31));
+        radioButton_recordDisk->setGeometry(QRect(760, 690, 161, 31));
         MainWindow->setCentralWidget(centralWidget);
         label_display1->raise();
         label_display2->raise();
