@@ -1,5 +1,6 @@
 #include "vrfullscreenviewer.h"
 
+
 /* Function VrFullscreenViewer
  * -------------------------------
  * build in constructor.
@@ -104,6 +105,9 @@ void VrFullscreenViewer::initScene()
     this->m_frameR.setPixmap(QPixmap::fromImage(*qImageR));
     this->m_frameL.setPixmap(QPixmap::fromImage(*qImageL));
 
+    this->m_frameL.setPos(0,0);
+    this->m_frameL.setOffset(0,0);
+
     m_currentUserParam = 1;
     loadUserParameters("./configFiles/UserParam1.yml");
 
@@ -116,9 +120,13 @@ void VrFullscreenViewer::initScene()
 
     this->setScene(&this->m_scene);
 
+    m_splitLine.setLine(m_params.screenWidth/2,0,m_params.screenWidth/2,m_params.screenHeight);
+    m_splitLine.setPen(QPen(Qt::red));
+
     //adding items to the scene
     this->scene()->addItem(&this->m_frameR);
     this->scene()->addItem(&this->m_frameL);
+    this->scene()->addItem(&m_splitLine);
 
     QFont panelFont("Helvetica [Cronyx]",25,12,false );
 
@@ -184,16 +192,19 @@ void VrFullscreenViewer::frameUpdateEvent()
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
     this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 
-    //this allow us to resize the scene when a change in the undistort setting is done
-    int imageWidth = this->m_frameR.pixmap().width();    
-    int imageHeight = this->m_frameR.pixmap().height();
+//    //this allow us to resize the scene when a change in the undistort setting is done
+//    int imageWidth = this->m_frameR.pixmap().width();
+//    int imageHeight = this->m_frameR.pixmap().height();
 
-    if ( imageHeight<this->m_frameL.pixmap().height() )
-    {
-        imageHeight = this->m_frameL.pixmap().height();
-    }
+//    if ( imageHeight<this->m_frameL.pixmap().height() )
+//    {
+//        imageHeight = this->m_frameL.pixmap().height();
+//    }
 
-    this->m_scene.setSceneRect(0,0,2 * imageWidth + m_params.screenWidth, imageHeight + m_params.screenHeight);
+    this->m_scene.setSceneRect(0,0, m_params.screenWidth, m_params.screenHeight);
+
+    m_splitLine.setLine(m_params.screenWidth/2,0,m_params.screenWidth/2,m_params.screenHeight);
+//    this->m_scene.setSceneRect(0,0,2 * imageWidth + m_params.screenWidth, imageHeight + m_params.screenHeight);
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 }
@@ -243,6 +254,56 @@ void VrFullscreenViewer::updateUserParamInFrame()
     this->m_frameL.setPos(0+m_params.offsetLeftX,m_params.offsetLeftY);
 
     this->m_frameR.setPos(m_params.offsetRightX,m_params.offsetRightY);
+}
+
+void VrFullscreenViewer::changeCameraROI()
+{
+
+    Rect leftRect = this->m_cameraL->getCurrentROIRect();
+
+    //calculating left resolution and anchor points
+    int marginWidthUpperLeft = m_params.offsetLeftX;
+    int marginHeightUpperLeft = m_params.offsetLeftY;
+    int marginWidthLowerRight = leftRect.width + m_params.offsetLeftX;
+    int marginHeightLowerRight = leftRect.height + m_params.offsetLeftY;
+
+    int centerpointLeftX = leftRect.width/2 + m_params.offsetLeftX;
+    int centerpointLeftY = leftRect.height/2 + m_params.offsetLeftY;
+
+    int increaseWidth = 2*((int)fmax( marginWidthUpperLeft, m_params.screenWidth/2 - marginWidthLowerRight));
+    int increaseHeight = 2*((int)fmax( marginHeightUpperLeft, m_params.screenHeight - marginHeightLowerRight));
+
+    if(this->m_cameraL->getMaxHeight() < increaseHeight+leftRect.height)
+        increaseHeight = this->m_cameraL->getMaxHeight() - leftRect.height;
+    if(this->m_cameraL->getMaxWidth() < increaseWidth+leftRect.width)
+        increaseWidth = this->m_cameraL->getMaxWidth() - leftRect.width;
+
+
+    int newAnchorX = m_params.offsetLeftX-increaseWidth/2;
+    int newAnchorY = m_params.offsetLeftY-increaseHeight/2;
+
+    //setting the new params for left image
+
+    emit setUpdatingL(false);
+
+    qDebug() << "screenWidth" << m_params.screenWidth << "screenHeight" << m_params.screenHeight;
+
+    qDebug() << "marginWidthUpperLeft" << marginWidthUpperLeft << "marginHeightUpperLeft" << marginHeightUpperLeft << "marginWidthLowerRight" << marginWidthLowerRight << "marginHeightLowerRight" << marginHeightLowerRight;
+
+    qDebug() << "X:" << (this->m_cameraL->getMaxWidth() - (leftRect.width+increaseWidth))/2 << " Y: " << (this->m_cameraL->getMaxHeight()- (leftRect.height+increaseHeight))/2  << " Width: " << leftRect.width+increaseWidth << " height: " << leftRect.height+increaseHeight;
+
+    this->m_cameraL->stopGrabbing();
+//    qDebug() << this->m_cameraL->isGrabbing();
+
+    this->m_cameraL->setROIRect(cv::Rect((this->m_cameraL->getMaxWidth() - (leftRect.width+increaseWidth))/2,
+                                         (this->m_cameraL->getMaxHeight()- (leftRect.height+increaseHeight))/2,
+                                         leftRect.width+increaseWidth, leftRect.height+increaseHeight) );
+    qDebug() << newAnchorX << newAnchorY;
+    m_params.offsetLeftX = newAnchorX;
+    m_params.offsetLeftY = newAnchorY;
+    updateUserParamInFrame();
+    this->m_cameraL->startGrabbing();
+    emit setUpdatingL(true);
 }
 
 /* Function keyPressEvent
@@ -401,11 +462,30 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         m_imgL = new QImage("./demo_images/im3L.png");
         m_imgR = new QImage("./demo_images/im3R.png");
         break;
+     case Qt::Key_P:
+        changeCameraROI();
+        break;
     default:
         break;
     }
 //    qDebug() << m_currentUserParam;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

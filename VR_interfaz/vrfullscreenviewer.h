@@ -18,6 +18,7 @@
 #include "QGraphicsScene"
 #include "QGraphicsItem"
 #include "QGraphicsRectItem"
+#include <QGraphicsLineItem>
 #include <QPointF>
 #include <QVector>
 #include <QPolygonF>
@@ -67,6 +68,7 @@ private:
     void saveUserParameters(QString filename);
     void loadUserParameters(QString filename);
     void updateUserParamInFrame();
+    void changeCameraROI();
     int m_currentUserParam;
 
 
@@ -105,6 +107,7 @@ private:
     //VrUI* m_interface;
     QGraphicsTextItemVR* m_fpsCounter;
     //QGraphicsRectItem* m_rectangle;
+    QGraphicsLineItem m_splitLine;
     float m_mean;
 
     vrParameters m_params;

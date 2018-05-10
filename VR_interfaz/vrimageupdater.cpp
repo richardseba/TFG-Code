@@ -49,7 +49,6 @@ void VRimageUpdater::frameUpdateEvent()
 
     if(ret)
     {
-        //this->m_crono.restart();
         if(this->m_isUndistorted && this->m_camera->getIsinitUndistort())
         {
             // qDebug() << "Undistort";
@@ -60,7 +59,6 @@ void VRimageUpdater::frameUpdateEvent()
             // qDebug() << "No undistort";
             m_frame = qImage->copy(qImage->rect());
         }
-        //qDebug() << this->m_crono.elapsed();
 
         delete[] qImage->bits();
         delete qImage;
@@ -92,7 +90,6 @@ QImage VRimageUpdater::getNextFrame()
 
     m_mutex.lock();
 
-    // return this->m_frame;
     h = m_frame.copy();
 
     m_mutex.unlock();
@@ -114,10 +111,10 @@ void VRimageUpdater::setIsUndistorted(bool isUndistorted)
 
 /* public slot setUpdatingEvent
  * -------------------------------
- * function that will start or stop the updating of the images
+ * function that starts or stops updating the image
  *
- * isUndistorted : True -> the image will be undistorted
- *                 False -> the image won't be undistorted
+ * isUndistorted : True -> the image will be captured
+ *                 False -> the image won't be captured
 */
 void VRimageUpdater::setUpdatingEvent(bool updating)
 {
@@ -128,8 +125,11 @@ void VRimageUpdater::setUpdatingEvent(bool updating)
     }
     else
     {
+        m_mutex.lock();
         this->m_timeTrigger->stop();
         this->m_camera->stopGrabbing();
+//        qDebug() << "from updater" << this->m_camera->isGrabbing();
+        m_mutex.unlock();
     }
 }
 

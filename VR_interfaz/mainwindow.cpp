@@ -31,13 +31,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->m_is_recording = false;
     this->m_calibParams_loaded = true;
-    qDebug() << "strt?";
+//    qDebug() << "strt?";
     this->m_cameraR = new Camera(0);
     this->m_cameraL = new Camera(1);
-    qDebug() << "end?";
+//    qDebug() << "end?";
     //Loading the yaml is optional
-//    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
-//    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
+    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
+    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
 
     this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./configFiles/calibLeft.yml");
     this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./configFiles/calibRight.yml");
