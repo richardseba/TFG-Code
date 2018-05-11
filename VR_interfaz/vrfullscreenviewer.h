@@ -36,6 +36,9 @@ typedef struct vrParameters {
 
     int screenWidth;
     int screenHeight;
+
+    QRect LeftSensorROI;
+    QRect RightSensorROI;
 } vrParameters;
 
 
@@ -96,17 +99,15 @@ private:
     QThread m_threadL;
 
     //demo
-    QImage* m_imgL;
-    QImage* m_imgR;
+    QImage m_imgL;
+    QImage m_imgR;
     int m_currentImage;
     bool m_isDemo;
 
     bool m_useUndistort;
 
     //User Interface
-    //VrUI* m_interface;
     QGraphicsTextItemVR* m_fpsCounter;
-    //QGraphicsRectItem* m_rectangle;
     QGraphicsLineItem m_splitLine;
     float m_mean;
 

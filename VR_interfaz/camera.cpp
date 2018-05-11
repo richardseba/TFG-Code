@@ -22,7 +22,6 @@ Camera::Camera(int num_cam)
     PylonInitialize();
     CTlFactory& tlFactory = CTlFactory::GetInstance();
     DeviceInfoList_t devices;
-    qDebug() << "asdad";
     int num_cameras = tlFactory.EnumerateDevices(devices);
 
     if(num_cameras-1 >= num_cam)
@@ -229,12 +228,12 @@ void Camera::setResolution(int width,int height)
 
     long maxWidth = CIntegerPtr(nodemap.GetNode("WidthMax"))->GetValue();
     long maxHeight = CIntegerPtr(nodemap.GetNode("HeightMax"))->GetValue();
-    qDebug() << odd2Even(width);
+
     if(width>0 && width<=maxWidth)
         CIntegerPtr(nodemap.GetNode("Width"))->SetValue(odd2Even(width));
     else
         CIntegerPtr(nodemap.GetNode("Width"))->SetValue(odd2Even(maxWidth));
-    qDebug() << odd2Even(height);
+
     if(height>0 && height<=maxHeight)
         CIntegerPtr(nodemap.GetNode("Height"))->SetValue(odd2Even(height));
     else
