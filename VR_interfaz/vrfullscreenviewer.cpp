@@ -185,8 +185,8 @@ void VrFullscreenViewer::frameUpdateEvent()
         this->m_frameR.setPixmap(QPixmap::fromImage(this->imageUpdaterR->getNextFrame().copy(m_params.RightSensorROI)));
         this->m_frameL.setPixmap(QPixmap::fromImage(this->imageUpdaterL->getNextFrame().copy(m_params.LeftSensorROI)));
     } else {
-        this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL));
-        this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR));
+        this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(m_params.LeftSensorROI)));
+        this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(m_params.RightSensorROI)));
     }
 
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
@@ -521,7 +521,6 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
-//    qDebug() << m_currentUserParam;
 }
 
 
