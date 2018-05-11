@@ -192,15 +192,6 @@ void VrFullscreenViewer::frameUpdateEvent()
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
     this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 
-//    //this allow us to resize the scene when a change in the undistort setting is done
-//    int imageWidth = this->m_frameR.pixmap().width();
-//    int imageHeight = this->m_frameR.pixmap().height();
-
-//    if ( imageHeight<this->m_frameL.pixmap().height() )
-//    {
-//        imageHeight = this->m_frameL.pixmap().height();
-//    }
-
     this->m_scene.setSceneRect(0,0, m_params.screenWidth, m_params.screenHeight);
 
     m_splitLine.setLine(m_params.screenWidth/2,0,m_params.screenWidth/2,m_params.screenHeight);
@@ -258,7 +249,7 @@ void VrFullscreenViewer::updateUserParamInFrame()
 
 void VrFullscreenViewer::changeCameraROI()
 {
-
+    qDebug() << "###########################";
     Rect leftRect = this->m_cameraL->getCurrentROIRect();
 
     //calculating left resolution and anchor points
@@ -267,43 +258,37 @@ void VrFullscreenViewer::changeCameraROI()
     int marginWidthLowerRight = leftRect.width + m_params.offsetLeftX;
     int marginHeightLowerRight = leftRect.height + m_params.offsetLeftY;
 
-    int centerpointLeftX = leftRect.width/2 + m_params.offsetLeftX;
-    int centerpointLeftY = leftRect.height/2 + m_params.offsetLeftY;
+    int increaseWidth = this->m_cameraL->getMaxWidth() - leftRect.width;
+    int increaseHeight = this->m_cameraL->getMaxHeight() - leftRect.height;
 
-    int increaseWidth = 2*((int)fmax( marginWidthUpperLeft, m_params.screenWidth/2 - marginWidthLowerRight));
-    int increaseHeight = 2*((int)fmax( marginHeightUpperLeft, m_params.screenHeight - marginHeightLowerRight));
-
-    if(this->m_cameraL->getMaxHeight() < increaseHeight+leftRect.height)
-        increaseHeight = this->m_cameraL->getMaxHeight() - leftRect.height;
-    if(this->m_cameraL->getMaxWidth() < increaseWidth+leftRect.width)
-        increaseWidth = this->m_cameraL->getMaxWidth() - leftRect.width;
-
-
-    int newAnchorX = m_params.offsetLeftX-increaseWidth/2;
-    int newAnchorY = m_params.offsetLeftY-increaseHeight/2;
-
-    //setting the new params for left image
-
-    emit setUpdatingL(false);
+    int marginResReduction = 0;
+    if(marginWidthLowerRight+(increaseWidth/2) > m_params.screenWidth/2){
+        marginResReduction = (marginWidthLowerRight+increaseWidth/2)-m_params.screenWidth/2;
+    }
+    qDebug()<< "marginResReduction" << marginResReduction;
 
     qDebug() << "screenWidth" << m_params.screenWidth << "screenHeight" << m_params.screenHeight;
-
     qDebug() << "marginWidthUpperLeft" << marginWidthUpperLeft << "marginHeightUpperLeft" << marginHeightUpperLeft << "marginWidthLowerRight" << marginWidthLowerRight << "marginHeightLowerRight" << marginHeightLowerRight;
+    qDebug() << "X:" << (this->m_cameraL->getMaxWidth() - (leftRect.width+increaseWidth))/2 << " Y: " << (this->m_cameraL->getMaxHeight()- (leftRect.height+increaseHeight))/2  << " Width: " << leftRect.width+increaseWidth-marginResReduction << " height: " << leftRect.height+increaseHeight;
 
-    qDebug() << "X:" << (this->m_cameraL->getMaxWidth() - (leftRect.width+increaseWidth))/2 << " Y: " << (this->m_cameraL->getMaxHeight()- (leftRect.height+increaseHeight))/2  << " Width: " << leftRect.width+increaseWidth << " height: " << leftRect.height+increaseHeight;
-
+    emit setUpdatingL(false);
     this->m_cameraL->stopGrabbing();
-//    qDebug() << this->m_cameraL->isGrabbing();
+    //setting the new params for left image
 
-    this->m_cameraL->setROIRect(cv::Rect((this->m_cameraL->getMaxWidth() - (leftRect.width+increaseWidth))/2,
-                                         (this->m_cameraL->getMaxHeight()- (leftRect.height+increaseHeight))/2,
-                                         leftRect.width+increaseWidth, leftRect.height+increaseHeight) );
-    qDebug() << newAnchorX << newAnchorY;
+    this->m_cameraL->setROIRect(cv::Rect(0, 0,
+                                         1529, 1200) );
+
+    this->m_cameraL->startGrabbing();
+    emit setUpdatingL(true);
+
+    //position inside the scene
+    int newAnchorX = m_params.offsetLeftX-increaseWidth/2;
+    int newAnchorY = m_params.offsetLeftY-increaseHeight/2;
+    qDebug() << "newAnchorX" << newAnchorX << "newAnchorY" << newAnchorY;
     m_params.offsetLeftX = newAnchorX;
     m_params.offsetLeftY = newAnchorY;
     updateUserParamInFrame();
-    this->m_cameraL->startGrabbing();
-    emit setUpdatingL(true);
+
 }
 
 /* Function keyPressEvent
@@ -341,20 +326,20 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     //Key events to move the window of the left camera - WASD keys
     case Qt::Key_W:
-        this->m_frameL.moveBy(0,-5);
-        m_params.offsetLeftY = m_params.offsetLeftY - 5;
+        this->m_frameL.moveBy(0,-6);
+        m_params.offsetLeftY = m_params.offsetLeftY - 6;
         break;
     case Qt::Key_A:
-        this->m_frameL.moveBy(-5,0);
-        m_params.offsetLeftX = m_params.offsetLeftX - 5;
+        this->m_frameL.moveBy(-6,0);
+        m_params.offsetLeftX = m_params.offsetLeftX - 6;
         break;
     case Qt::Key_S:
-        this->m_frameL.moveBy(0,5);
-        m_params.offsetLeftY = m_params.offsetLeftY + 5;
+        this->m_frameL.moveBy(0,6);
+        m_params.offsetLeftY = m_params.offsetLeftY + 6;
         break;
     case Qt::Key_D:
-        this->m_frameL.moveBy(5,0);
-        m_params.offsetLeftX = m_params.offsetLeftX + 5;
+        this->m_frameL.moveBy(6,0);
+        m_params.offsetLeftX = m_params.offsetLeftX + 6;
         break;
     //Key events to move the Frame Counter with the arrow keys
     case Qt::Key_Up:
@@ -375,20 +360,20 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     //Key events to move the window of the right camera - IJKL keys
     case Qt::Key_I:
-        this->m_frameR.moveBy(0,-5);
-        m_params.offsetRightY = m_params.offsetRightY - 5;
+        this->m_frameR.moveBy(0,-6);
+        m_params.offsetRightY = m_params.offsetRightY - 6;
         break;
     case Qt::Key_K:
-        this->m_frameR.moveBy(0,5);
-        m_params.offsetRightY = m_params.offsetRightY + 5;;
+        this->m_frameR.moveBy(0,6);
+        m_params.offsetRightY = m_params.offsetRightY + 6;
         break;
     case Qt::Key_J:
-        this->m_frameR.moveBy(-5,0);
-        m_params.offsetRightX = m_params.offsetRightX - 5;
+        this->m_frameR.moveBy(-6,0);
+        m_params.offsetRightX = m_params.offsetRightX - 6;
         break;
     case Qt::Key_L:
-        this->m_frameR.moveBy(5,0);
-        m_params.offsetRightX = m_params.offsetRightX + 5;
+        this->m_frameR.moveBy(6,0);
+        m_params.offsetRightX = m_params.offsetRightX + 6;
         break;
     //Key events to change de user configuration
     case Qt::Key_1:

@@ -38,36 +38,30 @@ VRimageUpdater::~VRimageUpdater()
 */
 void VRimageUpdater::frameUpdateEvent()
 {
-    //this->m_crono.restart();
-
     m_mutex.lock();
-
-    bool ret;
-    QImage *qImage;
-
-    qImage = this->m_camera->grab_image(ret);
-
-    if(ret)
+    if(this->m_camera->isGrabbing())
     {
-        if(this->m_isUndistorted && this->m_camera->getIsinitUndistort())
-        {
-            // qDebug() << "Undistort";
-            m_frame = this->m_camera->undistortMapImage(*qImage,CV_INTER_LINEAR);
-        }
-        else
-        {
-            // qDebug() << "No undistort";
-            m_frame = qImage->copy(qImage->rect());
-        }
+        bool ret;
+        QImage *qImage;
 
-        delete[] qImage->bits();
-        delete qImage;
-        qImage = NULL;
+        qImage = this->m_camera->grab_image(ret);
 
-        m_currentFps = 1000.0/(this->m_crono.restart());
-        //qDebug() << this->m_crono.restart();
+        if(ret)
+        {
+            if(this->m_isUndistorted && this->m_camera->getIsinitUndistort())
+                //Undistort Image
+                m_frame = this->m_camera->undistortMapImage(*qImage,CV_INTER_LINEAR);
+            else
+                //NOT undistort
+                m_frame = qImage->copy(qImage->rect());
+
+            delete[] qImage->bits();
+            delete qImage;
+            qImage = NULL;
+
+            m_currentFps = 1000.0/(this->m_crono.restart());
+        }
     }
-
     m_mutex.unlock();
 }
 
