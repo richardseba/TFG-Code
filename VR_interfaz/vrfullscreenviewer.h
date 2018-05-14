@@ -64,13 +64,12 @@ private slots:
 signals:
     void setUpdatingR(bool update);
     void setUpdatingL(bool update);
-    void zoomIn(float zoom);
-    void zoomOut(float zoom);
 private:
     void initScene();
     void saveUserParameters(QString filename);
     void loadUserParameters(QString filename);
-    void updateUserParamInFrame();
+    void zoomIn();
+    void zoomOut();
     void changeCameraROI();
     int m_currentUserParam;
 
@@ -111,7 +110,9 @@ private:
     QGraphicsLineItem m_splitLine;
     float m_mean;
 
-    vrParameters m_params;
+    vrParameters m_params; //en desuso
+    QRect m_leftSensorROI;
+    QRect m_rightSensorROI;
 
 protected:
     void keyPressEvent(QKeyEvent *event);
