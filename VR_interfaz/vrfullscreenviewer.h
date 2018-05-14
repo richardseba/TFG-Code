@@ -111,8 +111,8 @@ private:
     float m_mean;
 
     vrParameters m_params; //en desuso
-    QRect m_leftSensorROI;
-    QRect m_rightSensorROI;
+    Rect m_leftSensorROI;
+    Rect m_rightSensorROI;
 
 protected:
     void keyPressEvent(QKeyEvent *event);

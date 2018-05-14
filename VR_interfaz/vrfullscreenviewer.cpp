@@ -115,14 +115,15 @@ void VrFullscreenViewer::initScene()
     m_currentUserParam = 1;
     loadUserParameters("./configFiles/UserParam1.yml");
 
-    this->m_scene.setSceneRect(0,0, m_params.LeftSensorROI.width()+m_params.RightSensorROI.width() ,
-                               max(m_params.LeftSensorROI.height(),m_params.RightSensorROI.height()));
+    this->m_scene.setSceneRect(0,0, m_leftSensorROI.width+m_rightSensorROI.width ,
+                               max(m_leftSensorROI.height,m_rightSensorROI.height));
     this->m_frameL.setPos(0,0);
-    this->m_frameR.setPos(m_leftSensorROI.width(),0);
+    this->m_frameR.setPos(m_leftSensorROI.width,0);
 
     this->setScene(&this->m_scene);
 
-    m_splitLine.setLine(m_params.screenWidth/2,0,m_params.screenWidth/2,m_params.screenHeight);
+    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
+                        max(m_leftSensorROI.height,m_rightSensorROI.height));
     m_splitLine.setPen(QPen(Qt::red));
 
     //adding items to the scene
@@ -184,10 +185,12 @@ void VrFullscreenViewer::initScene()
 void VrFullscreenViewer::frameUpdateEvent()
 {
     if(!m_isDemo){
-        this->m_frameR.setPixmap(QPixmap::fromImage(this->imageUpdaterR->getNextFrame().copy(m_rightSensorROI)));
-        this->m_frameL.setPixmap(QPixmap::fromImage(this->imageUpdaterL->getNextFrame().copy(m_leftSensorROI)));
-//        qDebug() << m_rightSensorROI;
-//        qDebug() << m_leftSensorROI;
+        QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
+        QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
+        this->m_frameR.setPixmap(QPixmap::fromImage(this->imageUpdaterR->getNextFrame().copy(rightrect)));
+        this->m_frameL.setPixmap(QPixmap::fromImage(this->imageUpdaterL->getNextFrame().copy(leftrect)));
+//        qDebug() << m_leftSensorROI.x << m_leftSensorROI.y << m_leftSensorROI.width << m_leftSensorROI.height ;
+//        qDebug() << m_rightSensorROI.x << m_rightSensorROI.y << m_rightSensorROI.width << m_rightSensorROI.height ;
     } else {
         this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(m_params.LeftSensorROI)));
         this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(m_params.RightSensorROI)));
@@ -196,11 +199,11 @@ void VrFullscreenViewer::frameUpdateEvent()
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
     this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 
-    this->m_scene.setSceneRect(0,0, m_leftSensorROI.width()+m_rightSensorROI.width() ,
-                               max(m_leftSensorROI.height(),m_rightSensorROI.height()));
+    this->m_scene.setSceneRect(0,0, m_leftSensorROI.width+m_rightSensorROI.width ,
+                               max(m_leftSensorROI.height,m_rightSensorROI.height));
 
-    m_splitLine.setLine(m_leftSensorROI.width(), 0,m_leftSensorROI.width(),
-                        max(m_leftSensorROI.height(),m_rightSensorROI.height()));
+    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
+                        max(m_leftSensorROI.height,m_rightSensorROI.height));
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 }
@@ -274,47 +277,51 @@ void VrFullscreenViewer::loadUserParameters(QString filename)
     m_params.RightSensorROI.setWidth(RW);
     m_params.RightSensorROI.setHeight(RH);
 
-    m_leftSensorROI = m_params.LeftSensorROI;
-    m_rightSensorROI = m_params.RightSensorROI;
+    m_leftSensorROI.x = LX;
+    m_leftSensorROI.y = LY;
+    m_leftSensorROI.height = LH;
+    m_leftSensorROI.width = LW;
+
+    m_rightSensorROI.x = RX;
+    m_rightSensorROI.y = RY;
+    m_rightSensorROI.height = RH;
+    m_rightSensorROI.width = RW;
     changeCameraROI();
 }
 
 void VrFullscreenViewer::zoomIn()
 {
-    m_leftSensorROI.setX(m_leftSensorROI.x() - 9);
-    m_leftSensorROI.setY(m_leftSensorROI.y() - 8);
+    m_leftSensorROI.x += 9;
+    m_leftSensorROI.y += 8;
 
-    qDebug() << "left antes" << m_leftSensorROI;
+    m_leftSensorROI.height -= 18;
+    m_leftSensorROI.width -= 16;
 
-    m_leftSensorROI.setHeight(m_leftSensorROI.height()+9);
-    m_leftSensorROI.setWidth(m_leftSensorROI.width() +8);
+    m_rightSensorROI.x += 9;
+    m_rightSensorROI.y += 8;
 
-    m_rightSensorROI.setX(m_rightSensorROI.x() - 9);
-    m_rightSensorROI.setY(m_rightSensorROI.y() - 8);
-
-    m_rightSensorROI.setHeight(m_rightSensorROI.height()+9);
-    m_rightSensorROI.setWidth(m_rightSensorROI.width() +8);
+    m_rightSensorROI.height -= 18;
+    m_rightSensorROI.width -= 16;
 
     this->m_frameL.setPos(0,0);
-    this->m_frameR.setPos(m_leftSensorROI.width(),0);
-
+    this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
 void VrFullscreenViewer::zoomOut()
 {
-    m_leftSensorROI.setX(m_leftSensorROI.x() + 9);
-    m_leftSensorROI.setY(m_leftSensorROI.y() + 8);
+    m_leftSensorROI.x -= 9;
+    m_leftSensorROI.y -= 8;
 
-    m_leftSensorROI.setHeight(m_leftSensorROI.height()-18);
-    m_leftSensorROI.setWidth(m_leftSensorROI.width() - 16);
+    m_leftSensorROI.height += 18;
+    m_leftSensorROI.width += 16;
 
-    m_rightSensorROI.setX(m_rightSensorROI.x() + 9);
-    m_rightSensorROI.setY(m_rightSensorROI.y() + 8);
+    m_rightSensorROI.x -= 9;
+    m_rightSensorROI.y -= 8;
 
-    m_rightSensorROI.setHeight(m_rightSensorROI.height()-18);
-    m_rightSensorROI.setWidth(m_rightSensorROI.width() - 16);
+    m_rightSensorROI.height += 18;
+    m_rightSensorROI.width += 16;
 
     this->m_frameL.setPos(0,0);
-    this->m_frameR.setPos(m_leftSensorROI.width(),0);
+    this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
 
 void VrFullscreenViewer::changeCameraROI()
@@ -338,7 +345,6 @@ void VrFullscreenViewer::changeCameraROI()
     this->m_cameraL->stopGrabbing();
     //setting the new params for left image
 
-//    m_params.LeftSensorROI = QRect(0, 0, leftRect.width+increaseWidth-marginResReduction , leftRect.height+increaseHeight);
     this->m_cameraL->setROIRect(cv::Rect(0,0,this->m_cameraL->getMaxWidth(), this->m_cameraL->getMaxHeight()));
 
     this->m_cameraL->startGrabbing();
@@ -402,14 +408,14 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_Plus:
          qDebug() << "Zoom in";
          zoomIn();
-         qDebug() << m_leftSensorROI;
-         qDebug() << m_rightSensorROI;
+         qDebug() << m_leftSensorROI.x << m_leftSensorROI.y << m_leftSensorROI.width << m_leftSensorROI.height ;
+         qDebug() << m_rightSensorROI.x << m_rightSensorROI.y << m_rightSensorROI.width << m_rightSensorROI.height ;
         break;
     case Qt::Key_Minus:
         qDebug() << "Zoom out";
         zoomOut();
-        qDebug() << m_leftSensorROI;
-        qDebug() << m_rightSensorROI;
+        qDebug() << m_leftSensorROI.x << m_leftSensorROI.y << m_leftSensorROI.width << m_leftSensorROI.height ;
+        qDebug() << m_rightSensorROI.x << m_rightSensorROI.y << m_rightSensorROI.width << m_rightSensorROI.height ;
         break;
     case Qt::Key_Escape:
         if(this->m_timer->isActive())
@@ -424,54 +430,46 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     //Key events to move the window of the left camera - WASD keys
     case Qt::Key_W:
-        m_leftSensorROI.setY( m_leftSensorROI.y() - 6);
-        m_leftSensorROI.setHeight(m_leftSensorROI.height() - 6);
+        m_leftSensorROI.y -= 6;
         break;
     case Qt::Key_A:
-        m_leftSensorROI.setX( m_leftSensorROI.x() - 6);
-        m_leftSensorROI.setWidth(m_leftSensorROI.width() - 6);
+        m_leftSensorROI.x -= 6;
         break;
     case Qt::Key_S:
-        m_leftSensorROI.setY( m_leftSensorROI.y() + 6);
-        m_leftSensorROI.setHeight(m_leftSensorROI.height() + 6);
+        m_leftSensorROI.y += 6;
         break;
     case Qt::Key_D:
-        m_leftSensorROI.setX( m_leftSensorROI.x() + 6);
-        m_leftSensorROI.setWidth(m_leftSensorROI.width() + 6);
+        m_leftSensorROI.x += 6;
         break;
     //Key events to move the Frame Counter with the arrow keys
-    case Qt::Key_Up:
-        // m_fpsCounter->moveByOffset(0,-5);
-        m_params.screenHeight = m_params.screenHeight - 10;
-        break;
-    case Qt::Key_Down:
-        // m_fpsCounter->moveByOffset(0,5);
-        m_params.screenHeight = m_params.screenHeight + 10;
-        break;
-    case Qt::Key_Left:
-        // m_fpsCounter->moveByOffset(-5,0);
-        m_params.screenWidth = m_params.screenWidth - 10;
-        break;
-    case Qt::Key_Right:
-        // m_fpsCounter->moveByOffset(5,0);
-        m_params.screenWidth = m_params.screenWidth + 10;
-        break;
+//    case Qt::Key_Up:
+//        // m_fpsCounter->moveByOffset(0,-5);
+//        m_params.screenHeight = m_params.screenHeight - 10;
+//        break;
+//    case Qt::Key_Down:
+//        // m_fpsCounter->moveByOffset(0,5);
+//        m_params.screenHeight = m_params.screenHeight + 10;
+//        break;
+//    case Qt::Key_Left:
+//        // m_fpsCounter->moveByOffset(-5,0);
+//        m_params.screenWidth = m_params.screenWidth - 10;
+//        break;
+//    case Qt::Key_Right:
+//        // m_fpsCounter->moveByOffset(5,0);
+//        m_params.screenWidth = m_params.screenWidth + 10;
+//        break;
     //Key events to move the window of the right camera - IJKL keys
     case Qt::Key_I:
-        m_rightSensorROI.setY( m_rightSensorROI.y() - 6);
-        m_rightSensorROI.setHeight(m_rightSensorROI.height() - 6);
+        m_rightSensorROI.y -= 6;
         break;
     case Qt::Key_K:
-        m_rightSensorROI.setY( m_rightSensorROI.y() + 6);
-        m_rightSensorROI.setHeight(m_rightSensorROI.height() + 6);
+        m_rightSensorROI.y += 6;
         break;
     case Qt::Key_J:
-        m_rightSensorROI.setX( m_rightSensorROI.x() - 6);
-        m_rightSensorROI.setWidth(m_rightSensorROI.width() - 6);
+        m_rightSensorROI.x -= 6;
         break;
     case Qt::Key_L:
-        m_rightSensorROI.setX( m_rightSensorROI.x() + 6);
-        m_rightSensorROI.setWidth(m_rightSensorROI.width() + 6);
+        m_rightSensorROI.x += 6;
         break;
     //Key events to change de user configuration
     case Qt::Key_1:
