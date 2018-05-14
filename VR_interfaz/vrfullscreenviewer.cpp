@@ -7,15 +7,6 @@
 */
 VrFullscreenViewer::VrFullscreenViewer()
 {
-    this->m_params.offsetLeftX = 0;
-    this->m_params.offsetLeftY = 0;
-
-    this->m_params.offsetRightX = 0;
-    this->m_params.offsetRightY = 0;
-
-    this->m_params.screenWidth = 0;
-    this->m_params.screenHeight = 0;
-
     m_currentUserParam=1;
     m_isDemo = false;
 
@@ -43,8 +34,8 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR)
     m_currentImage = 1;
     m_isDemo = false;
 
-    this->m_params.offsetLeftX = 0;
-    this->m_params.offsetLeftY = 0;
+//    this->m_params.offsetLeftX = 0;
+//    this->m_params.offsetLeftY = 0;
 
     this->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
     this->setStyleSheet("border: 0px solid black");
@@ -99,6 +90,15 @@ void VrFullscreenViewer::initScene()
     bool ret;
     QImage *qImageL;
     QImage *qImageR;
+
+    this->m_cameraL->stopGrabbing();
+    this->m_cameraL->setROIRect(cv::Rect(0,0,this->m_cameraL->getMaxWidth(), this->m_cameraL->getMaxHeight()));
+    this->m_cameraL->startGrabbing();
+
+    this->m_cameraR->stopGrabbing();
+    this->m_cameraR->setROIRect(cv::Rect(0,0,this->m_cameraR->getMaxWidth(), this->m_cameraR->getMaxHeight()));
+    this->m_cameraR->startGrabbing();
+
     qImageL = this->m_cameraL->single_grab_image(ret);
     qImageR = this->m_cameraR->single_grab_image(ret);
 
@@ -109,8 +109,8 @@ void VrFullscreenViewer::initScene()
     int imageWidth = this->m_frameR.pixmap().width();
     int imageHeight = this->m_frameR.pixmap().height();
 
-    m_params.LeftSensorROI = QRect(0,0,imageWidth,imageHeight);
-    m_params.RightSensorROI = QRect(0,0,imageWidth,imageHeight);
+    m_leftSensorROI = Rect(0,0,imageWidth,imageHeight);
+    m_rightSensorROI = Rect(0,0,imageWidth,imageHeight);
 
     m_currentUserParam = 1;
     loadUserParameters("./configFiles/UserParam1.yml");
@@ -156,11 +156,6 @@ void VrFullscreenViewer::initScene()
     connect(this,SIGNAL(setUpdatingL(bool)),imageUpdaterL,SLOT(setUpdatingEvent(bool)));
     connect(this,SIGNAL(setUpdatingR(bool)),imageUpdaterR,SLOT(setUpdatingEvent(bool)));
 
-//    connect(this,SIGNAL(zoomIn(float)),imageUpdaterL,SLOT(zoomIn(float)));
-//    connect(this,SIGNAL(zoomOut(float)),imageUpdaterL,SLOT(zoomOut(float)));
-//    connect(this,SIGNAL(zoomIn(float)),imageUpdaterR,SLOT(zoomIn(float)));
-//    connect(this,SIGNAL(zoomOut(float)),imageUpdaterR,SLOT(zoomOut(float)));
-
     emit setUpdatingR(true);
     emit setUpdatingL(true);
 
@@ -184,16 +179,15 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
+    QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
+    QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
+
     if(!m_isDemo){
-        QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
-        QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
         this->m_frameR.setPixmap(QPixmap::fromImage(this->imageUpdaterR->getNextFrame().copy(rightrect)));
         this->m_frameL.setPixmap(QPixmap::fromImage(this->imageUpdaterL->getNextFrame().copy(leftrect)));
-//        qDebug() << m_leftSensorROI.x << m_leftSensorROI.y << m_leftSensorROI.width << m_leftSensorROI.height ;
-//        qDebug() << m_rightSensorROI.x << m_rightSensorROI.y << m_rightSensorROI.width << m_rightSensorROI.height ;
     } else {
-        this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(m_params.LeftSensorROI)));
-        this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(m_params.RightSensorROI)));
+        this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(leftrect)));
+        this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
     }
 
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
@@ -225,37 +219,20 @@ void VrFullscreenViewer::showFullScreen(int screenSelector)
 void VrFullscreenViewer::saveUserParameters(QString filename)
 {
     FileStorage fs (filename.toStdString(), FileStorage::WRITE);
-    fs << "OffsetLeftX" << m_params.offsetLeftX;
-    fs << "OffsetLeftY" << m_params.offsetLeftY;
-    // Camera on the right
-    fs << "OffsetRightX" << m_params.offsetRightX;
-    fs << "OffsetRightY" << m_params.offsetRightY;
-    // Screen size
-    fs << "ScreenWidth" << m_params.screenWidth;
-    fs << "ScreenHeight" << m_params.screenHeight;
+    fs << "LeftSensorROI_X" << m_leftSensorROI.x;
+    fs << "LeftSensorROI_Y" << m_leftSensorROI.y;
+    fs << "LeftSensorROI_Width" << m_leftSensorROI.width;
+    fs << "LeftSensorROI_Height" << m_leftSensorROI.height;
 
-    fs << "LeftSensorROI_X" << m_params.LeftSensorROI.x();
-    fs << "LeftSensorROI_Y" << m_params.LeftSensorROI.y();
-    fs << "LeftSensorROI_Width" << m_params.LeftSensorROI.width();
-    fs << "LeftSensorROI_Height" << m_params.LeftSensorROI.height();
-
-    fs << "RightSensorROI_X" << m_params.RightSensorROI.x();
-    fs << "RightSensorROI_Y" << m_params.RightSensorROI.y();
-    fs << "RightSensorROI_Width" << m_params.RightSensorROI.width();
-    fs << "RightSensorROI_Height" << m_params.RightSensorROI.height();
+    fs << "RightSensorROI_X" << m_rightSensorROI.x;
+    fs << "RightSensorROI_Y" << m_rightSensorROI.y;
+    fs << "RightSensorROI_Width" << m_rightSensorROI.width;
+    fs << "RightSensorROI_Height" << m_rightSensorROI.height;
 }
 
 void VrFullscreenViewer::loadUserParameters(QString filename)
 {
     FileStorage fs(filename.toStdString(), FileStorage::READ);
-    fs["OffsetLeftX"] >> m_params.offsetLeftX;
-    fs["OffsetLeftY"] >> m_params.offsetLeftY;
-
-    fs["OffsetRightX"] >> m_params.offsetRightX;
-    fs["OffsetRightY"] >> m_params.offsetRightY;
-
-    fs["ScreenWidth"] >> m_params.screenWidth;
-    fs["ScreenHeight"] >> m_params.screenHeight;
 
     int LX, LY, LW, LH, RX, RY, RW, RH;
     fs["LeftSensorROI_X"] >> LX;
@@ -267,16 +244,6 @@ void VrFullscreenViewer::loadUserParameters(QString filename)
     fs["RightSensorROI_Width"] >> RW;
     fs["RightSensorROI_Height"] >> RH;
 
-    m_params.LeftSensorROI.setX(LX);
-    m_params.LeftSensorROI.setY(LY);
-    m_params.LeftSensorROI.setWidth(LW);
-    m_params.LeftSensorROI.setHeight(LH);
-
-    m_params.RightSensorROI.setX(RX);
-    m_params.RightSensorROI.setY(RY);
-    m_params.RightSensorROI.setWidth(RW);
-    m_params.RightSensorROI.setHeight(RH);
-
     m_leftSensorROI.x = LX;
     m_leftSensorROI.y = LY;
     m_leftSensorROI.height = LH;
@@ -286,7 +253,6 @@ void VrFullscreenViewer::loadUserParameters(QString filename)
     m_rightSensorROI.y = RY;
     m_rightSensorROI.height = RH;
     m_rightSensorROI.width = RW;
-    changeCameraROI();
 }
 
 void VrFullscreenViewer::zoomIn()
@@ -324,71 +290,6 @@ void VrFullscreenViewer::zoomOut()
     this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
 
-void VrFullscreenViewer::changeCameraROI()
-{
-    Rect leftRect = this->m_cameraL->getCurrentROIRect();
-
-    //calculating left resolution and anchor points
-    int marginWidthUpperLeft = m_params.offsetLeftX;
-    int marginWidthLowerRight = leftRect.width + m_params.offsetLeftX;
-
-
-    int increaseWidth = this->m_cameraL->getMaxWidth() - leftRect.width;
-    int increaseHeight = this->m_cameraL->getMaxHeight() - leftRect.height;
-
-    int marginResReduction = 0;
-    if(m_params.screenWidth/2 < increaseWidth/2+marginWidthLowerRight){
-        marginResReduction = abs((marginWidthLowerRight+increaseWidth/2)-(m_params.screenWidth/2));
-    }
-
-    emit setUpdatingL(false);
-    this->m_cameraL->stopGrabbing();
-    //setting the new params for left image
-
-    this->m_cameraL->setROIRect(cv::Rect(0,0,this->m_cameraL->getMaxWidth(), this->m_cameraL->getMaxHeight()));
-
-    this->m_cameraL->startGrabbing();
-    emit setUpdatingL(true);
-
-    int newAnchorX = m_params.offsetLeftX-increaseWidth/2;
-    int newAnchorY = m_params.offsetLeftY-increaseHeight/2;
-
-//    m_params.offsetLeftX = newAnchorX;
-//    m_params.offsetLeftY = newAnchorY;
-
-//    qDebug() << "m_params.LeftSensorROI" << m_params.LeftSensorROI;
-//    qDebug() << "newAnchorX" << newAnchorX << "newAnchorY" << newAnchorY;
-
-    // /////////////////////////////////////////////////////////////////////////
-    // righty thingies
-
-    Rect RightRect = this->m_cameraR->getCurrentROIRect();
-    marginWidthUpperLeft = m_params.offsetRightX;
-
-    increaseWidth = this->m_cameraR->getMaxWidth() - RightRect.width;
-    increaseHeight = this->m_cameraR->getMaxHeight() - RightRect.height;
-
-    newAnchorX = m_params.offsetRightX-increaseWidth/2;
-    newAnchorY = m_params.offsetRightY-increaseHeight/2;
-
-    marginResReduction = 0;
-    if(m_params.screenWidth/2 > increaseWidth/2-marginWidthLowerRight){
-        marginResReduction = (m_params.screenWidth/2)-(marginWidthUpperLeft-increaseWidth/2);
-        newAnchorX += marginResReduction;
-    }
-
-    emit setUpdatingR(false);
-    this->thread()->msleep(62);
-    //setting the new params for right image
-
-    m_params.offsetRightX = newAnchorX;
-    m_params.offsetRightY = newAnchorY;
-
-//    m_params.RightSensorROI = QRect(m_params.RightSensorROI.x()+marginResReduction, 0, this->m_cameraR->getMaxWidth(), this->m_cameraR->getMaxHeight());
-    this->m_cameraR->setROIRect(cv::Rect(0,0,this->m_cameraR->getMaxWidth(), this->m_cameraR->getMaxHeight()));
-
-    emit setUpdatingR(true);
-}
 
 /* Function keyPressEvent
  * -------------------------------
@@ -402,20 +303,13 @@ void VrFullscreenViewer::changeCameraROI()
 */
 void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
 {
-    int temp = 0;
     switch (event->key())
     {
     case Qt::Key_Plus:
-         qDebug() << "Zoom in";
          zoomIn();
-         qDebug() << m_leftSensorROI.x << m_leftSensorROI.y << m_leftSensorROI.width << m_leftSensorROI.height ;
-         qDebug() << m_rightSensorROI.x << m_rightSensorROI.y << m_rightSensorROI.width << m_rightSensorROI.height ;
         break;
     case Qt::Key_Minus:
-        qDebug() << "Zoom out";
         zoomOut();
-        qDebug() << m_leftSensorROI.x << m_leftSensorROI.y << m_leftSensorROI.width << m_leftSensorROI.height ;
-        qDebug() << m_rightSensorROI.x << m_rightSensorROI.y << m_rightSensorROI.width << m_rightSensorROI.height ;
         break;
     case Qt::Key_Escape:
         if(this->m_timer->isActive())
@@ -551,12 +445,10 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         m_imgL = QImage::QImage("./demo_images/im3L.png");
         m_imgR = QImage::QImage("./demo_images/im3R.png");
         break;
-     case Qt::Key_P:
-        changeCameraROI();
-        break;
     default:
         break;
     }
+    this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
 
 

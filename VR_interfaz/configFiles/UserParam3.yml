@@ -1,16 +1,10 @@
 %YAML:1.0
 ---
-OffsetLeftX: -70
-OffsetLeftY: 120
-OffsetRightX: 1280
-OffsetRightY: 120
-ScreenWidth: 2560
-ScreenHeight: 1440
-LeftSensorROI_X: 0
-LeftSensorROI_Y: 0
-LeftSensorROI_Width: 1350
-LeftSensorROI_Height: 1200
-RightSensorROI_X: 250
-RightSensorROI_Y: 0
-RightSensorROI_Width: 1600
-RightSensorROI_Height: 1200
+LeftSensorROI_X: 147
+LeftSensorROI_Y: 242
+LeftSensorROI_Width: 592
+LeftSensorROI_Height: 666
+RightSensorROI_X: 177
+RightSensorROI_Y: 104
+RightSensorROI_Width: 592
+RightSensorROI_Height: 666

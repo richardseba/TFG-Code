@@ -70,7 +70,6 @@ private:
     void loadUserParameters(QString filename);
     void zoomIn();
     void zoomOut();
-    void changeCameraROI();
     int m_currentUserParam;
 
 
@@ -110,7 +109,7 @@ private:
     QGraphicsLineItem m_splitLine;
     float m_mean;
 
-    vrParameters m_params; //en desuso
+//    vrParameters m_params; //en desuso
     Rect m_leftSensorROI;
     Rect m_rightSensorROI;
 
