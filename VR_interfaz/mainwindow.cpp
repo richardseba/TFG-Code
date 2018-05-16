@@ -633,6 +633,20 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
       D2.bits()[i] = (uint8_t)max(255.0*D2_data[i]/disp_max,0.0);
     }
 
+    if(ui->checkBox_colormap->isChecked())
+    {
+        Mat imgL(D1.height(),D1.width(),CV_8UC1,(uchar*)D1.bits(),D1.bytesPerLine());
+        Mat imgR(D2.height(),D2.width(),CV_8UC1,(uchar*)D2.bits(),D2.bytesPerLine());
+
+        Mat colormapL, colormapR;
+
+        applyColorMap(imgL,colormapL,COLORMAP_JET);
+        applyColorMap(imgR,colormapR,COLORMAP_JET);
+
+        D1 = Mat2QImage(colormapL);
+        D2 = Mat2QImage(colormapR);
+    }
+
     ui->label_display1->setPixmap(QPixmap::fromImage(D1));
     ui->label_display1->show();
     ui->label_display2->setPixmap(QPixmap::fromImage(D2));
@@ -650,7 +664,6 @@ void MainWindow::saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter vid
         progress->setValue(progress->value()+1);
         progress->update();
         this->update();
-        //qDebug() << i << "/" << buffer.size();
     }
 }
 

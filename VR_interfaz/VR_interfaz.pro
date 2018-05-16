@@ -11,7 +11,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = VR_interfaz
 TEMPLATE = app
 
-
 SOURCES += main.cpp\
         mainwindow.cpp \
     camera.cpp \

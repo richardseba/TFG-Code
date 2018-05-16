@@ -639,6 +639,7 @@ release\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWind
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem \
 		..\mainwindow.h \
 		release\moc_predefs.h \
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
@@ -1291,6 +1292,7 @@ release\moc_vrfullscreenviewer.cpp: ..\camera.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem \
 		..\vrfullscreenviewer.h \
 		release\moc_predefs.h \
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
@@ -2189,7 +2191,8 @@ release\main.obj: ..\main.cpp ../mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsview.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem
 
 release\mainwindow.obj: ..\mainwindow.cpp ../mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWindow \
@@ -2576,6 +2579,7 @@ release\mainwindow.obj: ..\mainwindow.cpp ../mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem \
 		..\ui_mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QVariant \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QAction \
@@ -3667,7 +3671,8 @@ release\vrfullscreenviewer.obj: ..\vrfullscreenviewer.cpp ../vrfullscreenviewer.
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsview.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem
 
 release\vrimageupdater.obj: ..\vrimageupdater.cpp ../vrimageupdater.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \

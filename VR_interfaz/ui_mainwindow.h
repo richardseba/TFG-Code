@@ -73,6 +73,7 @@ public:
     QCheckBox *checkBox_saveVideo;
     QRadioButton *radioButton_recordMemory;
     QRadioButton *radioButton_recordDisk;
+    QCheckBox *checkBox_colormap;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -303,6 +304,9 @@ public:
         radioButton_recordDisk = new QRadioButton(centralWidget);
         radioButton_recordDisk->setObjectName(QStringLiteral("radioButton_recordDisk"));
         radioButton_recordDisk->setGeometry(QRect(760, 690, 161, 31));
+        checkBox_colormap = new QCheckBox(centralWidget);
+        checkBox_colormap->setObjectName(QStringLiteral("checkBox_colormap"));
+        checkBox_colormap->setGeometry(QRect(390, 680, 161, 31));
         MainWindow->setCentralWidget(centralWidget);
         label_display1->raise();
         label_display2->raise();
@@ -310,6 +314,7 @@ public:
         checkBox_saveVideo->raise();
         radioButton_recordMemory->raise();
         radioButton_recordDisk->raise();
+        checkBox_colormap->raise();
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
@@ -346,6 +351,7 @@ public:
         checkBox_saveVideo->setText(QApplication::translate("MainWindow", "Record", nullptr));
         radioButton_recordMemory->setText(QApplication::translate("MainWindow", "Record in memory", nullptr));
         radioButton_recordDisk->setText(QApplication::translate("MainWindow", "Record in disk", nullptr));
+        checkBox_colormap->setText(QApplication::translate("MainWindow", "Color Map", nullptr));
     } // retranslateUi
 
 };
