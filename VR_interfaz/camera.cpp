@@ -22,7 +22,6 @@ Camera::Camera(int num_cam)
     PylonInitialize();
     CTlFactory& tlFactory = CTlFactory::GetInstance();
     DeviceInfoList_t devices;
-//    qDebug() << "asdad";
     int num_cameras = tlFactory.EnumerateDevices(devices);
 
     if(num_cameras-1 >= num_cam)
@@ -232,8 +231,14 @@ void Camera::setResolution(int width,int height)
 
     if(width>0 && width<=maxWidth)
         CIntegerPtr(nodemap.GetNode("Width"))->SetValue(odd2Even(width));
+    else
+        CIntegerPtr(nodemap.GetNode("Width"))->SetValue(odd2Even(maxWidth));
+
     if(height>0 && height<=maxHeight)
         CIntegerPtr(nodemap.GetNode("Height"))->SetValue(odd2Even(height));
+    else
+        CIntegerPtr(nodemap.GetNode("Height"))->SetValue(odd2Even(maxHeight));
+
 }
 
 /* Function setROIOffset
@@ -347,7 +352,6 @@ QImage* Camera::grab_image(bool &ret)
     CGrabResultPtr ptrGrabResult;
 
     this->m_pylon_camera->RetrieveResult( 5000, ptrGrabResult, TimeoutHandling_ThrowException);
-
     if (ptrGrabResult->GrabSucceeded())
     {
         ret = true;

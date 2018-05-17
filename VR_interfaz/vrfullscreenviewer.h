@@ -18,6 +18,7 @@
 #include "QGraphicsScene"
 #include "QGraphicsItem"
 #include "QGraphicsRectItem"
+#include <QGraphicsLineItem>
 #include <QPointF>
 #include <QVector>
 #include <QPolygonF>
@@ -35,6 +36,9 @@ typedef struct vrParameters {
 
     int screenWidth;
     int screenHeight;
+
+    QRect LeftSensorROI;
+    QRect RightSensorROI;
 } vrParameters;
 
 
@@ -60,13 +64,12 @@ private slots:
 signals:
     void setUpdatingR(bool update);
     void setUpdatingL(bool update);
-    void zoomIn(float zoom);
-    void zoomOut(float zoom);
 private:
     void initScene();
     void saveUserParameters(QString filename);
     void loadUserParameters(QString filename);
-    void updateUserParamInFrame();
+    void zoomIn();
+    void zoomOut();
     int m_currentUserParam;
 
 
@@ -94,20 +97,21 @@ private:
     QThread m_threadL;
 
     //demo
-    QImage* m_imgL;
-    QImage* m_imgR;
+    QImage m_imgL;
+    QImage m_imgR;
     int m_currentImage;
     bool m_isDemo;
 
     bool m_useUndistort;
 
     //User Interface
-    //VrUI* m_interface;
     QGraphicsTextItemVR* m_fpsCounter;
-    //QGraphicsRectItem* m_rectangle;
+    QGraphicsLineItem m_splitLine;
     float m_mean;
 
-    vrParameters m_params;
+//    vrParameters m_params; //en desuso
+    Rect m_leftSensorROI;
+    Rect m_rightSensorROI;
 
 protected:
     void keyPressEvent(QKeyEvent *event);

@@ -26,7 +26,23 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
 {
     m_isCalibrated = false;
     m_camLeft = camLeft;
-    cout << "your fucking mamma";
+    m_camRight = CamRight;
+    m_boardHeight = boardHeight;
+    m_boardWidth = boardWidth;
+    m_squareSize = squareSize;
+
+    loadFromImagesPoints(numImgs, leftImgDir, rightImgDir,leftImgFilename, rightImgFilename, extension);
+
+    int flag = 0;
+    flag |= CV_CALIB_FIX_INTRINSIC;
+
+    stereoCalibrate(m_objectPoints, m_leftImagePoints, m_rightImagePoints, camLeft.getIntrinsicMatrix(),
+                    camLeft.getDistorsionVector(), CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(),
+                    m_imageSize, m_R, m_T, m_E, m_F);
+
+    stereoRectify(camLeft.getIntrinsicMatrix(), camLeft.getDistorsionVector(),
+                  CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(), m_imageSize, m_R, m_T, m_R1,
+                  m_R2, m_P1, m_P2, m_Q, CALIB_ZERO_DISPARITY,0.9);
     m_isCalibrated = true;
 }
 

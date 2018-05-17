@@ -31,13 +31,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->m_is_recording = false;
     this->m_calibParams_loaded = true;
-//    qDebug() << "strt?";
+
     this->m_cameraR = new Camera(0);
     this->m_cameraL = new Camera(1);
-//    qDebug() << "end?";
+
     //Loading the yaml is optional
-//    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
-//    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
+    this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
+    this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
 
     this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./configFiles/calibLeft.yml");
     this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./configFiles/calibRight.yml");
@@ -184,8 +184,8 @@ void MainWindow::on_recordingButton_clicked()
 
             saveVideoFromMemory(m_vectorVideoL, m_videoL,&progress);
             saveVideoFromMemory(m_vectorVideoR, m_videoR,&progress);
-            m_vectorVideoL.release();
-            m_vectorVideoR.release();
+            m_vectorVideoL.clear();
+            m_vectorVideoR.clear();
         }
         if(ui->checkBox_saveVideo->isChecked()){
             m_videoL.release();
@@ -633,6 +633,20 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
       D2.bits()[i] = (uint8_t)max(255.0*D2_data[i]/disp_max,0.0);
     }
 
+    if(ui->checkBox_colormap->isChecked())
+    {
+        Mat imgL(D1.height(),D1.width(),CV_8UC1,(uchar*)D1.bits(),D1.bytesPerLine());
+        Mat imgR(D2.height(),D2.width(),CV_8UC1,(uchar*)D2.bits(),D2.bytesPerLine());
+
+        Mat colormapL, colormapR;
+
+        applyColorMap(imgL,colormapL,COLORMAP_JET);
+        applyColorMap(imgR,colormapR,COLORMAP_JET);
+
+        D1 = Mat2QImage(colormapL);
+        D2 = Mat2QImage(colormapR);
+    }
+
     ui->label_display1->setPixmap(QPixmap::fromImage(D1));
     ui->label_display1->show();
     ui->label_display2->setPixmap(QPixmap::fromImage(D2));
@@ -642,14 +656,14 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     free(D2_data);
 }
 
-void MainWindow::saveVideoFromMemory(Vector<QImage> buffer, VideoWriter video, QProgressBar *progress)
+void MainWindow::saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter video, QProgressBar *progress)
 {
 //    qDebug() << buffer.size();
     for(int i = 0; i < buffer.size(); i++) {
         video << QImage2Mat(buffer[i]);
         progress->setValue(progress->value()+1);
         progress->update();
-        //qDebug() << i << "/" << buffer.size();
+        this->update();
     }
 }
 

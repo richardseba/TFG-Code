@@ -14,10 +14,10 @@ CXX           = cl
 DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -DWIN64 -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -nologo -Zc:wchar_t -FS -Zc:strictStrings -Zi -MDd -W3 -w44456 -w44457 -w44458 /Fddebug\VR_interfaz.vc.pdb $(DEFINES)
 CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -Zi -MDd -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -EHsc /Fddebug\VR_interfaz.vc.pdb $(DEFINES)
-INCPATH       = -I..\..\VR_interfaz -I. -I"C:\Program Files\Basler\pylon 5\development\include" -IINCLUDEPATH -I+= -IC:\opencv\build\include -IC:\Qt\5.10.1\msvc2015_64\include -IC:\Qt\5.10.1\msvc2015_64\include\QtWidgets -IC:\Qt\5.10.1\msvc2015_64\include\QtGui -IC:\Qt\5.10.1\msvc2015_64\include\QtANGLE -IC:\Qt\5.10.1\msvc2015_64\include\QtCore -Idebug -I. -I\include -IC:\Qt\5.10.1\msvc2015_64\mkspecs\win32-msvc 
+INCPATH       = -I..\..\VR_interfaz -I. -I"C:\Program Files\Basler\pylon 5\development\include" -IINCLUDEPATH -I+= -IC:\opencv3.4\build\include -IC:\Qt\5.10.1\msvc2015_64\include -IC:\Qt\5.10.1\msvc2015_64\include\QtWidgets -IC:\Qt\5.10.1\msvc2015_64\include\QtGui -IC:\Qt\5.10.1\msvc2015_64\include\QtANGLE -IC:\Qt\5.10.1\msvc2015_64\include\QtCore -Idebug -I. -I\include -IC:\Qt\5.10.1\msvc2015_64\mkspecs\win32-msvc 
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /DEBUG /SUBSYSTEM:WINDOWS "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'"
-LIBS          = /LIBPATH:C:\Qt\5.10.1\msvc2015_64\lib C:\Qt\5.10.1\msvc2015_64\lib\qtmaind.lib /LIBPATH:C:\utils\my_sql\my_sql\lib /LIBPATH:C:\utils\postgresql\pgsql\lib shell32.lib C:\opencv\build\x64\vc12\lib\opencv_core2413d.lib C:\opencv\build\x64\vc12\lib\opencv_imgproc2413d.lib C:\opencv\build\x64\vc12\lib\opencv_highgui2413d.lib C:\opencv\build\x64\vc12\lib\opencv_ml2413d.lib C:\opencv\build\x64\vc12\lib\opencv_features2d2413d.lib C:\opencv\build\x64\vc12\lib\opencv_calib3d2413d.lib /LIBPATH:"C:\Program Files\Basler\pylon 5\development\lib\x64" C:\opencv\build\x64\vc12\lib\opencv_core2413.lib C:\opencv\build\x64\vc12\lib\opencv_imgproc2413.lib C:\opencv\build\x64\vc12\lib\opencv_highgui2413.lib C:\opencv\build\x64\vc12\lib\opencv_ml2413.lib C:\opencv\build\x64\vc12\lib\opencv_features2d2413.lib C:\opencv\build\x64\vc12\lib\opencv_calib3d2413.lib "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonBase_MD_VC120_v5_0.lib" "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonUtility_MD_VC120_v5_0.lib" "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonC_MD_VC120.lib" C:\Qt\5.10.1\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Cored.lib 
+LIBS          = /LIBPATH:C:\Qt\5.10.1\msvc2015_64\lib C:\Qt\5.10.1\msvc2015_64\lib\qtmaind.lib /LIBPATH:C:\utils\my_sql\my_sql\lib /LIBPATH:C:\utils\postgresql\pgsql\lib shell32.lib C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib /LIBPATH:"C:\Program Files\Basler\pylon 5\development\lib\x64" C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonBase_MD_VC120_v5_0.lib" "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonUtility_MD_VC120_v5_0.lib" "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonC_MD_VC120.lib" C:\Qt\5.10.1\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Cored.lib 
 QMAKE         = C:\Qt\5.10.1\msvc2015_64\bin\qmake.exe
 IDC           = idc
 IDL           = midl /NOLOGO
@@ -513,23 +513,55 @@ debug\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWindow
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterTruncatePacked.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterYUV422.h" \
 		..\utils.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		..\cameracalibration.h \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbInstantCamera.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\_BaslerUsbCameraParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbDeviceInfo.h" \
@@ -607,10 +639,11 @@ debug\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWindow
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem \
 		..\mainwindow.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
-	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\mainwindow.h -o debug\moc_mainwindow.cpp
+	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv3.4/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\mainwindow.h -o debug\moc_mainwindow.cpp
 
 debug\moc_calibdialog.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QDialog \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qdialog.h \
@@ -724,27 +757,59 @@ debug\moc_calibdialog.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QDialog \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMessageBox \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qmessagebox.h \
 		..\cameracalibration.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
 		..\stereocalibration.h \
 		..\calibdialog.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
-	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\calibdialog.h -o debug\moc_calibdialog.cpp
+	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv3.4/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\calibdialog.h -o debug\moc_calibdialog.cpp
 
 debug\moc_loadcalibparamsdialog.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QDialog \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qdialog.h \
@@ -857,7 +922,7 @@ debug\moc_loadcalibparamsdialog.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\
 		..\loadcalibparamsdialog.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
-	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\loadcalibparamsdialog.h -o debug\moc_loadcalibparamsdialog.cpp
+	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv3.4/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\loadcalibparamsdialog.h -o debug\moc_loadcalibparamsdialog.cpp
 
 debug\moc_vrfullscreenviewer.cpp: ..\camera.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
@@ -1113,23 +1178,55 @@ debug\moc_vrfullscreenviewer.cpp: ..\camera.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterTruncatePacked.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterYUV422.h" \
 		..\utils.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		..\cameracalibration.h \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbInstantCamera.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\_BaslerUsbCameraParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbDeviceInfo.h" \
@@ -1195,10 +1292,11 @@ debug\moc_vrfullscreenviewer.cpp: ..\camera.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem \
 		..\vrfullscreenviewer.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
-	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\vrfullscreenviewer.h -o debug\moc_vrfullscreenviewer.cpp
+	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv3.4/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\vrfullscreenviewer.h -o debug\moc_vrfullscreenviewer.cpp
 
 debug\moc_vrimageupdater.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
@@ -1458,23 +1556,55 @@ debug\moc_vrimageupdater.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphi
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterTruncatePacked.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterYUV422.h" \
 		..\utils.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		..\cameracalibration.h \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbInstantCamera.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\_BaslerUsbCameraParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbDeviceInfo.h" \
@@ -1495,7 +1625,7 @@ debug\moc_vrimageupdater.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphi
 		..\vrimageupdater.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
-	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\vrimageupdater.h -o debug\moc_vrimageupdater.cpp
+	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv3.4/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\vrimageupdater.h -o debug\moc_vrimageupdater.cpp
 
 debug\moc_selectcameraparamsdialog.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QDialog \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qdialog.h \
@@ -1601,11 +1731,35 @@ debug\moc_selectcameraparamsdialog.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidge
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtouchdevice.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QFileDialog \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qfiledialog.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdir.h \
@@ -1616,7 +1770,7 @@ debug\moc_selectcameraparamsdialog.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidge
 		..\selectcameraparamsdialog.h \
 		debug\moc_predefs.h \
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
-	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\selectcameraparamsdialog.h -o debug\moc_selectcameraparamsdialog.cpp
+	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include debug/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv3.4/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I. -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" ..\selectcameraparamsdialog.h -o debug\moc_selectcameraparamsdialog.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -1912,23 +2066,55 @@ debug\main.obj: ..\main.cpp ../mainwindow.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterTruncatePacked.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterYUV422.h" \
 		../utils.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		../cameracalibration.h \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbInstantCamera.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\_BaslerUsbCameraParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbDeviceInfo.h" \
@@ -2005,7 +2191,8 @@ debug\main.obj: ..\main.cpp ../mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsview.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem
 
 debug\mainwindow.obj: ..\mainwindow.cpp ../mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWindow \
@@ -2266,23 +2453,55 @@ debug\mainwindow.obj: ..\mainwindow.cpp ../mainwindow.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterTruncatePacked.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterYUV422.h" \
 		../utils.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		../cameracalibration.h \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbInstantCamera.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\_BaslerUsbCameraParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbDeviceInfo.h" \
@@ -2360,6 +2579,7 @@ debug\mainwindow.obj: ..\mainwindow.cpp ../mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem \
 		..\ui_mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QVariant \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QAction \
@@ -2650,23 +2870,55 @@ debug\camera.obj: ..\camera.cpp ../camera.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterTruncatePacked.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterYUV422.h" \
 		../utils.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		../cameracalibration.h \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbInstantCamera.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\_BaslerUsbCameraParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbDeviceInfo.h" \
@@ -2799,22 +3051,54 @@ debug\calibdialog.obj: ..\calibdialog.cpp ../calibdialog.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMessageBox \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qmessagebox.h \
 		../cameracalibration.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
 		../stereocalibration.h \
 		..\ui_calibdialog.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QVariant \
@@ -3274,23 +3558,55 @@ debug\vrfullscreenviewer.obj: ..\vrfullscreenviewer.cpp ../vrfullscreenviewer.h 
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterTruncatePacked.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterYUV422.h" \
 		../utils.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		../cameracalibration.h \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbInstantCamera.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\_BaslerUsbCameraParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbDeviceInfo.h" \
@@ -3355,7 +3671,8 @@ debug\vrfullscreenviewer.obj: ..\vrfullscreenviewer.cpp ../vrfullscreenviewer.h 
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsview.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem
 
 debug\vrimageupdater.obj: ..\vrimageupdater.cpp ../vrimageupdater.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
@@ -3616,23 +3933,55 @@ debug\vrimageupdater.obj: ..\vrimageupdater.cpp ../vrimageupdater.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterTruncatePacked.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterYUV422.h" \
 		../utils.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		../cameracalibration.h \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbInstantCamera.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\_BaslerUsbCameraParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\usb\BaslerUsbDeviceInfo.h" \
@@ -3756,11 +4105,35 @@ debug\selectcameraparamsdialog.obj: ..\selectcameraparamsdialog.cpp ../selectcam
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qfiledevice.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qvector2d.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtouchdevice.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QFileDialog \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qfiledialog.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdir.h \
@@ -4049,16 +4422,46 @@ debug\qgraphicstextitemvr.obj: ..\qgraphicstextitemvr.cpp ../qgraphicstextitemvr
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug
 
 debug\utils.obj: ..\utils.cpp ../utils.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
@@ -4146,22 +4549,54 @@ debug\utils.obj: ..\utils.cpp ../utils.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h
 
 debug\cameracalibration.obj: ..\cameracalibration.cpp ../cameracalibration.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp
 
 debug\descriptor.obj: ..\descriptor.cpp ../descriptor.h \
 		../filter.h
@@ -4176,22 +4611,54 @@ debug\filter.obj: ..\filter.cpp ../filter.h
 
 debug\stereocalibration.obj: ..\stereocalibration.cpp ../stereocalibration.h \
 		../cameracalibration.h \
-		C:\opencv\build\include\opencv2\core\core.hpp \
-		C:\opencv\build\include\opencv2\core\types_c.h \
-		C:\opencv\build\include\opencv2\core\version.hpp \
-		C:\opencv\build\include\opencv2\core\operations.hpp \
-		C:\opencv\build\include\opencv2\core\mat.hpp \
-		C:\opencv\build\include\opencv2\calib3d\calib3d.hpp \
-		C:\opencv\build\include\opencv2\features2d\features2d.hpp \
-		C:\opencv\build\include\opencv2\flann\miniflann.hpp \
-		C:\opencv\build\include\opencv2\flann\defines.h \
-		C:\opencv\build\include\opencv2\flann\config.h \
-		C:\opencv\build\include\opencv2\core\affine.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui.hpp \
-		C:\opencv\build\include\opencv2\highgui\highgui_c.h \
-		C:\opencv\build\include\opencv2\core\core_c.h \
-		C:\opencv\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv\build\include\opencv2\imgproc\types_c.h
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp
 
 debug\triangle.obj: ..\triangle.cpp ../triangle.h
 
