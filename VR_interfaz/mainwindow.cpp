@@ -181,7 +181,7 @@ void MainWindow::on_recordingButton_clicked()
             progress.setMaximum(m_vectorVideoL.size()+m_vectorVideoR.size());
             progress.show();
             progress.setFixedSize(250,50);
-
+            qDebug() << m_vectorVideoL.size();
             saveVideoFromMemory(m_vectorVideoL, m_videoL,&progress);
             saveVideoFromMemory(m_vectorVideoR, m_videoR,&progress);
             m_vectorVideoL.clear();
