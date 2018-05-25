@@ -52,7 +52,7 @@ signals:
     void setUpdatingL(bool update);
 private:
     void initScene();
-    void saveUserParameters(QString filename);
+    void saveUserParameters(QString filename,QString nameSufix="");
     void loadUserParameters(QString filename);
     void zoomIn();
     void zoomOut();

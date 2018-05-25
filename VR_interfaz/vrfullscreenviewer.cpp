@@ -216,8 +216,9 @@ void VrFullscreenViewer::showFullScreen(int screenSelector)
     QGraphicsView::showFullScreen();
 }
 
-void VrFullscreenViewer::saveUserParameters(QString filename)
+void VrFullscreenViewer::saveUserParameters(QString filename, QString nameSufix)
 {
+    filename += nameSufix;
     FileStorage fs (filename.toStdString(), FileStorage::WRITE);
     fs << "LeftSensorROI_X" << m_leftSensorROI.x;
     fs << "LeftSensorROI_Y" << m_leftSensorROI.y;

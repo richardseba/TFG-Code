@@ -3,7 +3,6 @@
 
 #include "QDebug"
 #include "elas.h"
-#include "image.h"
 
 #include <QDateTime>
 #include <QProgressBar>
