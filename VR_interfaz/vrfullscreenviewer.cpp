@@ -335,34 +335,17 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_D:
         m_leftSensorROI.x += 6;
         break;
-    //Key events to move the Frame Counter with the arrow keys
-//    case Qt::Key_Up:
-//        // m_fpsCounter->moveByOffset(0,-5);
-//        m_params.screenHeight = m_params.screenHeight - 10;
-//        break;
-//    case Qt::Key_Down:
-//        // m_fpsCounter->moveByOffset(0,5);
-//        m_params.screenHeight = m_params.screenHeight + 10;
-//        break;
-//    case Qt::Key_Left:
-//        // m_fpsCounter->moveByOffset(-5,0);
-//        m_params.screenWidth = m_params.screenWidth - 10;
-//        break;
-//    case Qt::Key_Right:
-//        // m_fpsCounter->moveByOffset(5,0);
-//        m_params.screenWidth = m_params.screenWidth + 10;
-//        break;
-    //Key events to move the window of the right camera - IJKL keys
-    case Qt::Key_I:
+    //Key events to move the window of the right camera - Arrow Keys
+    case Qt::Key_Up:
         m_rightSensorROI.y -= 6;
         break;
-    case Qt::Key_K:
+    case Qt::Key_Down:
         m_rightSensorROI.y += 6;
         break;
-    case Qt::Key_J:
+    case Qt::Key_Left:
         m_rightSensorROI.x -= 6;
         break;
-    case Qt::Key_L:
+    case Qt::Key_Right:
         m_rightSensorROI.x += 6;
         break;
     //Key events to change de user configuration
@@ -448,7 +431,6 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
-    this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
 
 

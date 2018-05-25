@@ -27,20 +27,6 @@
 #include "QTime"
 //#include <math.h>
 
-typedef struct vrParameters {
-    int offsetLeftX;
-    int offsetLeftY;
-
-    int offsetRightX;
-    int offsetRightY;
-
-    int screenWidth;
-    int screenHeight;
-
-    QRect LeftSensorROI;
-    QRect RightSensorROI;
-} vrParameters;
-
 
 /* Class VrFullscreenViewer
  * -------------------------------
