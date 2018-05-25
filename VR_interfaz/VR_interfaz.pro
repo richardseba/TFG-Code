@@ -44,9 +44,7 @@ HEADERS  += mainwindow.h \
     descriptor.h \
     elas.h \
     filter.h \
-    image.h \
     stereocalibration.h \
-    timer.h \
     triangle.h \
     matrix.h
 
