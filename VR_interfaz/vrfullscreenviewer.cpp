@@ -112,6 +112,9 @@ void VrFullscreenViewer::initScene()
     m_leftSensorROI = Rect(0,0,imageWidth,imageHeight);
     m_rightSensorROI = Rect(0,0,imageWidth,imageHeight);
 
+    m_transitionLeft = ROITransition(&m_leftSensorROI);
+    m_transitionRight = ROITransition(&m_rightSensorROI);
+
     m_currentUserParam = 1;
     loadUserParameters("./configFiles/UserParam1.yml");
 
@@ -189,6 +192,8 @@ void VrFullscreenViewer::frameUpdateEvent()
         this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(leftrect)));
         this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
     }
+    this->m_transitionLeft.step();
+    this->m_transitionRight.step();
 
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
     this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
@@ -231,10 +236,11 @@ void VrFullscreenViewer::saveUserParameters(QString filename, QString nameSufix)
     fs << "RightSensorROI_Height" << m_rightSensorROI.height;
 }
 
-void VrFullscreenViewer::loadUserParameters(QString filename)
+void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
 {
     FileStorage fs(filename.toStdString(), FileStorage::READ);
 
+    Rect leftRect, rightRect;
     int LX, LY, LW, LH, RX, RY, RW, RH;
     fs["LeftSensorROI_X"] >> LX;
     fs["LeftSensorROI_Y"] >> LY;
@@ -245,15 +251,28 @@ void VrFullscreenViewer::loadUserParameters(QString filename)
     fs["RightSensorROI_Width"] >> RW;
     fs["RightSensorROI_Height"] >> RH;
 
-    m_leftSensorROI.x = LX;
-    m_leftSensorROI.y = LY;
-    m_leftSensorROI.height = LH;
-    m_leftSensorROI.width = LW;
+    leftRect.x = LX;
+    leftRect.y = LY;
+    leftRect.height = LH;
+    leftRect.width = LW;
 
-    m_rightSensorROI.x = RX;
-    m_rightSensorROI.y = RY;
-    m_rightSensorROI.height = RH;
-    m_rightSensorROI.width = RW;
+    rightRect.x = RX;
+    rightRect.y = RY;
+    rightRect.height = RH;
+    rightRect.width = RW;
+
+    if(!transition)
+    {
+        m_leftSensorROI = leftRect;
+        m_rightSensorROI = rightRect;
+    } else {
+        m_transitionLeft = ROITransition(&m_leftSensorROI);
+        m_transitionRight = ROITransition(&m_rightSensorROI);
+        m_transitionLeft.setTarget(leftRect);
+        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
+        m_transitionRight.setTarget(rightRect);
+        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
+    }
 }
 
 void VrFullscreenViewer::zoomIn()
@@ -356,6 +375,8 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         else
         {
             m_currentUserParam = 1;
+            m_transitionLeft.cancelTransition();
+            m_transitionRight.cancelTransition();
             loadUserParameters("./configFiles/UserParam1.yml");
         }
         break;
@@ -365,6 +386,8 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         else
         {
             m_currentUserParam = 2;
+            m_transitionLeft.cancelTransition();
+            m_transitionRight.cancelTransition();
             loadUserParameters("./configFiles/UserParam2.yml");
         }
         break;
@@ -374,7 +397,9 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         else
         {
             m_currentUserParam = 3;
-            loadUserParameters("./configFiles/UserParam3.yml");
+            m_transitionLeft.cancelTransition();
+            m_transitionRight.cancelTransition();
+            loadUserParameters("./configFiles/UserParam3.yml",true);
         }
         break;
     case Qt::Key_4:
@@ -383,6 +408,8 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         else
         {
             m_currentUserParam = 4;
+            m_transitionLeft.cancelTransition();
+            m_transitionRight.cancelTransition();
             loadUserParameters("./configFiles/UserParam4.yml");
         }
         break;
@@ -432,6 +459,7 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     default:
         break;
     }
+    this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
 
 

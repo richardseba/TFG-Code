@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     filter.cpp \
     stereocalibration.cpp \
     triangle.cpp \
-    matrix.cpp
+    matrix.cpp \
+    roitransition.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -46,7 +47,8 @@ HEADERS  += mainwindow.h \
     filter.h \
     stereocalibration.h \
     triangle.h \
-    matrix.h
+    matrix.h \
+    roitransition.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \
