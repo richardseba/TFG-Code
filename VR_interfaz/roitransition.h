@@ -9,7 +9,7 @@
 
 using namespace cv;
 
-enum Orientation { goingUp=0, goingDown=1, goingLeft=2, goingRight=3};
+enum Orientation { goingUp=0, goingDown=1, goingLeft=2, goingRight=3, growing=4, decreasing=5 };
 
 class ROITransition
 {
@@ -30,7 +30,16 @@ private:
     int m_stepY;
     Orientation m_YOrientation;
 
+    int m_stepW;
+    Orientation m_WOrientation;
+
+    int m_stepH;
+    Orientation m_HOrientation;
+
+
+
     bool m_isTransitionOn;
+    bool m_isOnCorrectZoomm;
 };
 
 #endif // ROITRANSITION_H

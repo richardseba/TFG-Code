@@ -31,6 +31,24 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
     m_boardWidth = boardWidth;
     m_squareSize = squareSize;
 
+    m_R = Mat();
+    m_T = Vec3d();
+    m_E = Mat();
+    m_F = Mat();
+    m_R1 = Mat();
+    m_R2 = Mat();
+    m_P1 = Mat();
+    m_P2 = Mat();
+    m_Q = Mat();
+    m_lMapX = Mat();
+    m_lMapY = Mat();
+    m_rMapX = Mat();
+    m_rMapY = Mat();
+
+    m_objectPoints.clear();
+    m_leftImagePoints.clear();
+    m_rightImagePoints.clear();
+
     loadFromImagesPoints(numImgs, leftImgDir, rightImgDir,leftImgFilename, rightImgFilename, extension);
 
     int flag = 0;
@@ -42,7 +60,7 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
 
     stereoRectify(camLeft.getIntrinsicMatrix(), camLeft.getDistorsionVector(),
                   CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(), m_imageSize, m_R, m_T, m_R1,
-                  m_R2, m_P1, m_P2, m_Q, CALIB_ZERO_DISPARITY,0.9);
+                  m_R2, m_P1, m_P2, m_Q, CALIB_ZERO_DISPARITY,1);
     m_isCalibrated = true;
 }
 
@@ -52,6 +70,20 @@ void StereoCalibration::calibrateStereoFromFile(CameraCalibration camLeft, Camer
 
     m_camLeft = camLeft;
     m_camRight = CamRight;
+
+    m_R = Mat();
+    m_T = Vec3d();
+    m_E = Mat();
+    m_F = Mat();
+    m_R1 = Mat();
+    m_R2 = Mat();
+    m_P1 = Mat();
+    m_P2 = Mat();
+    m_Q = Mat();
+    m_lMapX = Mat();
+    m_lMapY = Mat();
+    m_rMapX = Mat();
+    m_rMapY = Mat();
 
     FileStorage fs(stereoConfig, FileStorage::READ);
     fs["R"] >> m_R;

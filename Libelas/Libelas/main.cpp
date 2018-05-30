@@ -26,44 +26,37 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 #include "image.h"
 #include <algorithm>
 
-
+#include <QImage>
 #include <QImage>
 #include <QDebug>
 #include <QTime>
+#include "opencv2/core/core.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 using namespace std;
+using namespace cv;
 
 // compute disparities of pgm image input pair file_1, file_2
 void process (const char* file_1,const char* file_2) {
 
   cout << "Processing: " << file_1 << ", " << file_2 << endl;
+  QImage I1 = QImage(file_1);
+  QImage I2 = QImage(file_2);
 
-  // load images
-//  QImage I1,I2;
-//  I1.load(file_1);
-//  I2.load(file_2);
-
-//  I1 = I1.convertToFormat(QImage::Format_Grayscale8);
-//  I2 = I2.convertToFormat(QImage::Format_Grayscale8);
-
-
-  image<uchar> *I1,*I2;
-  I1 = loadPGM(file_1);
-  I2 = loadPGM(file_2);
-
-  if (I1->width()<=0 || I1->height() <=0 || I2->width()<=0 || I2->height() <=0 ||
-      I1->width()!=I2->width() || I1->height()!=I2->height()) {
-    cout << "ERROR: Images must be of same size, but" << endl;
-    cout << "       I1: " << I1->width() <<  " x " << I1->height() <<
-                 ", I2: " << I2->width() <<  " x " << I2->height() << endl;
-    delete I1;
-    delete I2;
-    return;
-  }
+  // check for correct size
+   if (I1.width()<=0 || I1.height() <=0 || I2.width()<=0 || I2.height() <=0 ||
+       I1.width()!=I2.width() || I1.height()!=I2.height()) {
+     qDebug() << "ERROR: Images must be of same size, but" << endl;
+     qDebug() << "       I1: " << I1.width() <<  " x " << I1.height() <<
+                  ", I2: " << I2.width() <<  " x " << I2.height() << endl;
+     return;
+   }
 
   // get image width and height
-  int32_t width  = I1->width();
-  int32_t height = I1->height();
+   int32_t width  = I1.width();
+   int32_t height = I1.height();
+
 
   // allocate memory for disparity images
   const int32_t dims[3] = {width,height,width}; // bytes per line = width
@@ -74,10 +67,10 @@ void process (const char* file_1,const char* file_2) {
 
   Elas::parameters param;
   param.postprocess_only_left = true;
-//  Elas elas(param);
+  //Elas elas(param);
 
-  Elas elas(Elas::setting::CVC);
-  elas.process(I1->data,I2->data,D1_data,D2_data,dims);
+  Elas elas(Elas::setting::MIDDLEBURY);
+  elas.process(I1.bits(),I2.bits(),D1_data,D2_data,dims);
 
   // find maximum disparity for scaling output disparity images to [0..255]
   float disp_max = 0;
@@ -86,29 +79,26 @@ void process (const char* file_1,const char* file_2) {
     if (D2_data[i]>disp_max) disp_max = D2_data[i];
   }
 
-  // copy float to uchar
-  image<uchar> *D1 = new image<uchar>(width,height);
-  image<uchar> *D2 = new image<uchar>(width,height);
+  QImage D1((int)width,(int)height,QImage::Format_Grayscale8);
+  QImage D2((int)width,(int)height,QImage::Format_Grayscale8);
+
   for (int32_t i=0; i<width*height; i++) {
-    D1->data[i] = (uint8_t)max(255.0*D1_data[i]/disp_max,0.0);
-    D2->data[i] = (uint8_t)max(255.0*D2_data[i]/disp_max,0.0);
+    D1.bits()[i] = (uint8_t)max(255.0*D1_data[i]/disp_max,0.0);
+    D2.bits()[i] = (uint8_t)max(255.0*D2_data[i]/disp_max,0.0);
   }
 
-  // save disparity images
-  char output_1[1024];
-  char output_2[1024];
-  strncpy(output_1,file_1,strlen(file_1)-4);
-  strncpy(output_2,file_2,strlen(file_2)-4);
-  output_1[strlen(file_1)-4] = '\0';
-  output_2[strlen(file_2)-4] = '\0';
-  strcat(output_1,"_disp.pgm");
-  strcat(output_2,"_disp.pgm");
-  savePGM(D1,output_1);
-  savePGM(D2,output_2);
 
-  // free memory
-  delete D1;
-  delete D2;
+  Mat imgL(D1.height(),D1.width(),CV_8UC1,(uchar*)D1.bits(),D1.bytesPerLine());
+  Mat imgR(D2.height(),D2.width(),CV_8UC1,(uchar*)D2.bits(),D2.bytesPerLine());
+
+  Mat colormapL, colormapR;
+
+  applyColorMap(imgL,colormapL,COLORMAP_JET);
+  applyColorMap(imgR,colormapR,COLORMAP_JET);
+
+  imwrite("l.png",imgL);
+  imwrite("r.png",imgR);
+
   free(D1_data);
   free(D2_data);
 }

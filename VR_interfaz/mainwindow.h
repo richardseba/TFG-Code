@@ -29,7 +29,7 @@ using namespace cv;
 
 const int FRAME_TIMER = 0;
 
-const int FRAME_RATE_SAVE = 34;
+const int FRAME_RATE_SAVE = 33;
 const int MAX_FRAME_IN_MEMORY = 1000;
 //const int MAX_FRAME_IN_MEMORY = 450;
 

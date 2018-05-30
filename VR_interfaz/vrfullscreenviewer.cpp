@@ -268,9 +268,9 @@ void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
     } else {
         m_transitionLeft = ROITransition(&m_leftSensorROI);
         m_transitionRight = ROITransition(&m_rightSensorROI);
-        m_transitionLeft.setTarget(leftRect);
+        m_transitionLeft.setTarget(leftRect,10);
         qDebug() << "on target: " << m_transitionLeft.isOnTarget();
-        m_transitionRight.setTarget(rightRect);
+        m_transitionRight.setTarget(rightRect,10);
         qDebug() << "on target: " << m_transitionLeft.isOnTarget();
     }
 }
