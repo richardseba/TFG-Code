@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     elas.cpp \
     filter.cpp \
     matrix.cpp \
-    triangle.cpp
+    triangle.cpp \
+    utils.cpp
 
 HEADERS += \
     descriptor.h \
@@ -31,7 +32,8 @@ HEADERS += \
     image.h \
     matrix.h \
     timer.h \
-    triangle.h
+    triangle.h \
+    utils.h
 
 win32 {
     INCLUDEPATH += $$(PYLON_DEV_DIR)/include \

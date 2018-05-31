@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.5.1, 2018-05-30T15:42:55. -->
+<!-- Written by QtCreator 4.5.1, 2018-05-30T18:03:14. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -535,7 +535,7 @@
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName">Libelas2</value>
     <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">Qt4ProjectManager.Qt4RunConfiguration:C:/Users/rsegovia/Desktop/TFG/TFG-Code/Libelas/Libelas/Libelas.pro</value>
     <value type="bool" key="QmakeProjectManager.QmakeRunConfiguration.UseLibrarySearchPath">true</value>
-    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">l.pgm r.pgm</value>
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.CommandLineArguments">C:\Users\rsegovia\Desktop\frames\left\frame_L_350.pgm C:\Users\rsegovia\Desktop\frames\right\frame_R_350.pgm</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">Libelas.pro</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
