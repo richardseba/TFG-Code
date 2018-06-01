@@ -74,6 +74,7 @@ public:
     QRadioButton *radioButton_recordMemory;
     QRadioButton *radioButton_recordDisk;
     QCheckBox *checkBox_colormap;
+    QCheckBox *checkBox_getDepthMap;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -307,6 +308,9 @@ public:
         checkBox_colormap = new QCheckBox(centralWidget);
         checkBox_colormap->setObjectName(QStringLiteral("checkBox_colormap"));
         checkBox_colormap->setGeometry(QRect(390, 680, 161, 31));
+        checkBox_getDepthMap = new QCheckBox(centralWidget);
+        checkBox_getDepthMap->setObjectName(QStringLiteral("checkBox_getDepthMap"));
+        checkBox_getDepthMap->setGeometry(QRect(190, 680, 181, 31));
         MainWindow->setCentralWidget(centralWidget);
         label_display1->raise();
         label_display2->raise();
@@ -315,6 +319,7 @@ public:
         radioButton_recordMemory->raise();
         radioButton_recordDisk->raise();
         checkBox_colormap->raise();
+        checkBox_getDepthMap->raise();
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
@@ -352,6 +357,7 @@ public:
         radioButton_recordMemory->setText(QApplication::translate("MainWindow", "Record in memory", nullptr));
         radioButton_recordDisk->setText(QApplication::translate("MainWindow", "Record in disk", nullptr));
         checkBox_colormap->setText(QApplication::translate("MainWindow", "Color Map", nullptr));
+        checkBox_getDepthMap->setText(QApplication::translate("MainWindow", "get Depth map", nullptr));
     } // retranslateUi
 
 };

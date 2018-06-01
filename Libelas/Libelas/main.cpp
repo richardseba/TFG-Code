@@ -43,8 +43,8 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
 
   cout << "Processing: " << file_1 << ", " << file_2 << endl;
 
-  Mat I1 = imread("C:/Users/rsegovia/Desktop/frames/left/frame_L_350.pgm");
-  Mat I2 = imread("C:/Users/rsegovia/Desktop/frames/right/frame_R_350.pgm");
+  Mat I1 = imread(file_1);
+  Mat I2 = imread(file_2);
 
   int bd = 0;
   Mat l,r;
@@ -95,12 +95,96 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
 
 }
 
+void process (Mat I1,Mat I2, QImage &Im1, QImage &Im2, bool colorMap) {
 
+  int bd = 0;
+  Mat l,r;
+  if(I1.channels()==3){cvtColor(I1,l,CV_BGR2GRAY);}
+  else l=I1;
+  if(I2.channels()==3)cvtColor(I2,r,CV_BGR2GRAY);
+  else r=I2;
+
+  Mat lb,rb;
+  cv::copyMakeBorder(l,lb,0,0,bd,bd,cv::BORDER_REPLICATE);
+  cv::copyMakeBorder(r,rb,0,0,bd,bd,cv::BORDER_REPLICATE);
+
+  const cv::Size imsize = lb.size();
+  const int32_t dims[3] = {imsize.width,imsize.height,imsize.width}; // bytes per line = width
+
+  cv::Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
+  cv::Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
+  Elas::parameters param;
+  param.postprocess_only_left = true;
+  Elas elas(Elas::setting::MIDDLEBURY);
+  elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
+
+  Mat disp;
+  Mat(leftdpf(cv::Rect(bd,0,I1.cols,I1.rows))).copyTo(disp);
+  disp.convertTo(I1,CV_8UC1,16);
+  Mat(rightdpf(cv::Rect(bd,0,I2.cols,I2.rows))).copyTo(disp);
+  disp.convertTo(I2,CV_8UC1,16);
+
+  Mat temp;
+  cvtColor(I1,temp,CV_GRAY2RGB);
+  QImage D1 = Mat2QImage(temp);
+  cvtColor(I2,temp,CV_GRAY2RGB);
+  QImage D2 = Mat2QImage(temp);
+
+  if(colorMap)
+  {
+      Mat colormapL, colormapR;
+
+      applyColorMap(I1,colormapL,COLORMAP_JET);
+      applyColorMap(I2,colormapR,COLORMAP_JET);
+
+      D1 = Mat2QImage(colormapL);
+      D2 = Mat2QImage(colormapR);
+  }
+
+  Im1 = D1;
+  Im2 = D2;
+
+}
+
+void processframes(QString path_L,QString path_R)
+{
+
+    VideoWriter newVideoL;
+    VideoWriter newVideoR;
+
+    Mat frameL, frameR;
+    QImage out1,out2;
+
+    frameL = imread((path_L+"frame_L_0.pgm").toLatin1().data());
+    frameR = imread((path_R+"frame_R_0.pgm").toLatin1().data());
+
+    newVideoL.open("new_video_out_L.avi",-1,33,frameL.size());
+    newVideoR.open("new_video_out_R.avi",-1,33,frameR.size());
+
+    for(int i = 0; i < 350; i++)
+    {
+        if(i%50 == 0) qDebug() << i << "frames procesed";
+        QString nameL = path_L+"frame_L_"+QString::number(i)+".pgm";
+        QString nameR = path_R+"frame_R_"+QString::number(i)+".pgm";
+
+        frameL = imread(nameL.toLatin1().data());
+        frameR = imread(nameR.toLatin1().data());
+
+        process(frameL,frameR,out1,out2,true);
+
+        newVideoL << QImage2Mat(out1);
+        newVideoR << QImage2Mat(out2);
+    }
+
+    newVideoL.release();
+    newVideoR.release();
+}
 
 int main (int argc, char** argv) {
     QTime crono = QTime();
     crono.start();
-    bool colormap = true;
+    bool colormap = false;
+
   // run demo
   if (argc==2 && !strcmp(argv[1],"demo")) {
     process("img/cones_left.pgm",   "img/cones_right.pgm",colormap);
@@ -117,9 +201,9 @@ int main (int argc, char** argv) {
   } else if (argc==3) {
     process(argv[1],argv[2],colormap);
     cout << "... done!" << endl;
-  } else if (argc==4 && strcmp(argv[1],"video")){
-    cout << "procesing video";
-
+  } else if (argc==4 && !strcmp(argv[1],"videof")){
+    cout << "procesing videof \n";
+    processframes(argv[2],argv[3]);
   // display help
   } else {
     cout << endl;

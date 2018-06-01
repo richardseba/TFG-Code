@@ -234,39 +234,55 @@ void MainWindow::on_recordingButton_clicked()
 */
 void MainWindow::frameTimeEvent()
 {
-    QImage *qImageL = NULL;
-    QImage *qImageR = NULL;
+    QImage qImageL;
+    QImage qImageR;
+
+    QImage* temp;
 
     bool left,right;
     left = ui->checkBox_continous_left->isChecked();
     right = ui->checkBox_continous_right->isChecked();
 
-    if(left)
-        qImageL = this->m_cameraL->grab_image(left);
-    if(right)
-        qImageR = this->m_cameraR->grab_image(right);
-
+    if(left){
+        temp = this->m_cameraL->grab_image(left);
+        qImageL = temp->copy();
+        if(temp!=NULL){
+            delete[] temp->bits();
+            delete temp;
+            temp = NULL;
+        }
+    }
+    if(right){
+        temp = this->m_cameraR->grab_image(right);
+        qImageR = temp->copy();
+        if(temp!=NULL){
+            delete[] temp->bits();
+            delete temp;
+       }
+    }
 
     if(left && right)
     {
-        if(!ui->checkBox_saveVideo->isChecked())
+        if(!ui->checkBox_saveVideo->isChecked() && ui->checkBox_getDepthMap->isChecked())
         {
+            QImagePair outDisp;
+            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(qImageL),CV_INTER_CUBIC));
+            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(qImageR),CV_INTER_CUBIC));
 
-            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(*qImageL),CV_INTER_CUBIC));
-            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(*qImageR),CV_INTER_CUBIC));
-
-            this->processDisparity(&qImageLU,&qImageRU);
+            outDisp = this->processDisparity(&qImageLU,&qImageRU);
+            qImageL = outDisp.im1.copy();
+            qImageR = outDisp.im2.copy();
         }
         if(ui->checkBox_saveVideo->isChecked())
         {
             if(ui->radioButton_recordMemory->isChecked() && ((m_vectorVideoL.size()+m_vectorVideoR.size()) < MAX_FRAME_IN_MEMORY)) {
-                m_vectorVideoL.push_back(qImageL->copy());
-                m_vectorVideoR.push_back(qImageR->copy());
+                m_vectorVideoL.push_back(qImageL.copy());
+                m_vectorVideoR.push_back(qImageR.copy());
             }else if(((m_vectorVideoL.size()+m_vectorVideoR.size()) >= MAX_FRAME_IN_MEMORY))
                 on_recordingButton_clicked();
             if(ui->radioButton_recordDisk->isChecked()){
-                Mat im1 = QImage2Mat(*qImageL);
-                Mat im2 = QImage2Mat(*qImageR);
+                Mat im1 = QImage2Mat(qImageL);
+                Mat im2 = QImage2Mat(qImageR);
                 m_videoL << im1;
                 m_videoR << im2;
             }
@@ -277,27 +293,13 @@ void MainWindow::frameTimeEvent()
         qDebug() << m_meanfps;
 
     }
-    else
-    {
-        if(left) {
-            ui->label_display1->setPixmap(QPixmap::fromImage(*qImageL));
-            ui->label_display1->show();
-        }
-        if(right){
-            ui->label_display2->setPixmap(QPixmap::fromImage(*qImageR));
-            ui->label_display2->show();
-        }
+    if(left && !ui->checkBox_saveVideo->isChecked()) {
+        ui->label_display1->setPixmap(QPixmap::fromImage(qImageL));
+        ui->label_display1->show();
     }
-
-    if(qImageL!=NULL){
-        delete[] qImageL->bits();
-        delete qImageL;
-        qImageL = NULL;
-    }
-    if(qImageR!=NULL){
-        delete[] qImageR->bits();
-        delete qImageR;
-        qImageR = NULL;
+    if(right && !ui->checkBox_saveVideo->isChecked()){
+        ui->label_display2->setPixmap(QPixmap::fromImage(qImageR));
+        ui->label_display2->show();
     }
 
 }
@@ -584,7 +586,7 @@ void MainWindow::on_switchCamera_pushButton_clicked()
     qDebug() <<"WARNING! Stereo undistort will not work!\n";
 }
 
-void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
+QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2)
 {
 //    Mat I1 = imread("C:/Users/rsegovia/Desktop/frames/left/frame_L_350.pgm");
 //    Mat I2 = imread("C:/Users/rsegovia/Desktop/frames/right/frame_R_350.pgm");
@@ -636,10 +638,10 @@ void MainWindow::processDisparity(QImage* Im1,QImage* Im2)
         D2 = Mat2QImage(colormapR);
     }
 
-    ui->label_display1->setPixmap(QPixmap::fromImage(D1));
-    ui->label_display1->show();
-    ui->label_display2->setPixmap(QPixmap::fromImage(D2));
-    ui->label_display2->show();
+    QImagePair outPair;
+    outPair.im1 = D1.copy();
+    outPair.im2 = D2.copy();
+    return outPair;
 }
 
 void MainWindow::saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter video, QProgressBar *progress)

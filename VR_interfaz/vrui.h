@@ -12,6 +12,8 @@
 #include <QDebug>
 #include <QGraphicsItemGroup>
 
+
+
 /* Class MainWindow
  * -------------------------------
  * This class is mean to be the main controller of a future VR UI
