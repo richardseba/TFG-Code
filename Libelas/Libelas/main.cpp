@@ -43,16 +43,17 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
 
   cout << "Processing: " << file_1 << ", " << file_2 << endl;
 
-  Mat leftim = imread(file_1);
-  Mat rightim =imread(file_2);
+  QImage imLeft = QImage(QString(file_1));
+  QImage imRight= QImage(QString(file_2));
 
-  Mat leftdisp;
-  Mat rightdisp;
+  Mat leftim(imLeft.height(),imLeft.width(),CV_8UC1,(uchar*)imLeft.bits(),imLeft.bytesPerLine());
+
+  Mat rightim(imRight.height(),imRight.width(),CV_8UC1,(uchar*)imRight.bits(),imRight.bytesPerLine());
 
   int bd = 0;
 
   Mat l,r;
-  if(leftim.channels()==3){cvtColor(leftim,l,CV_BGR2GRAY);cout<<"convert gray"<<endl;}
+  if(leftim.channels()==3)cvtColor(leftim,l,CV_BGR2GRAY);
   else l=leftim;
   if(rightim.channels()==3)cvtColor(rightim,r,CV_BGR2GRAY);
   else r=rightim;
@@ -92,9 +93,26 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
       }
   }
 
+  Mat temp;
+  cvtColor(D1,temp,CV_GRAY2RGB);
+  QImage tempIm1 = Mat2QImage(temp);
+  cvtColor(D2,temp,CV_GRAY2RGB);
+  QImage tempIm2 = Mat2QImage(temp);
 
-  qDebug() << imwrite("./test1.pgm",D1);
-  qDebug() << imwrite("./test2.pgm",D2);
+  if(colorMap)
+  {
+      Mat colormapL, colormapR;
+
+      applyColorMap(D1,colormapL,COLORMAP_JET);
+      applyColorMap(D2,colormapR,COLORMAP_JET);
+
+      tempIm1 = Mat2QImage(colormapL);
+      tempIm2 = Mat2QImage(colormapR);
+  }
+
+  tempIm1.save("./test1.png");
+  tempIm2.save("./test2.png");
+
 
 
 }
@@ -258,7 +276,7 @@ void processframes(QString path_L,QString path_R)
 int main (int argc, char** argv) {
     QTime crono = QTime();
     crono.start();
-    bool colormap = false;
+    bool colormap = true;
 
   // run demo
   if (argc==2 && !strcmp(argv[1],"demo")) {
