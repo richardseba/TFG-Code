@@ -43,15 +43,19 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
 
   cout << "Processing: " << file_1 << ", " << file_2 << endl;
 
-  Mat I1 = imread(file_1);
-  Mat I2 = imread(file_2);
+  Mat leftim = imread(file_1);
+  Mat rightim =imread(file_2);
+
+  Mat leftdisp;
+  Mat rightdisp;
 
   int bd = 0;
+
   Mat l,r;
-  if(I1.channels()==3){cvtColor(I1,l,CV_BGR2GRAY);}
-  else l=I1;
-  if(I2.channels()==3)cvtColor(I2,r,CV_BGR2GRAY);
-  else r=I2;
+  if(leftim.channels()==3){cvtColor(leftim,l,CV_BGR2GRAY);cout<<"convert gray"<<endl;}
+  else l=leftim;
+  if(rightim.channels()==3)cvtColor(rightim,r,CV_BGR2GRAY);
+  else r=rightim;
 
   Mat lb,rb;
   cv::copyMakeBorder(l,lb,0,0,bd,bd,cv::BORDER_REPLICATE);
@@ -62,36 +66,107 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
 
   cv::Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
   cv::Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
+
   Elas::parameters param;
   param.postprocess_only_left = true;
-  Elas elas(Elas::setting::MIDDLEBURY);
+  Elas elas(param);
   elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
-  Mat disp;
-  Mat(leftdpf(cv::Rect(bd,0,I1.cols,I1.rows))).copyTo(disp);
-  disp.convertTo(I1,CV_8UC1,16);
-  Mat(rightdpf(cv::Rect(bd,0,I2.cols,I2.rows))).copyTo(disp);
-  disp.convertTo(I2,CV_8UC1,16);
+  float disp_max = 0;
+  int width = leftdpf.size().width;
+  int height = rightdpf.size().height;
+  for (int i=0; i<height; i++) {
+      for(int j = 0; j<width; j++){
+        if (leftdpf.at<float>(i,j)>disp_max) disp_max = leftdpf.at<float>(i,j);
+        if (rightdpf.at<float>(i,j)>disp_max) disp_max = rightdpf.at<float>(i,j);
+      }
+  }
+  Mat D1(height,width,CV_8UC1);
+  Mat D2(height,width,CV_8UC1);
 
-  Mat temp;
-  cvtColor(I1,temp,CV_GRAY2RGB);
-  QImage D1 = Mat2QImage(temp);
-  cvtColor(I2,temp,CV_GRAY2RGB);
-  QImage D2 = Mat2QImage(temp);
-
-  if(colorMap)
-  {
-      Mat colormapL, colormapR;
-
-      applyColorMap(I1,colormapL,COLORMAP_JET);
-      applyColorMap(I2,colormapR,COLORMAP_JET);
-
-      D1 = Mat2QImage(colormapL);
-      D2 = Mat2QImage(colormapR);
+  for (int32_t i=0; i<height; i++) {
+      for(int  j = 0; j<width; j++){
+          Point2d point(j,i);
+          D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/disp_max),0.0);
+          D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/disp_max),0.0);
+      }
   }
 
-  D1.save(QString(file_1)+QString("_disp.png"));
-  D2.save(QString(file_2)+QString("_disp.png"));
+
+  qDebug() << imwrite("./test1.pgm",D1);
+  qDebug() << imwrite("./test2.pgm",D2);
+
+
+}
+
+void oldProcess (const char* file_1,const char* file_2, bool colorMap) {
+    // load images
+      image<uchar> *I1,*I2;
+      I1 = loadPGM(file_1);
+      I2 = loadPGM(file_2);
+
+      // check for correct size
+      if (I1->width()<=0 || I1->height() <=0 || I2->width()<=0 || I2->height() <=0 ||
+          I1->width()!=I2->width() || I1->height()!=I2->height()) {
+        cout << "ERROR: Images must be of same size, but" << endl;
+        cout << "       I1: " << I1->width() <<  " x " << I1->height() <<
+                     ", I2: " << I2->width() <<  " x " << I2->height() << endl;
+        delete I1;
+        delete I2;
+        return;
+      }
+
+      // get image width and height
+      int32_t width  = I1->width();
+      int32_t height = I1->height();
+
+      // allocate memory for disparity images
+      const int32_t dims[3] = {width,height,width}; // bytes per line = width
+      float* D1_data = (float*)malloc(width*height*sizeof(float));
+      float* D2_data = (float*)malloc(width*height*sizeof(float));
+
+      // process
+      Elas::parameters param;
+      param.postprocess_only_left = true;
+      Elas elas(param);
+      elas.process(I1->data,I2->data,D1_data,D2_data,dims);
+
+      // find maximum disparity for scaling output disparity images to [0..255]
+      float disp_max = 0;
+      for (int32_t i=0; i<width*height; i++) {
+        if (D1_data[i]>disp_max) disp_max = D1_data[i];
+        if (D2_data[i]>disp_max) disp_max = D2_data[i];
+      }
+
+      qDebug() << disp_max;
+
+      // copy float to uchar
+      image<uchar> *D1 = new image<uchar>(width,height);
+      image<uchar> *D2 = new image<uchar>(width,height);
+      for (int32_t i=0; i<width*height; i++) {
+        D1->data[i] = (uint8_t)max(255.0*D1_data[i]/disp_max,0.0);
+        D2->data[i] = (uint8_t)max(255.0*D2_data[i]/disp_max,0.0);
+      }
+
+      // save disparity images
+      char output_1[1024];
+      char output_2[1024];
+      strncpy(output_1,file_1,strlen(file_1)-4);
+      strncpy(output_2,file_2,strlen(file_2)-4);
+      output_1[strlen(file_1)-4] = '\0';
+      output_2[strlen(file_2)-4] = '\0';
+      strcat(output_1,"_disp.pgm");
+      strcat(output_2,"_disp.pgm");
+      savePGM(D1,"./test1_old.pgm");
+      savePGM(D2,"./test2_old.pgm");
+
+      // free memory
+      delete I1;
+      delete I2;
+      delete D1;
+      delete D2;
+      free(D1_data);
+      free(D2_data);
 
 }
 
