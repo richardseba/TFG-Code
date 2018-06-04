@@ -96,7 +96,7 @@ void ROITransition::setTarget(Rect targetRect, int numberOfSteps)
 
 void ROITransition::step()
 {
-    qDebug() << "isOnTarget" << isOnTarget();
+//    qDebug() << "isOnTarget" << isOnTarget();
     if(!isOnTarget())
     {
         if(!m_isOnCorrectZoomm)

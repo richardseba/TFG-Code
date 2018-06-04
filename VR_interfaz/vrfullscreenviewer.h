@@ -101,6 +101,11 @@ private:
     ROITransition m_transitionLeft;
     ROITransition m_transitionRight;
 
+    //video demo
+    VideoCapture* m_videoR;
+    VideoCapture* m_videoL;
+    bool m_isPlayingVideo;
+
 protected:
     void keyPressEvent(QKeyEvent *event);
 };

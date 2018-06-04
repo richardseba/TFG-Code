@@ -265,13 +265,24 @@ void MainWindow::frameTimeEvent()
     {
         if(!ui->checkBox_saveVideo->isChecked() && ui->checkBox_getDepthMap->isChecked())
         {
-//            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/frames/left/frame_L_0.pgm");
-//            QImage imRight= QImage("C:/Users/rsegovia/Desktop/frames/right/frame_R_0.pgm");
+            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/frames/left/frame_L_0.pgm");//.convertToFormat(QImage::Format_RGB888);
+            QImage imRight= QImage("C:/Users/rsegovia/Desktop/frames/right/frame_R_0.pgm");//.convertToFormat(QImage::Format_RGB888);
+            qDebug() << imLeft.format();
             QImagePair outDisp;
-            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(qImageL),CV_INTER_LINEAR));
-            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(qImageR),CV_INTER_LINEAR));
+//            Mat imLU = m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR);
+//            Mat imRU = m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR);
+//            Mat imLU = QImage2Mat(imLeft);
+//            Mat imRU = QImage2Mat(imRight);
+//            imwrite("./out1.png",imLU);
+//            imwrite("./out1.png",imRU);
 
-            outDisp = this->processDisparity(&qImageLU,&qImageRU);
+
+//            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR));
+//            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR));
+//            QImage tempL = qImageLU.convertToFormat(QImage::Format_Grayscale8);
+//            QImage tempR = qImageRU.convertToFormat(QImage::Format_Grayscale8);
+
+            outDisp = this->processDisparity(&imLeft,&imRight);
             qImageL = outDisp.im1.copy();
             qImageR = outDisp.im2.copy();
         }
@@ -292,7 +303,7 @@ void MainWindow::frameTimeEvent()
 
         float currentfps = 1000.0/m_time->restart();
         m_meanfps = (currentfps+m_meanfps)/2;
-        qDebug() << m_meanfps;
+//        qDebug() << m_meanfps;
 
     }
     if(left && !ui->checkBox_saveVideo->isChecked()) {

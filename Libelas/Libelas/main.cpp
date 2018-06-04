@@ -182,9 +182,8 @@ void process (Mat I1,Mat I2, QImage &Im1, QImage &Im2, bool colorMap) {
 
 }
 
-void processframes(QString path_L,QString path_R)
+void processframes(QString path_L,QString path_R,bool colorMap)
 {
-
     VideoWriter newVideoL;
     VideoWriter newVideoR;
 
@@ -206,8 +205,45 @@ void processframes(QString path_L,QString path_R)
         frameL = imread(nameL.toLatin1().data());
         frameR = imread(nameR.toLatin1().data());
 
-        process(frameL,frameR,out1,out2,true);
+        process(frameL,frameR,out1,out2,colorMap);
 
+        newVideoL << QImage2Mat(out1);
+        newVideoR << QImage2Mat(out2);
+    }
+
+    newVideoL.release();
+    newVideoR.release();
+}
+
+void processVideos(QString path_L,QString path_R,bool colorMap)
+{
+    VideoCapture videoL(path_L.toLatin1().data());
+    VideoCapture videoR(path_R.toLatin1().data());
+
+    VideoWriter newVideoL;
+    VideoWriter newVideoR;
+
+    Mat frameL, frameR;
+
+    videoL >> frameL;
+    videoR >> frameR;
+
+    QImage out1,out2;
+
+    newVideoL.open("new_video_out_L.avi",-1,33,frameL.size());
+    newVideoR.open("new_video_out_R.avi",-1,33,frameR.size());
+    process(frameL,frameR,out1,out2,colorMap);
+
+    newVideoL << QImage2Mat(out1);
+    newVideoR << QImage2Mat(out2);
+
+    for(int i = 0; i < 20; i++)
+    {
+        if(i%50 == 0) qDebug() << i << "frames procesed";
+        videoL >> frameL;
+        videoR >> frameR;
+
+        process(frameL,frameR,out1,out2,colorMap);
         newVideoL << QImage2Mat(out1);
         newVideoR << QImage2Mat(out2);
     }
@@ -239,14 +275,18 @@ int main (int argc, char** argv) {
     cout << "... done!" << endl;
   } else if (argc==4 && !strcmp(argv[1],"videof")){
     cout << "procesing videof \n";
-    processframes(argv[2],argv[3]);
+    processframes(argv[2],argv[3],colormap);
+  } else if (argc==4 && !strcmp(argv[1],"videov")){
+      cout << "procesing videov \n";
+      processVideos(argv[2],argv[3],colormap);
   // display help
   } else {
     cout << endl;
     cout << "ELAS demo program usage: " << endl;
     cout << "./elas demo ................ process all test images (image dir)" << endl;
     cout << "./elas left.pgm right.pgm .. process a single stereo pair" << endl;
-    cout << "./elas video videoLeft.avi videoRight.avi .. process a undistorted stereo pair video" << endl;
+    cout << "./elas videof ./folder/frames* ./folder/frames* .. process a undistorted stereo pair frames" << endl;
+    cout << "./elas videov videoLeft.avi videoRight.avi .. process a undistorted stereo pair video" << endl;
     cout << "./elas -h .................. shows this help" << endl;
     cout << endl;
     cout << "Note: All images must be pgm greylevel images. All output" << endl;

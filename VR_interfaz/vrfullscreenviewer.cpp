@@ -33,6 +33,7 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR)
     m_currentUserParam = 1;
     m_currentImage = 1;
     m_isDemo = false;
+    m_isPlayingVideo = false;
 
 //    this->m_params.offsetLeftX = 0;
 //    this->m_params.offsetLeftY = 0;
@@ -184,14 +185,26 @@ void VrFullscreenViewer::frameUpdateEvent()
 {
     QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
-
-    if(!m_isDemo){
+    if(!m_isDemo && !m_isPlayingVideo){
         this->m_frameR.setPixmap(QPixmap::fromImage(this->imageUpdaterR->getNextFrame().copy(rightrect)));
         this->m_frameL.setPixmap(QPixmap::fromImage(this->imageUpdaterL->getNextFrame().copy(leftrect)));
-    } else {
+    } else if(m_isDemo){
         this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(leftrect)));
         this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
+    } if(m_isPlayingVideo){ //playing video on
+       Mat matL ,matR;
+       m_videoL->grab();
+       m_videoR->grab();
+       m_videoL->read(matL);
+       m_videoR->read(matR);
+       if(!matL.empty()&& !matR.empty())
+       {
+           this->m_frameL.setPixmap(QPixmap::fromImage(Mat2QImage(matL).copy(leftrect)));
+           this->m_frameR.setPixmap(QPixmap::fromImage(Mat2QImage(matR).copy(rightrect)));
+       }
     }
+
+    //update the movement in the ROI, if any.
     this->m_transitionLeft.step();
     this->m_transitionRight.step();
 
@@ -269,9 +282,9 @@ void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
         m_transitionLeft = ROITransition(&m_leftSensorROI);
         m_transitionRight = ROITransition(&m_rightSensorROI);
         m_transitionLeft.setTarget(leftRect,10);
-        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
+//        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
         m_transitionRight.setTarget(rightRect,10);
-        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
+//        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
     }
 }
 
@@ -413,6 +426,18 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             loadUserParameters("./configFiles/UserParam4.yml");
         }
         break;
+    case Qt::Key_5:
+        if(!m_isPlayingVideo){
+            m_isPlayingVideo = true;
+            m_videoL = new VideoCapture("./videos/Loadable_L.avi");
+            m_videoR = new VideoCapture("./videos/Loadable_R.avi");
+        }else
+        {
+            m_isPlayingVideo = false;
+            delete m_videoL;
+            delete m_videoR;
+        }
+        //Keys for show 1 static image
     case Qt::Key_8:
         if(m_isDemo && m_currentImage == 1) {
             emit setUpdatingR(true);
@@ -428,7 +453,6 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         m_imgR = QImage::QImage("./demo_images/im1R.png");
         break;
     case Qt::Key_9:
-        qDebug() << (m_isDemo && m_currentImage == 2);
         if(m_isDemo && m_currentImage == 2) {
             emit setUpdatingR(true);
             emit setUpdatingL(true);
