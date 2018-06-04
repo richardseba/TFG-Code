@@ -265,9 +265,11 @@ void MainWindow::frameTimeEvent()
     {
         if(!ui->checkBox_saveVideo->isChecked() && ui->checkBox_getDepthMap->isChecked())
         {
+//            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/frames/left/frame_L_0.pgm");
+//            QImage imRight= QImage("C:/Users/rsegovia/Desktop/frames/right/frame_R_0.pgm");
             QImagePair outDisp;
-            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(qImageL),CV_INTER_CUBIC));
-            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(qImageR),CV_INTER_CUBIC));
+            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(qImageL),CV_INTER_LINEAR));
+            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(qImageR),CV_INTER_LINEAR));
 
             outDisp = this->processDisparity(&qImageLU,&qImageRU);
             qImageL = outDisp.im1.copy();
@@ -588,18 +590,21 @@ void MainWindow::on_switchCamera_pushButton_clicked()
 
 QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2)
 {
-//    Mat I1 = imread("C:/Users/rsegovia/Desktop/frames/left/frame_L_350.pgm");
-//    Mat I2 = imread("C:/Users/rsegovia/Desktop/frames/right/frame_R_350.pgm");
+//    QImage* imLeft = new QImage("C:/Users/rsegovia/Desktop/frames/left/frame_L_0.pgm");
+//    QImage* imRight= new QImage("C:/Users/rsegovia/Desktop/frames/right/frame_R_0.pgm");
 
-    Mat I1 = QImage2Mat(*Im1);
-    Mat I2 = QImage2Mat(*Im2);
+    Mat leftim(Im1->height(),Im1->width(),CV_8UC1,(uchar*)Im1->bits(),Im1->bytesPerLine());
+
+    Mat rightim(Im2->height(),Im2->width(),CV_8UC1,(uchar*)Im2->bits(),Im2->bytesPerLine());
+
+
+    Mat l,r;
+    if(leftim.channels()==3){cvtColor(leftim,l,CV_BGR2GRAY); qDebug() << "convexed";}
+    else l=leftim;
+    if(rightim.channels()==3){cvtColor(rightim,r,CV_BGR2GRAY); qDebug() << "convexed";}
+    else r=rightim;
 
     int bd = 0;
-    Mat l,r;
-    if(I1.channels()==3){cvtColor(I1,l,CV_BGR2GRAY);}
-    else l=I1;
-    if(I2.channels()==3)cvtColor(I2,r,CV_BGR2GRAY);
-    else r=I2;
 
     Mat lb,rb;
     cv::copyMakeBorder(l,lb,0,0,bd,bd,cv::BORDER_REPLICATE);
@@ -610,37 +615,52 @@ QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2)
 
     cv::Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
     cv::Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
+
     Elas::parameters param;
     param.postprocess_only_left = true;
-    Elas elas(Elas::setting::MIDDLEBURY);
+    Elas elas(param);
     elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
-    Mat disp;
-    Mat(leftdpf(cv::Rect(bd,0,I1.cols,I1.rows))).copyTo(disp);
-    disp.convertTo(I1,CV_8UC1,16);
-    Mat(rightdpf(cv::Rect(bd,0,I2.cols,I2.rows))).copyTo(disp);
-    disp.convertTo(I2,CV_8UC1,16);
+    float disp_max = 0;
+    int width = leftdpf.size().width;
+    int height = rightdpf.size().height;
+    for (int i=0; i<height; i++) {
+        for(int j = 0; j<width; j++){
+          if (leftdpf.at<float>(i,j)>disp_max) disp_max = leftdpf.at<float>(i,j);
+          if (rightdpf.at<float>(i,j)>disp_max) disp_max = rightdpf.at<float>(i,j);
+        }
+    }
+    Mat D1(height,width,CV_8UC1);
+    Mat D2(height,width,CV_8UC1);
+
+    for (int32_t i=0; i<height; i++) {
+        for(int  j = 0; j<width; j++){
+            Point2d point(j,i);
+            D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/disp_max),0.0);
+            D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/disp_max),0.0);
+        }
+    }
 
     Mat temp;
-    cvtColor(I1,temp,CV_GRAY2RGB);
-    QImage D1 = Mat2QImage(temp);
-    cvtColor(I2,temp,CV_GRAY2RGB);
-    QImage D2 = Mat2QImage(temp);
+    cvtColor(D1,temp,CV_GRAY2RGB);
+    QImage tempIm1 = Mat2QImage(temp);
+    cvtColor(D2,temp,CV_GRAY2RGB);
+    QImage tempIm2 = Mat2QImage(temp);
 
     if(ui->checkBox_colormap->isChecked())
     {
         Mat colormapL, colormapR;
 
-        applyColorMap(I1,colormapL,COLORMAP_JET);
-        applyColorMap(I2,colormapR,COLORMAP_JET);
+        applyColorMap(D1,colormapL,COLORMAP_JET);
+        applyColorMap(D2,colormapR,COLORMAP_JET);
 
-        D1 = Mat2QImage(colormapL);
-        D2 = Mat2QImage(colormapR);
+        tempIm1 = Mat2QImage(colormapL);
+        tempIm2 = Mat2QImage(colormapR);
     }
 
     QImagePair outPair;
-    outPair.im1 = D1.copy();
-    outPair.im2 = D2.copy();
+    outPair.im1 = tempIm1.copy();
+    outPair.im2 = tempIm2.copy();
     return outPair;
 }
 
