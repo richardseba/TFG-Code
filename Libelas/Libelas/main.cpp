@@ -110,10 +110,8 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
       tempIm2 = Mat2QImage(colormapR);
   }
 
-  tempIm1.save("./test1.png");
-  tempIm2.save("./test2.png");
-
-
+  tempIm1.save(QString(file_1)+"_disp.png");
+  tempIm2.save(QString(file_2)+"_disp.png");
 
 }
 
@@ -190,52 +188,68 @@ void oldProcess (const char* file_1,const char* file_2, bool colorMap) {
 
 void process (Mat I1,Mat I2, QImage &Im1, QImage &Im2, bool colorMap) {
 
-  int bd = 0;
-  Mat l,r;
-  if(I1.channels()==3){cvtColor(I1,l,CV_BGR2GRAY);}
-  else l=I1;
-  if(I2.channels()==3)cvtColor(I2,r,CV_BGR2GRAY);
-  else r=I2;
+    int bd = 0;
 
-  Mat lb,rb;
-  cv::copyMakeBorder(l,lb,0,0,bd,bd,cv::BORDER_REPLICATE);
-  cv::copyMakeBorder(r,rb,0,0,bd,bd,cv::BORDER_REPLICATE);
+    Mat l,r;
+    if(I1.channels()==3)cvtColor(I1,l,CV_BGR2GRAY);
+    else l=I1;
+    if(I2.channels()==3)cvtColor(I2,r,CV_BGR2GRAY);
+    else r=I2;
 
-  const cv::Size imsize = lb.size();
-  const int32_t dims[3] = {imsize.width,imsize.height,imsize.width}; // bytes per line = width
+    Mat lb,rb;
+    cv::copyMakeBorder(l,lb,0,0,bd,bd,cv::BORDER_REPLICATE);
+    cv::copyMakeBorder(r,rb,0,0,bd,bd,cv::BORDER_REPLICATE);
 
-  cv::Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
-  cv::Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
-  Elas::parameters param;
-  param.postprocess_only_left = true;
-  Elas elas(Elas::setting::MIDDLEBURY);
-  elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
+    const cv::Size imsize = lb.size();
+    const int32_t dims[3] = {imsize.width,imsize.height,imsize.width}; // bytes per line = width
 
-  Mat disp;
-  Mat(leftdpf(cv::Rect(bd,0,I1.cols,I1.rows))).copyTo(disp);
-  disp.convertTo(I1,CV_8UC1,16);
-  Mat(rightdpf(cv::Rect(bd,0,I2.cols,I2.rows))).copyTo(disp);
-  disp.convertTo(I2,CV_8UC1,16);
+    cv::Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
+    cv::Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
 
-  Mat temp;
-  cvtColor(I1,temp,CV_GRAY2RGB);
-  QImage D1 = Mat2QImage(temp);
-  cvtColor(I2,temp,CV_GRAY2RGB);
-  QImage D2 = Mat2QImage(temp);
+    Elas::parameters param;
+    param.postprocess_only_left = true;
+    Elas elas(param);
+    elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
-  if(colorMap)
-  {
-      Mat colormapL, colormapR;
+    float disp_max = 0;
+    int width = leftdpf.size().width;
+    int height = rightdpf.size().height;
+    for (int i=0; i<height; i++) {
+        for(int j = 0; j<width; j++){
+          if (leftdpf.at<float>(i,j)>disp_max) disp_max = leftdpf.at<float>(i,j);
+          if (rightdpf.at<float>(i,j)>disp_max) disp_max = rightdpf.at<float>(i,j);
+        }
+    }
+    Mat D1(height,width,CV_8UC1);
+    Mat D2(height,width,CV_8UC1);
 
-      applyColorMap(I1,colormapL,COLORMAP_JET);
-      applyColorMap(I2,colormapR,COLORMAP_JET);
+    for (int32_t i=0; i<height; i++) {
+        for(int  j = 0; j<width; j++){
+            Point2d point(j,i);
+            D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/disp_max),0.0);
+            D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/disp_max),0.0);
+        }
+    }
 
-      D1 = Mat2QImage(colormapL);
-      D2 = Mat2QImage(colormapR);
-  }
+    Mat temp;
+    cvtColor(D1,temp,CV_GRAY2RGB);
+    QImage tempIm1 = Mat2QImage(temp);
+    cvtColor(D2,temp,CV_GRAY2RGB);
+    QImage tempIm2 = Mat2QImage(temp);
 
-  Im1 = D1;
-  Im2 = D2;
+    if(colorMap)
+    {
+        Mat colormapL, colormapR;
+
+        applyColorMap(D1,colormapL,COLORMAP_JET);
+        applyColorMap(D2,colormapR,COLORMAP_JET);
+
+        tempIm1 = Mat2QImage(colormapL);
+        tempIm2 = Mat2QImage(colormapR);
+    }
+
+  Im1 = tempIm1;
+  Im2 = tempIm2;
 
 }
 
