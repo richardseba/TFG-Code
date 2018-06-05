@@ -332,6 +332,19 @@
      <string>Color Map</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBox_getDepthMap">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>680</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>get Depth map</string>
+    </property>
+   </widget>
    <zorder>label_display1</zorder>
    <zorder>label_display2</zorder>
    <zorder>layoutWidget</zorder>
@@ -339,6 +352,7 @@
    <zorder>radioButton_recordMemory</zorder>
    <zorder>radioButton_recordDisk</zorder>
    <zorder>checkBox_colormap</zorder>
+   <zorder>checkBox_getDepthMap</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

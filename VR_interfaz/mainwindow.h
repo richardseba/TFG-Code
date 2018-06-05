@@ -29,9 +29,9 @@ using namespace cv;
 
 const int FRAME_TIMER = 0;
 
-const int FRAME_RATE_SAVE = 34;
+const int FRAME_RATE_SAVE = 33;
 const int MAX_FRAME_IN_MEMORY = 1000;
-//const int MAX_FRAME_IN_MEMORY = 450;
+//const int MAX_FRAME_IN_MEMORY = 450; 32bits
 
 namespace Ui {
 class MainWindow;
@@ -77,7 +77,7 @@ private:
     bool saveImage(QImage qImage);
     void saveVideo(Mat im1,Mat im2);
     void showVRViewer(int screen=0);
-    void processDisparity(QImage* Im1,QImage* Im2);
+    QImagePair processDisparity(QImage* Im1, QImage* Im2);
     void saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter video, QProgressBar* progress);
 
     Camera* m_cameraL;

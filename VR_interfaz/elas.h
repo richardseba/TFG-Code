@@ -152,7 +152,7 @@ public:
         ipol_gap_width        = 5000;
         filter_median         = 1;
         filter_adaptive_mean  = 0;
-        postprocess_only_left = 0;
+        postprocess_only_left = 1;
         subsampling           = 0;
       }
     }

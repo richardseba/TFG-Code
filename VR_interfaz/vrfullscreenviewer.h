@@ -5,6 +5,7 @@
 #include "vrimageupdater.h"
 #include <vrui.h>
 #include "qgraphicstextitemvr.h"
+#include "roitransition.h"
 
 #include "QTimer"
 #include <QTime>
@@ -25,21 +26,6 @@
 #include <QGraphicsPolygonItem>
 
 #include "QTime"
-//#include <math.h>
-
-typedef struct vrParameters {
-    int offsetLeftX;
-    int offsetLeftY;
-
-    int offsetRightX;
-    int offsetRightY;
-
-    int screenWidth;
-    int screenHeight;
-
-    QRect LeftSensorROI;
-    QRect RightSensorROI;
-} vrParameters;
 
 
 /* Class VrFullscreenViewer
@@ -66,8 +52,8 @@ signals:
     void setUpdatingL(bool update);
 private:
     void initScene();
-    void saveUserParameters(QString filename);
-    void loadUserParameters(QString filename);
+    void saveUserParameters(QString filename,QString nameSufix="");
+    void loadUserParameters(QString filename,bool transition=false);
     void zoomIn();
     void zoomOut();
     int m_currentUserParam;
@@ -109,9 +95,17 @@ private:
     QGraphicsLineItem m_splitLine;
     float m_mean;
 
-//    vrParameters m_params; //en desuso
     Rect m_leftSensorROI;
     Rect m_rightSensorROI;
+
+    ROITransition m_transitionLeft;
+    ROITransition m_transitionRight;
+    bool m_doTransitions;
+
+    //video demo
+    VideoCapture* m_videoR;
+    VideoCapture* m_videoL;
+    bool m_isPlayingVideo;
 
 protected:
     void keyPressEvent(QKeyEvent *event);

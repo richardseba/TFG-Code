@@ -87,7 +87,7 @@ public:
         incon_window_size     = 5;
         incon_threshold       = 5;
         incon_min_support     = 5;
-        add_corners           = 0;
+        add_corners           = 1;
         grid_size             = 20;
         beta                  = 0.02;
         gamma                 = 3;
@@ -152,7 +152,7 @@ public:
         ipol_gap_width        = 5000;
         filter_median         = 1;
         filter_adaptive_mean  = 0;
-        postprocess_only_left = 0;
+        postprocess_only_left = 1;
         subsampling           = 0;
       }
     }

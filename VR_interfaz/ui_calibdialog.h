@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
+#include <QtWidgets/QDoubleSpinBox>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
@@ -31,10 +32,10 @@ public:
     QSpinBox *spinBox_row;
     QLabel *label;
     QLabel *label_2;
-    QSpinBox *spinBox_squareSize;
     QLabel *label_3;
     QSpinBox *spinBox_numImg;
     QLabel *label_4;
+    QDoubleSpinBox *spinBox_squareSize;
     QGroupBox *groupBox_2;
     QPushButton *pushButton_leftpath;
     QPushButton *pushButton_rightpath;
@@ -67,10 +68,6 @@ public:
         label_2 = new QLabel(groupBox);
         label_2->setObjectName(QStringLiteral("label_2"));
         label_2->setGeometry(QRect(90, 20, 71, 31));
-        spinBox_squareSize = new QSpinBox(groupBox);
-        spinBox_squareSize->setObjectName(QStringLiteral("spinBox_squareSize"));
-        spinBox_squareSize->setGeometry(QRect(190, 50, 71, 41));
-        spinBox_squareSize->setMinimum(1);
         label_3 = new QLabel(groupBox);
         label_3->setObjectName(QStringLiteral("label_3"));
         label_3->setGeometry(QRect(190, 20, 111, 31));
@@ -83,6 +80,11 @@ public:
         label_4 = new QLabel(groupBox);
         label_4->setObjectName(QStringLiteral("label_4"));
         label_4->setGeometry(QRect(280, 20, 131, 31));
+        spinBox_squareSize = new QDoubleSpinBox(groupBox);
+        spinBox_squareSize->setObjectName(QStringLiteral("spinBox_squareSize"));
+        spinBox_squareSize->setGeometry(QRect(181, 51, 81, 41));
+        spinBox_squareSize->setDecimals(1);
+        spinBox_squareSize->setMinimum(1);
         groupBox_2 = new QGroupBox(CalibDialog);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
         groupBox_2->setGeometry(QRect(20, 20, 531, 171));

@@ -83,13 +83,13 @@ void calibrateStereo()
 {
   char leftcalib_file[] = "./calibLeftOLD.txt";
   char rightcalib_file[] = "./calibRightOLD.txt";
-  char leftimg_dir[] = "../../../Dataset/Calib/left/";
-  char rightimg_dir[] = "../../../Dataset/Calib/right/";
+  char leftimg_dir[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/";
+  char rightimg_dir[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/";
   char leftimg_filename[] = "";
   char rightimg_filename[] = "";
   char out_file[] = "./stereoCalibOLD.txt";
   char extension[] = "png";
-  int num_imgs = 25;
+  int num_imgs = 16;
 
   FileStorage fsl(leftcalib_file, FileStorage::READ);
   FileStorage fsr(rightcalib_file, FileStorage::READ);
@@ -127,7 +127,7 @@ void calibrateStereo()
   printf("Starting Rectification\n");
 
   cv::Mat R1, R2, P1, P2, Q;
-  stereoRectify(K1, D1, K2, D2, img1.size(), R, T, R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY,0.993);
+  stereoRectify(K1, D1, K2, D2, img1.size(), R, T, R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY,0.9975);
 
   fs1 << "R1" << R1;
   fs1 << "R2" << R2;

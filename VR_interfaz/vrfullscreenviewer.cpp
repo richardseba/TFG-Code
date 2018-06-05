@@ -33,6 +33,8 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR)
     m_currentUserParam = 1;
     m_currentImage = 1;
     m_isDemo = false;
+    m_isPlayingVideo = false;
+    m_doTransitions = false;
 
 //    this->m_params.offsetLeftX = 0;
 //    this->m_params.offsetLeftY = 0;
@@ -112,6 +114,9 @@ void VrFullscreenViewer::initScene()
     m_leftSensorROI = Rect(0,0,imageWidth,imageHeight);
     m_rightSensorROI = Rect(0,0,imageWidth,imageHeight);
 
+    m_transitionLeft = ROITransition(&m_leftSensorROI);
+    m_transitionRight = ROITransition(&m_rightSensorROI);
+
     m_currentUserParam = 1;
     loadUserParameters("./configFiles/UserParam1.yml");
 
@@ -181,14 +186,29 @@ void VrFullscreenViewer::frameUpdateEvent()
 {
     QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
-
-    if(!m_isDemo){
+    if(!m_isDemo && !m_isPlayingVideo){
         this->m_frameR.setPixmap(QPixmap::fromImage(this->imageUpdaterR->getNextFrame().copy(rightrect)));
         this->m_frameL.setPixmap(QPixmap::fromImage(this->imageUpdaterL->getNextFrame().copy(leftrect)));
-    } else {
+    } else if(m_isDemo){
         this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(leftrect)));
         this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
+    } if(m_isPlayingVideo){ //playing video on
+       Mat matL ,matR;
+       m_videoL->grab();
+       m_videoR->grab();
+       m_videoL->read(matL);
+       m_videoR->read(matR);
+       if(!matL.empty()&& !matR.empty())
+       {
+           this->m_frameL.setPixmap(QPixmap::fromImage(Mat2QImage(matL).copy(leftrect)));
+           this->m_frameR.setPixmap(QPixmap::fromImage(Mat2QImage(matR).copy(rightrect)));
+       }
     }
+
+    //update the movement in the ROI, if any.
+    this->m_transitionLeft.step();
+    this->m_transitionRight.step();
+    this->m_frameR.setPos(m_leftSensorROI.width,0);
 
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
     this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
@@ -216,8 +236,9 @@ void VrFullscreenViewer::showFullScreen(int screenSelector)
     QGraphicsView::showFullScreen();
 }
 
-void VrFullscreenViewer::saveUserParameters(QString filename)
+void VrFullscreenViewer::saveUserParameters(QString filename, QString nameSufix)
 {
+    filename += nameSufix;
     FileStorage fs (filename.toStdString(), FileStorage::WRITE);
     fs << "LeftSensorROI_X" << m_leftSensorROI.x;
     fs << "LeftSensorROI_Y" << m_leftSensorROI.y;
@@ -230,10 +251,11 @@ void VrFullscreenViewer::saveUserParameters(QString filename)
     fs << "RightSensorROI_Height" << m_rightSensorROI.height;
 }
 
-void VrFullscreenViewer::loadUserParameters(QString filename)
+void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
 {
     FileStorage fs(filename.toStdString(), FileStorage::READ);
 
+    Rect leftRect, rightRect;
     int LX, LY, LW, LH, RX, RY, RW, RH;
     fs["LeftSensorROI_X"] >> LX;
     fs["LeftSensorROI_Y"] >> LY;
@@ -244,15 +266,28 @@ void VrFullscreenViewer::loadUserParameters(QString filename)
     fs["RightSensorROI_Width"] >> RW;
     fs["RightSensorROI_Height"] >> RH;
 
-    m_leftSensorROI.x = LX;
-    m_leftSensorROI.y = LY;
-    m_leftSensorROI.height = LH;
-    m_leftSensorROI.width = LW;
+    leftRect.x = LX;
+    leftRect.y = LY;
+    leftRect.height = LH;
+    leftRect.width = LW;
 
-    m_rightSensorROI.x = RX;
-    m_rightSensorROI.y = RY;
-    m_rightSensorROI.height = RH;
-    m_rightSensorROI.width = RW;
+    rightRect.x = RX;
+    rightRect.y = RY;
+    rightRect.height = RH;
+    rightRect.width = RW;
+
+    if(!transition)
+    {
+        m_leftSensorROI = leftRect;
+        m_rightSensorROI = rightRect;
+    } else {
+        m_transitionLeft = ROITransition(&m_leftSensorROI);
+        m_transitionRight = ROITransition(&m_rightSensorROI);
+        m_transitionLeft.setTarget(leftRect,100);
+//        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
+        m_transitionRight.setTarget(rightRect,100);
+//        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
+    }
 }
 
 void VrFullscreenViewer::zoomIn()
@@ -306,9 +341,13 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
     case Qt::Key_Plus:
-         zoomIn();
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
+        zoomIn();
         break;
     case Qt::Key_Minus:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         zoomOut();
         break;
     case Qt::Key_Escape:
@@ -324,46 +363,50 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     //Key events to move the window of the left camera - WASD keys
     case Qt::Key_W:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_leftSensorROI.y -= 6;
         break;
     case Qt::Key_A:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_leftSensorROI.x -= 6;
         break;
     case Qt::Key_S:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_leftSensorROI.y += 6;
         break;
     case Qt::Key_D:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_leftSensorROI.x += 6;
         break;
-    //Key events to move the Frame Counter with the arrow keys
-//    case Qt::Key_Up:
-//        // m_fpsCounter->moveByOffset(0,-5);
-//        m_params.screenHeight = m_params.screenHeight - 10;
-//        break;
-//    case Qt::Key_Down:
-//        // m_fpsCounter->moveByOffset(0,5);
-//        m_params.screenHeight = m_params.screenHeight + 10;
-//        break;
-//    case Qt::Key_Left:
-//        // m_fpsCounter->moveByOffset(-5,0);
-//        m_params.screenWidth = m_params.screenWidth - 10;
-//        break;
-//    case Qt::Key_Right:
-//        // m_fpsCounter->moveByOffset(5,0);
-//        m_params.screenWidth = m_params.screenWidth + 10;
-//        break;
-    //Key events to move the window of the right camera - IJKL keys
-    case Qt::Key_I:
+    //Key events to move the window of the right camera - Arrow Keys
+    case Qt::Key_Up:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_rightSensorROI.y -= 6;
         break;
-    case Qt::Key_K:
+    case Qt::Key_Down:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_rightSensorROI.y += 6;
         break;
-    case Qt::Key_J:
+    case Qt::Key_Left:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_rightSensorROI.x -= 6;
         break;
-    case Qt::Key_L:
+    case Qt::Key_Right:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_rightSensorROI.x += 6;
+        break;
+    case Qt::Key_T:
+        qDebug() << m_doTransitions;
+        m_doTransitions = !m_doTransitions;
+        qDebug() << m_doTransitions;
         break;
     //Key events to change de user configuration
     case Qt::Key_1:
@@ -372,7 +415,9 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         else
         {
             m_currentUserParam = 1;
-            loadUserParameters("./configFiles/UserParam1.yml");
+            m_transitionLeft.cancelTransition();
+            m_transitionRight.cancelTransition();
+            loadUserParameters("./configFiles/UserParam1.yml",m_doTransitions);
         }
         break;
     case Qt::Key_2:
@@ -381,7 +426,9 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         else
         {
             m_currentUserParam = 2;
-            loadUserParameters("./configFiles/UserParam2.yml");
+            m_transitionLeft.cancelTransition();
+            m_transitionRight.cancelTransition();
+            loadUserParameters("./configFiles/UserParam2.yml",m_doTransitions);
         }
         break;
     case Qt::Key_3:
@@ -390,7 +437,9 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         else
         {
             m_currentUserParam = 3;
-            loadUserParameters("./configFiles/UserParam3.yml");
+            m_transitionLeft.cancelTransition();
+            m_transitionRight.cancelTransition();
+            loadUserParameters("./configFiles/UserParam3.yml",m_doTransitions);
         }
         break;
     case Qt::Key_4:
@@ -399,9 +448,23 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         else
         {
             m_currentUserParam = 4;
-            loadUserParameters("./configFiles/UserParam4.yml");
+            m_transitionLeft.cancelTransition();
+            m_transitionRight.cancelTransition();
+            loadUserParameters("./configFiles/UserParam4.yml",m_doTransitions);
         }
         break;
+    case Qt::Key_5:
+        if(!m_isPlayingVideo){
+            m_isPlayingVideo = true;
+            m_videoL = new VideoCapture("./videos/Loadable_L.avi");
+            m_videoR = new VideoCapture("./videos/Loadable_R.avi");
+        }else
+        {
+            m_isPlayingVideo = false;
+            delete m_videoL;
+            delete m_videoR;
+        }
+        //Keys for show 1 static image
     case Qt::Key_8:
         if(m_isDemo && m_currentImage == 1) {
             emit setUpdatingR(true);
@@ -417,7 +480,6 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         m_imgR = QImage::QImage("./demo_images/im1R.png");
         break;
     case Qt::Key_9:
-        qDebug() << (m_isDemo && m_currentImage == 2);
         if(m_isDemo && m_currentImage == 2) {
             emit setUpdatingR(true);
             emit setUpdatingL(true);

@@ -73,15 +73,15 @@ void makeCalibration()
 {
     int board_width, board_height, num_imgs;
     float square_size;
-    char imgs_directory[] = "../../../Dataset/Calib/left/";
+    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/";
     char imgs_filename[]  = "";
-    char out_file[] = "calibLeftOLD.txt";
+    char out_file[] = "calibRightOLD.txt";
     char extension[] = "png";
 
       board_width = 11;
       board_height = 7;
-      num_imgs = 25;
-      square_size = 1;
+      num_imgs = 16;
+      square_size = 2,4;
 
       setup_calibration(board_width, board_height, num_imgs, square_size,
                        imgs_directory, imgs_filename, extension);
