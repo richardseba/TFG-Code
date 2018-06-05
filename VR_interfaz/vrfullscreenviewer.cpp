@@ -34,6 +34,7 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR)
     m_currentImage = 1;
     m_isDemo = false;
     m_isPlayingVideo = false;
+    m_doTransitions = false;
 
 //    this->m_params.offsetLeftX = 0;
 //    this->m_params.offsetLeftY = 0;
@@ -340,9 +341,13 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
     case Qt::Key_Plus:
-         zoomIn();
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
+        zoomIn();
         break;
     case Qt::Key_Minus:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         zoomOut();
         break;
     case Qt::Key_Escape:
@@ -358,29 +363,50 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     //Key events to move the window of the left camera - WASD keys
     case Qt::Key_W:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_leftSensorROI.y -= 6;
         break;
     case Qt::Key_A:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_leftSensorROI.x -= 6;
         break;
     case Qt::Key_S:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_leftSensorROI.y += 6;
         break;
     case Qt::Key_D:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_leftSensorROI.x += 6;
         break;
     //Key events to move the window of the right camera - Arrow Keys
     case Qt::Key_Up:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_rightSensorROI.y -= 6;
         break;
     case Qt::Key_Down:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_rightSensorROI.y += 6;
         break;
     case Qt::Key_Left:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_rightSensorROI.x -= 6;
         break;
     case Qt::Key_Right:
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
         m_rightSensorROI.x += 6;
+        break;
+    case Qt::Key_T:
+        qDebug() << m_doTransitions;
+        m_doTransitions = !m_doTransitions;
+        qDebug() << m_doTransitions;
         break;
     //Key events to change de user configuration
     case Qt::Key_1:
@@ -391,7 +417,7 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_currentUserParam = 1;
             m_transitionLeft.cancelTransition();
             m_transitionRight.cancelTransition();
-            loadUserParameters("./configFiles/UserParam1.yml");
+            loadUserParameters("./configFiles/UserParam1.yml",m_doTransitions);
         }
         break;
     case Qt::Key_2:
@@ -402,7 +428,7 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_currentUserParam = 2;
             m_transitionLeft.cancelTransition();
             m_transitionRight.cancelTransition();
-            loadUserParameters("./configFiles/UserParam2.yml",false);
+            loadUserParameters("./configFiles/UserParam2.yml",m_doTransitions);
         }
         break;
     case Qt::Key_3:
@@ -413,7 +439,7 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_currentUserParam = 3;
             m_transitionLeft.cancelTransition();
             m_transitionRight.cancelTransition();
-            loadUserParameters("./configFiles/UserParam3.yml",true);
+            loadUserParameters("./configFiles/UserParam3.yml",m_doTransitions);
         }
         break;
     case Qt::Key_4:
@@ -424,7 +450,7 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_currentUserParam = 4;
             m_transitionLeft.cancelTransition();
             m_transitionRight.cancelTransition();
-            loadUserParameters("./configFiles/UserParam4.yml");
+            loadUserParameters("./configFiles/UserParam4.yml",m_doTransitions);
         }
         break;
     case Qt::Key_5:

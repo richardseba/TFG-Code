@@ -34,7 +34,7 @@ void ROITransition::setTarget(Rect targetRect, int numberOfSteps)
     incY = (int)max(incY/numberOfSteps,1);
 //    incW = (int)max(incW/numberOfSteps,1);
 //    incH = (int)max(incH/numberOfSteps,1);
-    incW = 8;
+    incW = 8; //We need to enforce an 8 by 9 aspect ratio to prevent issues while building the scene
     incH = 9;
     qDebug() << incX << incY;
 

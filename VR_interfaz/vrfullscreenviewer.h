@@ -100,6 +100,7 @@ private:
 
     ROITransition m_transitionLeft;
     ROITransition m_transitionRight;
+    bool m_doTransitions;
 
     //video demo
     VideoCapture* m_videoR;
