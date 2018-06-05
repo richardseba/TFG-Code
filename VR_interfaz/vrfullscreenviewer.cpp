@@ -207,6 +207,7 @@ void VrFullscreenViewer::frameUpdateEvent()
     //update the movement in the ROI, if any.
     this->m_transitionLeft.step();
     this->m_transitionRight.step();
+    this->m_frameR.setPos(m_leftSensorROI.width,0);
 
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
     this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
@@ -281,9 +282,9 @@ void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
     } else {
         m_transitionLeft = ROITransition(&m_leftSensorROI);
         m_transitionRight = ROITransition(&m_rightSensorROI);
-        m_transitionLeft.setTarget(leftRect,10);
+        m_transitionLeft.setTarget(leftRect,100);
 //        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
-        m_transitionRight.setTarget(rightRect,10);
+        m_transitionRight.setTarget(rightRect,100);
 //        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
     }
 }
@@ -401,7 +402,7 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_currentUserParam = 2;
             m_transitionLeft.cancelTransition();
             m_transitionRight.cancelTransition();
-            loadUserParameters("./configFiles/UserParam2.yml");
+            loadUserParameters("./configFiles/UserParam2.yml",false);
         }
         break;
     case Qt::Key_3:

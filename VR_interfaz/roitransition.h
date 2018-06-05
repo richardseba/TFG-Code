@@ -36,10 +36,8 @@ private:
     int m_stepH;
     Orientation m_HOrientation;
 
-
-
     bool m_isTransitionOn;
-    bool m_isOnCorrectZoomm;
+    bool m_isOnCorrectZoom;
 };
 
 #endif // ROITRANSITION_H

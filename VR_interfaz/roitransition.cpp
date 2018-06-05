@@ -5,7 +5,7 @@ ROITransition::ROITransition()
 {
     m_currentRect = NULL;
     m_isTransitionOn = false;
-    m_isOnCorrectZoomm = false;
+    m_isOnCorrectZoom = false;
 
     m_stepX = 0;
     m_stepY = 0;
@@ -14,7 +14,7 @@ ROITransition::ROITransition(Rect* linkedROIRect)
 {
     m_currentRect = linkedROIRect;
     m_isTransitionOn = false;
-    m_isOnCorrectZoomm = false;
+    m_isOnCorrectZoom = true;
 
     m_stepX = 0;
     m_stepY = 0;
@@ -36,7 +36,7 @@ void ROITransition::setTarget(Rect targetRect, int numberOfSteps)
 //    incH = (int)max(incH/numberOfSteps,1);
     incW = 8;
     incH = 9;
-
+    qDebug() << incX << incY;
 
     if(m_currentRect->x > m_targetRect.x)
     {
@@ -81,9 +81,9 @@ void ROITransition::setTarget(Rect targetRect, int numberOfSteps)
         m_HOrientation = growing;
     }
 
-    m_isOnCorrectZoomm = false;
+    m_isOnCorrectZoom = false;
     if(m_currentRect->width == m_targetRect.width && m_currentRect->height == m_targetRect.height)
-        m_isOnCorrectZoomm = true;
+        m_isOnCorrectZoom = true;
 
     if(*m_currentRect != m_targetRect)
     {
@@ -91,15 +91,14 @@ void ROITransition::setTarget(Rect targetRect, int numberOfSteps)
     } else {
         m_isTransitionOn = false;
     }
-    qDebug() << "correctZoom" << m_isOnCorrectZoomm;
+    qDebug() << "correctZoom" << m_isOnCorrectZoom;
 }
 
 void ROITransition::step()
 {
-//    qDebug() << "isOnTarget" << isOnTarget();
     if(!isOnTarget())
     {
-        if(!m_isOnCorrectZoomm)
+        if(!m_isOnCorrectZoom)
         {
             if(m_currentRect->width != m_targetRect.width)
                 if(m_WOrientation == growing)
@@ -157,8 +156,9 @@ void ROITransition::step()
                         m_currentRect->y = m_targetRect.y;
                 }
         }
+        qDebug() << m_currentRect->width << m_targetRect.width << m_currentRect->height << m_targetRect.height;
         if(m_currentRect->width == m_targetRect.width && m_currentRect->height == m_targetRect.height)
-            m_isOnCorrectZoomm = false;
+            m_isOnCorrectZoom = true;
         if(*m_currentRect == m_targetRect)
         {
             m_isTransitionOn = false;
