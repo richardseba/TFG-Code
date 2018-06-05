@@ -12,11 +12,11 @@ using namespace cv;
 
 void makeRectification()
 {
-  char leftimg_filename[] = "../../../Dataset/Calib/left/1.png";
-  char rightimg_filename[] = "../../../Dataset/Calib/right/1.png";
-  char calib_file[] = "./stereoCalib.txt";
-  char leftout_filename[] = "./1LU.png";
-  char rightout_filename[] = "./1RU.png";
+  char leftimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/1.png";
+  char rightimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/1.png";
+  char calib_file[] = "./stereoCalibOLD.txt";
+  char leftout_filename[] = "./1LU_OLD.png";
+  char rightout_filename[] = "./1RU_OLD.png";
 
   Mat R1, R2, P1, P2, Q;
   Mat K1, K2, R;

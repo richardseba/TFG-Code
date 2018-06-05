@@ -6,14 +6,14 @@
 
 void calib()
 {
-    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100/right";
-//    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100/left";
+//    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right";
+    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left";
     char imgs_filename[]  = "";
-    char out_file[] = "calibRight.txt";
-//    char out_file[] = "calibLeft.txt";
+//    char out_file[] = "calibRight.txt";
+    char out_file[] = "calibLeft.txt";
     char extension[] = "png";
 
-    CameraCalibration* cam1 = new CameraCalibration(11,7,13,1,imgs_directory,imgs_filename,extension);
+    CameraCalibration* cam1 = new CameraCalibration(11,7,16,2.4,imgs_directory,imgs_filename,extension);
    // CameraCalibration* cam1 = new CameraCalibration(out_file);
     cam1->saveParamsInFile(out_file);
 }
@@ -25,10 +25,10 @@ void stereo()
     CameraCalibration camLeft(lConfig);
     CameraCalibration camRight(rConfig);
 
-    char leftimg_path[] = "../../../../Dataset/1100x1100/left";
-    char rightimg_path[] = "../../../../Dataset/1100x1100/right";
-    char leftimg_filename[] = "../../../../Dataset/1100x1100/left/1.png";
-    char rightimg_filename[] = "../../../../Dataset/1100x1100/right/1.png";
+    char leftimg_path[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/";
+    char rightimg_path[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/";
+    char leftimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/1.png";
+    char rightimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/1.png";
     char calib_file[] = "./stereoCalib.txt";
     char img_prefix[]  = "";
     char extension[] = "png";
