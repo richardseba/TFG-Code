@@ -83,12 +83,15 @@ void calibrateStereo()
 {
   char leftcalib_file[] = "./calibLeftOLD.txt";
   char rightcalib_file[] = "./calibRightOLD.txt";
-  char leftimg_dir[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/";
-  char rightimg_dir[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/";
-  char leftimg_filename[] = "";
-  char rightimg_filename[] = "";
+//  char leftimg_dir[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/";
+  char leftimg_dir[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/";
+//  char rightimg_dir[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/";
+  char rightimg_dir[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/";
+
+  char leftimg_filename[] = "left";
+  char rightimg_filename[] = "right";
   char out_file[] = "./stereoCalibOLD.txt";
-  char extension[] = "png";
+  char extension[] = "jpg";
   int num_imgs = 16;
 
   FileStorage fsl(leftcalib_file, FileStorage::READ);
@@ -107,7 +110,7 @@ void calibrateStereo()
   fsr["D"] >> D2;
   int flag = 0;
   flag |= CV_CALIB_FIX_INTRINSIC;
-  
+  flag |= CV_CALIB_ZERO_TANGENT_DIST;
   cout << "Read intrinsics" << endl;
   
   stereoCalibrate(object_pointsStereo, left_img_points, right_img_points, K1, D1, K2, D2, img1.size(), R, T, E, F);

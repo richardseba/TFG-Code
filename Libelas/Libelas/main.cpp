@@ -38,13 +38,40 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 using namespace std;
 using namespace cv;
 
+float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR)
+{
+    Mat cutL = Mat(imL,rectL);
+    Mat cutR = Mat(imL,rectR);
+
+    float sumL = 0;
+    float sumR = 0;
+    int widthL = cutL.size().width;
+    int heightL = cutL.size().height;
+    for (int i=0; i<heightL; i++) {
+        for(int j = 0; j<widthL; j++){
+          sumL += cutL.at<float>(i,j);
+        }
+    }
+    int widthR = cutR.size().width;
+    int heightR = cutR.size().height;
+    for (int i=0; i<heightR; i++) {
+        for(int j = 0; j<widthR; j++){
+          sumR += cutR.at<float>(i,j);
+        }
+    }
+    float meanL = sumL/(widthL*heightL);
+    float meanR = sumR/(widthR*heightR);
+    return (meanL+meanR)/2.0;
+    return 0;
+}
+
 // compute disparities of pgm image input pair file_1, file_2
 void process (const char* file_1,const char* file_2, bool colorMap) {
 
   cout << "Processing: " << file_1 << ", " << file_2 << endl;
 
-  QImage imLeft = QImage(QString(file_1));
-  QImage imRight= QImage(QString(file_2));
+  QImage imLeft = QImage(QString(file_1)).convertToFormat(QImage::Format_Grayscale8);
+  QImage imRight= QImage(QString(file_2)).convertToFormat(QImage::Format_Grayscale8);
 
   Mat leftim(imLeft.height(),imLeft.width(),CV_8UC1,(uchar*)imLeft.bits(),imLeft.bytesPerLine());
 
@@ -74,14 +101,20 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
   elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
   float disp_max = 0;
+//  float disp_min = 999999;
   int width = leftdpf.size().width;
   int height = rightdpf.size().height;
   for (int i=0; i<height; i++) {
       for(int j = 0; j<width; j++){
-        if (leftdpf.at<float>(i,j)>disp_max) disp_max = leftdpf.at<float>(i,j);
-        if (rightdpf.at<float>(i,j)>disp_max) disp_max = rightdpf.at<float>(i,j);
+        disp_max = max(leftdpf.at<float>(i,j),disp_max);// disp_max = leftdpf.at<float>(i,j);
+        disp_max = max(rightdpf.at<float>(i,j),disp_max);// disp_max = rightdpf.at<float>(i,j);
+//        disp_min = min(leftdpf.at<float>(i,j),disp_min);
+//        disp_min = min(rightdpf.at<float>(i,j),disp_min);
       }
   }
+//  qDebug() << disp_max;
+//  qDebug() << disp_min;
+
   Mat D1(height,width,CV_8UC1);
   Mat D2(height,width,CV_8UC1);
 
@@ -141,6 +174,7 @@ void process (Mat I1,Mat I2, QImage &Im1, QImage &Im2, bool colorMap) {
     elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
     float disp_max = 0;
+    float disp_min = 0;
     int width = leftdpf.size().width;
     int height = rightdpf.size().height;
     for (int i=0; i<height; i++) {
@@ -149,6 +183,8 @@ void process (Mat I1,Mat I2, QImage &Im1, QImage &Im2, bool colorMap) {
           if (rightdpf.at<float>(i,j)>disp_max) disp_max = rightdpf.at<float>(i,j);
         }
     }
+//    qDebug() << disp_max;
+//    qDebug() << disp_min;
     Mat D1(height,width,CV_8UC1);
     Mat D2(height,width,CV_8UC1);
 
@@ -280,6 +316,9 @@ int main (int argc, char** argv) {
       cout << "procesing videov \n";
       processVideos(argv[2],argv[3],colormap);
   // display help
+  } else if (argc==2 && !strcmp(argv[1],"test")){
+//      getMeanOfROI();
+  // display help
   } else {
     cout << endl;
     cout << "ELAS demo program usage: " << endl;
@@ -293,6 +332,7 @@ int main (int argc, char** argv) {
     cout << "      disparities will be scaled such that disp_max = 255." << endl;
     cout << endl;
   }
+  qDebug() << "done";
 
   return 0;
 }

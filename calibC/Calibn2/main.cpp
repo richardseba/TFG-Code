@@ -7,11 +7,12 @@
 void calib()
 {
 //    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right";
-    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left";
-    char imgs_filename[]  = "";
-//    char out_file[] = "calibRight.txt";
-    char out_file[] = "calibLeft.txt";
-    char extension[] = "png";
+//    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left";
+    char imgs_directory[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/";
+    char imgs_filename[]  = "right";
+    char out_file[] = "calibRight.txt";
+//    char out_file[] = "calibLeft.txt";
+    char extension[] = "jpg";
 
     CameraCalibration* cam1 = new CameraCalibration(11,7,16,2.4,imgs_directory,imgs_filename,extension);
    // CameraCalibration* cam1 = new CameraCalibration(out_file);
@@ -25,16 +26,21 @@ void stereo()
     CameraCalibration camLeft(lConfig);
     CameraCalibration camRight(rConfig);
 
-    char leftimg_path[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/";
-    char rightimg_path[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/";
-    char leftimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/1.png";
-    char rightimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/1.png";
+//    char leftimg_path[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/";
+    char leftimg_path[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/";
+//    char rightimg_path[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/";
+    char rightimg_path[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/";
+//    char leftimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/1.png";
+    char leftimg_filename[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/left1.jpg";
+//    char rightimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/1.png";
+    char rightimg_filename[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/right1.jpg";
     char calib_file[] = "./stereoCalib.txt";
-    char img_prefix[]  = "";
-    char extension[] = "png";
+    char img_left_prefix[]  = "left";
+    char img_right_prefix[]  = "right";
+    char extension[] = "jpg";
 
     StereoCalibration stereoCalib(camLeft,camRight,11,7,13,1,leftimg_path,rightimg_path,
-                                  img_prefix,img_prefix,extension);
+                                  img_left_prefix,img_right_prefix,extension);
     stereoCalib.saveParamsInFile(calib_file);
 
     stereoCalib.initUndistortImage();
@@ -54,7 +60,7 @@ void stereo()
 int main(int argc, char const **argv)
 {
     printf("Starting the program\n");
-    int phase = 3;
+    int phase = 1;
     switch (phase) {
     case 0:
         makeCalibration();

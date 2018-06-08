@@ -1,4 +1,5 @@
 #include "cameracalibration.h"
+#include "QDebug"
 
 CameraCalibration::CameraCalibration()
 {
@@ -77,12 +78,17 @@ void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int
 
     printf("Starting Calibration\n");
     int flag = 0;
+    flag |= CV_CALIB_FIX_K3;
     flag |= CV_CALIB_FIX_K4;
     flag |= CV_CALIB_FIX_K5;
+    flag |= CV_CALIB_FIX_K6;
+    flag |= CALIB_ZERO_TANGENT_DIST;
+//    flag |= CALIB_FIX_ASPECT_RATIO ;
+//    flag |= CALIB_FIX_PRINCIPAL_POINT;
     calibrateCamera(m_objectPoints, m_imagePoints, m_imageSize, m_intrinsicMatrix, m_distorsionVector, rvecs,
                     tvecs, flag);
 
-    cout << "Calibration error: " << computeReprojectionErrors(rvecs, tvecs) << "\n";
+    qDebug() << "Calibration error: " << computeReprojectionErrors(rvecs, tvecs) << "\n";
 
     if(m_intrinsicMatrix.data != NULL && m_distorsionVector.data != NULL)
         m_isCalibrated = true;

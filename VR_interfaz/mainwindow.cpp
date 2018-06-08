@@ -265,26 +265,45 @@ void MainWindow::frameTimeEvent()
     {
         if(!ui->checkBox_saveVideo->isChecked() && ui->checkBox_getDepthMap->isChecked())
         {
-            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/frames/left/frame_L_0.pgm");//.convertToFormat(QImage::Format_RGB888);
-            QImage imRight= QImage("C:/Users/rsegovia/Desktop/frames/right/frame_R_0.pgm");//.convertToFormat(QImage::Format_RGB888);
-            qDebug() << imLeft.format();
+            //loading from a gray undistorted file
+//            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/frames/left/frame_L_0.pgm");//.convertToFormat(QImage::Format_RGB888);
+//            QImage imRight= QImage("C:/Users/rsegovia/Desktop/frames/right/frame_R_0.pgm");//.convertToFormat(QImage::Format_RGB888);
+//            QImagePair outDisp;
+//            outDisp = this->processDisparity(&imLeft,&imRight);
+//            qImageL = outDisp.im1.copy();
+//            qImageR = outDisp.im2.copy();
+            //loading from a color undistorted file
+//            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/frames/left/frame_L_0.png").convertToFormat(QImage::Format_Grayscale8);
+//            QImage imRight= QImage("C:/Users/rsegovia/Desktop/frames/right/frame_R_0.png").convertToFormat(QImage::Format_Grayscale8);
+
+//            QImagePair outDisp;
+//            outDisp = this->processDisparity(&imLeft,&imRight);
+//            qImageL = outDisp.im1.copy();
+//            qImageR = outDisp.im2.copy();
+            //loading from a color file
+            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/raw_frames/left/frame_L_0.png").convertToFormat(QImage::Format_RGB888);
+            QImage imRight= QImage("C:/Users/rsegovia/Desktop/raw_frames/right/frame_R_0.png").convertToFormat(QImage::Format_RGB888);
+
+            QImage tempL = this->m_cameraL->undistortMapImage(imLeft,CV_INTER_LINEAR).convertToFormat(QImage::Format_Grayscale8);
+            QImage tempR = this->m_cameraR->undistortMapImage(imRight,CV_INTER_LINEAR).convertToFormat(QImage::Format_Grayscale8);
+            tempL.save("test2L.pgm");
+            tempR.save("test2R.pgm");
             QImagePair outDisp;
-//            Mat imLU = m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR);
-//            Mat imRU = m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR);
-//            Mat imLU = QImage2Mat(imLeft);
-//            Mat imRU = QImage2Mat(imRight);
-//            imwrite("./out1.png",imLU);
-//            imwrite("./out1.png",imRU);
-
-
-//            QImage qImageLU = Mat2QImage(m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR));
-//            QImage qImageRU = Mat2QImage(m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR));
-//            QImage tempL = qImageLU.convertToFormat(QImage::Format_Grayscale8);
-//            QImage tempR = qImageRU.convertToFormat(QImage::Format_Grayscale8);
-
-            outDisp = this->processDisparity(&imLeft,&imRight);
+            outDisp = this->processDisparity(&tempL,&tempR);
             qImageL = outDisp.im1.copy();
             qImageR = outDisp.im2.copy();
+            //runtime processing
+//            QImage imLeft = qImageL.convertToFormat(QImage::Format_RGB888);
+//            QImage imRight= qImageR.convertToFormat(QImage::Format_RGB888);
+
+//            QImage tempL = this->m_cameraL->undistortMapImage(imLeft,CV_INTER_LINEAR).convertToFormat(QImage::Format_Grayscale8);
+//            QImage tempR = this->m_cameraR->undistortMapImage(imRight,CV_INTER_LINEAR).convertToFormat(QImage::Format_Grayscale8);
+
+//            QImagePair outDisp;
+//            outDisp = this->processDisparity(&tempL,&tempR);
+//            qImageL = outDisp.im1.copy();
+//            qImageR = outDisp.im2.copy();
+
         }
         if(ui->checkBox_saveVideo->isChecked())
         {
@@ -333,7 +352,7 @@ bool MainWindow::saveImage(QImage qImage)
     QString imagePath = QFileDialog::getSaveFileName(
                     this,
                     tr("Save File"),
-                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/"+filename,
+                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100 6 june/"+filename,
                     tr("PNG (*.png);;JPEG (*.jpg *.jpeg)" )
                     );
     if(!imagePath.isEmpty() && !imagePath.isNull())

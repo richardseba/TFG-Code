@@ -51,16 +51,26 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
 
     loadFromImagesPoints(numImgs, leftImgDir, rightImgDir,leftImgFilename, rightImgFilename, extension);
 
+    int flagCalib = 0;
     int flag = 0;
-    flag |= CV_CALIB_FIX_INTRINSIC;
+    flagCalib |= CALIB_ZERO_TANGENT_DIST;
+    flag |= CV_CALIB_ZERO_DISPARITY ;
+    flagCalib |= CV_CALIB_FIX_K3;
+    flagCalib |= CV_CALIB_FIX_K4;
+    flagCalib |= CV_CALIB_FIX_K5;
+    flagCalib |= CV_CALIB_FIX_K6;
+//    flagCalib |= CALIB_USE_INTRINSIC_GUESS;
+    flagCalib |= CALIB_FIX_INTRINSIC ;
+//    flagCalib |= CALIB_FIX_PRINCIPAL_POINT  ;
+//    flagCalib |= CALIB_FIX_ASPECT_RATIO  ;
 
     stereoCalibrate(m_objectPoints, m_leftImagePoints, m_rightImagePoints, camLeft.getIntrinsicMatrix(),
                     camLeft.getDistorsionVector(), CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(),
-                    m_imageSize, m_R, m_T, m_E, m_F);
+                    m_imageSize, m_R, m_T, m_E, m_F,flagCalib);
 
     stereoRectify(camLeft.getIntrinsicMatrix(), camLeft.getDistorsionVector(),
                   CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(), m_imageSize, m_R, m_T, m_R1,
-                  m_R2, m_P1, m_P2, m_Q, CALIB_ZERO_DISPARITY,0.95);
+                  m_R2, m_P1, m_P2, m_Q, flag,0.2);
     m_isCalibrated = true;
 }
 
@@ -205,6 +215,10 @@ void StereoCalibration::initUndistortImage()
 void StereoCalibration::initUndistortImage(Size imageSize)
 {
     m_isInitUndistort = false;
+
+    cv::getOptimalNewCameraMatrix(m_camLeft.getIntrinsicMatrix(),m_camLeft)
+
+
     cv::initUndistortRectifyMap(m_camLeft.getIntrinsicMatrix(), m_camLeft.getDistorsionVector(),
                                 m_R1, m_P1, imageSize, CV_32F, m_lMapX, m_lMapY);
     cv::initUndistortRectifyMap(m_camRight.getIntrinsicMatrix(), m_camRight.getDistorsionVector(),
