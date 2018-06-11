@@ -16,7 +16,7 @@ PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
 libelas; if not, write to the Free Software Foundation, Inc., 51 Franklin
-Street, Fifth Floor, Boston, MA 02110-1301, USA 
+Street, Fifth Floor, Boston, MA 02110-1301, USA
 */
 
 // Demo program showing how libelas can be used, try "./elas -h" for help
@@ -67,82 +67,6 @@ float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR)
     return 0;
 }
 
-// compute disparities of pgm image input pair file_1, file_2
-void process (const char* file_1,const char* file_2, bool colorMap) {
-
-  cout << "Processing: " << file_1 << ", " << file_2 << endl;
-
-  QImage imLeft = QImage(QString(file_1)).convertToFormat(QImage::Format_Grayscale8);
-  QImage imRight= QImage(QString(file_2)).convertToFormat(QImage::Format_Grayscale8);
-
-  Mat leftim(imLeft.height(),imLeft.width(),CV_8UC1,(uchar*)imLeft.bits(),imLeft.bytesPerLine());
-
-  Mat rightim(imRight.height(),imRight.width(),CV_8UC1,(uchar*)imRight.bits(),imRight.bytesPerLine());
-
-  int bd = 0;
-
-  Mat l,r;
-  if(leftim.channels()==3)cvtColor(leftim,l,CV_BGR2GRAY);
-  else l=leftim;
-  if(rightim.channels()==3)cvtColor(rightim,r,CV_BGR2GRAY);
-  else r=rightim;
-
-  Mat lb,rb;
-  cv::copyMakeBorder(l,lb,0,0,bd,bd,cv::BORDER_REPLICATE);
-  cv::copyMakeBorder(r,rb,0,0,bd,bd,cv::BORDER_REPLICATE);
-
-  const cv::Size imsize = lb.size();
-  const int32_t dims[3] = {imsize.width,imsize.height,imsize.width}; // bytes per line = width
-
-  cv::Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
-  cv::Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
-
-  Elas::parameters param;
-  param.postprocess_only_left = true;
-  Elas elas(param);
-  elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
-
-  double maxValue = 0;
-  double minValue = 0;
-
-  minMaxLoc(leftdpf,&minValue,&maxValue);
-  int width = leftdpf.size().width;
-  int height = rightdpf.size().height;
-
-//    qDebug() << disp_max << maxValue;
-
-  Mat D1(height,width,CV_8UC1);
-  Mat D2(height,width,CV_8UC1);
-
-  for (int32_t i=0; i<height; i++) {
-      for(int  j = 0; j<width; j++){
-          Point2d point(j,i);
-          D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/maxValue),0.0);
-          D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/maxValue),0.0);
-      }
-  }
-
-  Mat temp;
-  cvtColor(D1,temp,CV_GRAY2RGB);
-  QImage tempIm1 = Mat2QImage(temp);
-  cvtColor(D2,temp,CV_GRAY2RGB);
-  QImage tempIm2 = Mat2QImage(temp);
-
-  if(colorMap)
-  {
-      Mat colormapL, colormapR;
-
-      applyColorMap(D1,colormapL,COLORMAP_JET);
-      applyColorMap(D2,colormapR,COLORMAP_JET);
-
-      tempIm1 = Mat2QImage(colormapL);
-      tempIm2 = Mat2QImage(colormapR);
-  }
-
-  tempIm1.save(QString(file_1)+"_disp.png");
-  tempIm2.save(QString(file_2)+"_disp.png");
-
-}
 
 void process (Mat I1,Mat I2, QImage &Im1, QImage &Im2, bool colorMap) {
 
@@ -210,6 +134,34 @@ void process (Mat I1,Mat I2, QImage &Im1, QImage &Im2, bool colorMap) {
 
 }
 
+// compute disparities of pgm image input pair file_1, file_2
+void process (const char* file_1,const char* file_2, bool colorMap) {
+
+  cout << "Processing: " << file_1 << ", " << file_2 << endl;
+
+  QImage imLeft = QImage(QString(file_1)).convertToFormat(QImage::Format_Grayscale8);
+  QImage imRight= QImage(QString(file_2)).convertToFormat(QImage::Format_Grayscale8);
+
+  Mat leftim(imLeft.height(),imLeft.width(),CV_8UC1,(uchar*)imLeft.bits(),imLeft.bytesPerLine());
+
+  Mat rightim(imRight.height(),imRight.width(),CV_8UC1,(uchar*)imRight.bits(),imRight.bytesPerLine());
+
+  QImage outL;
+  QImage outR;
+
+  process(leftim,rightim,outL,outR,colorMap);
+
+  if(colorMap){
+      outL.save(QString(file_1)+"_disp.png");
+      outR.save(QString(file_2)+"_disp.png");
+  } else {
+      outL.save(QString(file_1)+"_disp.pgm");
+      outR.save(QString(file_2)+"_disp.pgm");
+  }
+
+}
+
+
 void processframes(QString path_L,QString path_R,bool colorMap)
 {
     VideoWriter newVideoL;
@@ -254,11 +206,8 @@ void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize)
 
     Size originalSize(width,height);
 
-    if(outSize.empty()) {
-
+    if(outSize.empty())
         outSize = originalSize;
-    }
-
 
     VideoWriter newVideoL;
     VideoWriter newVideoR;
@@ -302,7 +251,6 @@ void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize)
         newVideoL << QImage2Mat(out1);
         newVideoR << QImage2Mat(out2);
     }
-
     newVideoL.release();
     newVideoR.release();
 }
