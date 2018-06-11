@@ -23,7 +23,9 @@ SOURCES += main.cpp \
     filter.cpp \
     matrix.cpp \
     triangle.cpp \
-    utils.cpp
+    utils.cpp \
+    ../../VR_interfaz/cameracalibration.cpp \
+    ../../VR_interfaz/stereocalibration.cpp
 
 HEADERS += \
     descriptor.h \
@@ -33,7 +35,9 @@ HEADERS += \
     matrix.h \
     timer.h \
     triangle.h \
-    utils.h
+    utils.h \
+    ../../VR_interfaz/cameracalibration.h \
+    ../../VR_interfaz/stereocalibration.h
 
 win32 {
     INCLUDEPATH += $$(PYLON_DEV_DIR)/include \
