@@ -80,7 +80,7 @@ public:
       //  and are a bit more robust towards lighting etc.)
       if (s==ROBOTICS) {
         disp_min              = 0;
-        disp_max              = 255;
+        disp_max              = 1000;
         support_threshold     = 0.85;
         support_texture       = 10;
         candidate_stepsize    = 5;
@@ -123,8 +123,8 @@ public:
           lr_threshold          = 2;
           speckle_sim_threshold = 1;
           speckle_size          = 200;
-          ipol_gap_width        = 200;
-          filter_median         = 1;
+          ipol_gap_width        = 10;
+          filter_median         = 0;
           filter_adaptive_mean  = 0;
           postprocess_only_left = 1;
           subsampling           = 0;

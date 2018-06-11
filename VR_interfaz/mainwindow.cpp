@@ -273,8 +273,8 @@ void MainWindow::frameTimeEvent()
 //            qImageL = outDisp.im1.copy();
 //            qImageR = outDisp.im2.copy();
             //loading from a color file
-            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/raw_frames/left/frame_L_0.png").convertToFormat(QImage::Format_RGB888);
-            QImage imRight= QImage("C:/Users/rsegovia/Desktop/raw_frames/right/frame_R_0.png").convertToFormat(QImage::Format_RGB888);
+            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/raw_frames/left/frame_L_450.png").convertToFormat(QImage::Format_RGB888);
+            QImage imRight= QImage("C:/Users/rsegovia/Desktop/raw_frames/right/frame_R_450.png").convertToFormat(QImage::Format_RGB888);
             QImage tempL = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
             QImage tempR = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
             tempL.save("./test2L.pgm");
@@ -621,9 +621,9 @@ QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2)
 
 
     Mat l,r;
-    if(leftim.channels()==3){cvtColor(leftim,l,CV_BGR2GRAY); qDebug() << "convexed";}
+    if(leftim.channels()==3){cvtColor(leftim,l,CV_BGR2GRAY); qDebug() << "converted to gray";}
     else l=leftim;
-    if(rightim.channels()==3){cvtColor(rightim,r,CV_BGR2GRAY); qDebug() << "convexed";}
+    if(rightim.channels()==3){cvtColor(rightim,r,CV_BGR2GRAY); qDebug() << "converted to gray";}
     else r=rightim;
 
     int bd = 0;
@@ -638,28 +638,26 @@ QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     cv::Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
     cv::Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
 
-    Elas::parameters param;
-    param.postprocess_only_left = true;
-    Elas elas(param);
+    Elas elas(Elas::ROBOTICS);
     elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
-    float disp_max = 0;
+    double maxValue = 0;
+    double minValue = 0;
+
+    minMaxLoc(leftdpf,&minValue,&maxValue);
     int width = leftdpf.size().width;
     int height = rightdpf.size().height;
-    for (int i=0; i<height; i++) {
-        for(int j = 0; j<width; j++){
-          if (leftdpf.at<float>(i,j)>disp_max) disp_max = leftdpf.at<float>(i,j);
-          if (rightdpf.at<float>(i,j)>disp_max) disp_max = rightdpf.at<float>(i,j);
-        }
-    }
+
+//    qDebug() << disp_max << maxValue;
+
     Mat D1(height,width,CV_8UC1);
     Mat D2(height,width,CV_8UC1);
 
     for (int32_t i=0; i<height; i++) {
         for(int  j = 0; j<width; j++){
             Point2d point(j,i);
-            D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/disp_max),0.0);
-            D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/disp_max),0.0);
+            D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/maxValue),0.0);
+            D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/maxValue),0.0);
         }
     }
 

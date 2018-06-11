@@ -105,7 +105,7 @@ public:
 
         //CVC parameters
       } else if(s==CVC) {
-          disp_min              = 0;
+          disp_min              = 10;
           disp_max              = 255;
           support_threshold     = 0.95;
           support_texture       = 10;
@@ -123,8 +123,8 @@ public:
           lr_threshold          = 2;
           speckle_sim_threshold = 1;
           speckle_size          = 200;
-          ipol_gap_width        = 200;
-          filter_median         = 1;
+          ipol_gap_width        = 10;
+          filter_median         = 0;
           filter_adaptive_mean  = 0;
           postprocess_only_left = 1;
           subsampling           = 0;

@@ -102,20 +102,14 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
   Elas elas(param);
   elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
-  float disp_max = 0;
-//  float disp_min = 999999;
+  double maxValue = 0;
+  double minValue = 0;
+
+  minMaxLoc(leftdpf,&minValue,&maxValue);
   int width = leftdpf.size().width;
   int height = rightdpf.size().height;
-  for (int i=0; i<height; i++) {
-      for(int j = 0; j<width; j++){
-        disp_max = max(leftdpf.at<float>(i,j),disp_max);// disp_max = leftdpf.at<float>(i,j);
-        disp_max = max(rightdpf.at<float>(i,j),disp_max);// disp_max = rightdpf.at<float>(i,j);
-//        disp_min = min(leftdpf.at<float>(i,j),disp_min);
-//        disp_min = min(rightdpf.at<float>(i,j),disp_min);
-      }
-  }
-//  qDebug() << disp_max;
-//  qDebug() << disp_min;
+
+//    qDebug() << disp_max << maxValue;
 
   Mat D1(height,width,CV_8UC1);
   Mat D2(height,width,CV_8UC1);
@@ -123,8 +117,8 @@ void process (const char* file_1,const char* file_2, bool colorMap) {
   for (int32_t i=0; i<height; i++) {
       for(int  j = 0; j<width; j++){
           Point2d point(j,i);
-          D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/disp_max),0.0);
-          D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/disp_max),0.0);
+          D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/maxValue),0.0);
+          D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/maxValue),0.0);
       }
   }
 
@@ -175,26 +169,22 @@ void process (Mat I1,Mat I2, QImage &Im1, QImage &Im2, bool colorMap) {
     Elas elas(param);
     elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
-    float disp_max = 0;
-    float disp_min = 0;
+    double maxValue = 0;
+    double minValue = 0;
+
+    minMaxLoc(leftdpf,&minValue,&maxValue);
     int width = leftdpf.size().width;
     int height = rightdpf.size().height;
-    for (int i=0; i<height; i++) {
-        for(int j = 0; j<width; j++){
-          if (leftdpf.at<float>(i,j)>disp_max) disp_max = leftdpf.at<float>(i,j);
-          if (rightdpf.at<float>(i,j)>disp_max) disp_max = rightdpf.at<float>(i,j);
-        }
-    }
-//    qDebug() << disp_max;
-//    qDebug() << disp_min;
+
+  //    qDebug() << disp_max << maxValue;
     Mat D1(height,width,CV_8UC1);
     Mat D2(height,width,CV_8UC1);
 
     for (int32_t i=0; i<height; i++) {
         for(int  j = 0; j<width; j++){
             Point2d point(j,i);
-            D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/disp_max),0.0);
-            D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/disp_max),0.0);
+            D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/maxValue),0.0);
+            D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/maxValue),0.0);
         }
     }
 
@@ -253,10 +243,22 @@ void processframes(QString path_L,QString path_R,bool colorMap)
     newVideoR.release();
 }
 
-void processVideos(QString path_L,QString path_R,bool colorMap)
+void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize)
 {
     VideoCapture videoL(path_L.toLatin1().data());
     VideoCapture videoR(path_R.toLatin1().data());
+
+    int width = videoL.get(CV_CAP_PROP_FRAME_WIDTH);
+    int height = videoL.get(CV_CAP_PROP_FRAME_HEIGHT);
+    int nFrames = videoL.get(CV_CAP_PROP_FRAME_COUNT);
+
+    Size originalSize(width,height);
+
+    if(outSize.empty()) {
+
+        outSize = originalSize;
+    }
+
 
     VideoWriter newVideoL;
     VideoWriter newVideoR;
@@ -268,21 +270,12 @@ void processVideos(QString path_L,QString path_R,bool colorMap)
     stereocalib.initUndistortImage();
 
     Mat frameL, frameR;
-
-
-    videoL >> frameL;
-    videoR >> frameR;
-
     QImage out1,out2;
 
-    newVideoL.open("new_video_out_L.avi",-1,33,frameL.size());
-    newVideoR.open("new_video_out_R.avi",-1,33,frameR.size());
-    process(frameL,frameR,out1,out2,colorMap);
+    newVideoL.open("new_video_out_L.avi",-1,33,outSize);
+    newVideoR.open("new_video_out_R.avi",-1,33,outSize);
 
-    newVideoL << QImage2Mat(out1);
-    newVideoR << QImage2Mat(out2);
-
-    for(int i = 0; i < 450; i++)
+    for(int i = 0; i < nFrames; i++)
     {
         if(i%50 == 0) qDebug() << i << "frames procesed";
         videoL >> frameL;
@@ -294,6 +287,17 @@ void processVideos(QString path_L,QString path_R,bool colorMap)
         Mat tempL = stereocalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR);
         Mat tempR = stereocalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR);
 
+        if(outSize != originalSize)
+        {
+            Mat subsamplingL;
+            Mat subsamplingR;
+
+            pyrDown(tempL,subsamplingL,outSize);
+            pyrDown(tempR,subsamplingR,outSize);
+
+            tempL = subsamplingL;
+            tempR = subsamplingR;
+        }
         process(tempL,tempR,out1,out2,colorMap);
         newVideoL << QImage2Mat(out1);
         newVideoR << QImage2Mat(out2);
@@ -328,7 +332,7 @@ int main (int argc, char** argv) {
     processframes(argv[2],argv[3],colormap);
   } else if (argc==4 && !strcmp(argv[1],"videov")){
       cout << "procesing videov \n";
-      processVideos(argv[2],argv[3],colormap);
+      processVideos(argv[2],argv[3],colormap,Size(550,550));
   // display help
   } else if (argc==2 && !strcmp(argv[1],"test")){
 //      getMeanOfROI();
