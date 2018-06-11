@@ -69,14 +69,21 @@ void CameraCalibration::calibrateFromFile(char *configFileName)
 void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int numImgs, float squareSize,
                                             char *imgFilePath, char *imgsFilename, char *imgExtension)
 {
-
+    m_isCalibrated = false;
     m_isInitUndistort = false;
     m_boardWidth = boardWidth;
     m_boardHeight = boardHeight;
     m_squareSize = squareSize;
 
+    m_mapx = Mat();
+    m_mapy = Mat();
+    m_intrinsicMatrix = Mat();
+    m_distorsionVector = Mat();
+
+    m_imagePoints.clear();
+    m_objectPoints.clear();
+
     vector< Mat > rvecs, tvecs;
-    m_isCalibrated = false;
 
     loadFromImagesPoints(numImgs, imgFilePath, imgsFilename, imgExtension);
 

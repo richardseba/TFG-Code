@@ -26,6 +26,8 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 #include "image.h"
 #include <algorithm>
 #include "utils.h"
+#include "../../VR_interfaz/stereocalibration.h"
+#include "../../VR_interfaz/cameracalibration.h"
 
 #include <QImage>
 #include <QImage>
@@ -259,7 +261,14 @@ void processVideos(QString path_L,QString path_R,bool colorMap)
     VideoWriter newVideoL;
     VideoWriter newVideoR;
 
+    char pathLeft[] ="./configFiles/calibLeft.yml";
+    char pathRight[] ="./configFiles/calibRight.yml";
+    char pathStereo[] ="./configFiles/calibStereo.yml";
+    StereoCalibration stereocalib = StereoCalibration(CameraCalibration(pathLeft),CameraCalibration(pathRight),pathStereo);
+    stereocalib.initUndistortImage();
+
     Mat frameL, frameR;
+
 
     videoL >> frameL;
     videoR >> frameR;
@@ -273,13 +282,19 @@ void processVideos(QString path_L,QString path_R,bool colorMap)
     newVideoL << QImage2Mat(out1);
     newVideoR << QImage2Mat(out2);
 
-    for(int i = 0; i < 20; i++)
+    for(int i = 0; i < 450; i++)
     {
         if(i%50 == 0) qDebug() << i << "frames procesed";
         videoL >> frameL;
         videoR >> frameR;
 
-        process(frameL,frameR,out1,out2,colorMap);
+        QImage imLeft = Mat2QImage(frameL).convertToFormat(QImage::Format_RGB888);
+        QImage imRight= Mat2QImage(frameR).convertToFormat(QImage::Format_RGB888);
+
+        Mat tempL = stereocalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR);
+        Mat tempR = stereocalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR);
+
+        process(tempL,tempR,out1,out2,colorMap);
         newVideoL << QImage2Mat(out1);
         newVideoR << QImage2Mat(out2);
     }
@@ -292,7 +307,6 @@ int main (int argc, char** argv) {
     QTime crono = QTime();
     crono.start();
     bool colormap = true;
-
   // run demo
   if (argc==2 && !strcmp(argv[1],"demo")) {
     process("img/cones_left.pgm",   "img/cones_right.pgm",colormap);

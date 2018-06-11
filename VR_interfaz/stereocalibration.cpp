@@ -26,6 +26,8 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
                                                  char *rightImgFilename, char *extension)
 {
     m_isCalibrated = false;
+    m_isInitUndistort = false;
+
     m_camLeft = camLeft;
     m_camRight = camRight;
     m_boardHeight = boardHeight;
@@ -90,6 +92,7 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
 void StereoCalibration::calibrateStereoFromFile(CameraCalibration camLeft, CameraCalibration CamRight, char *stereoConfig)
 {
     m_isCalibrated = false;
+    m_isInitUndistort = false;
 
     m_camLeft = camLeft;
     m_camRight = CamRight;
@@ -241,6 +244,8 @@ Mat StereoCalibration::undistortLeft(Mat imgLeftIn, int interpolation)
     Mat imgOut;
     if(this->isCalibrated() && this->isInitUndistort())
         cv::remap(imgLeftIn, imgOut, m_lMapX, m_lMapY, interpolation);
+    else
+        qDebug() << "undistort map no initialized or not calibrated";
     return imgOut;
 }
 
@@ -249,6 +254,8 @@ Mat StereoCalibration::undistortRight(Mat imgRightIn, int interpolation)
     Mat imgOut;
     if(this->isCalibrated() && this->isInitUndistort())
         cv::remap(imgRightIn, imgOut, m_rMapX, m_rMapY, interpolation);
+    else
+        qDebug() << "undistort map no initialized or not calibrated";
     return imgOut;
 }
 
