@@ -107,8 +107,8 @@ public:
       } else if(s==CVC) {
           disp_min              = 0;
           disp_max              = 255;
-          support_threshold     = 0.95;
-          support_texture       = 10;
+          support_threshold     = 0.65;
+          support_texture       = 50;
           candidate_stepsize    = 5;
           incon_window_size     = 5;
           incon_threshold       = 5;
@@ -125,7 +125,7 @@ public:
           speckle_size          = 200;
           ipol_gap_width        = 10;
           filter_median         = 0;
-          filter_adaptive_mean  = 0;
+          filter_adaptive_mean  = 1;
           postprocess_only_left = 1;
           subsampling           = 0;
       // default settings for middlebury benchmark

@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 
 #include "QDebug"
-#include "elas.h"
 
 #include <QDateTime>
 #include <QProgressBar>
@@ -291,7 +290,7 @@ void MainWindow::frameTimeEvent()
             }
 
             QImagePair outDisp;
-            outDisp = this->processDisparity(&tempL,&tempR);
+            outDisp = this->processDisparity(&tempL,&tempR,ui->checkBox_colormap->isChecked(),Elas::setting(ui->spinBox_Libelas_setting->value()));
             qImageL = outDisp.im1.copy();
             qImageR = outDisp.im2.copy();
 
@@ -609,36 +608,25 @@ void MainWindow::on_switchCamera_pushButton_clicked()
     qDebug() <<"WARNING! Stereo undistort will not work!\n";
 }
 
-QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2)
+QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2, bool colormap, Elas::setting elasSetting)
 {
-//    QImage* imLeft = new QImage("C:/Users/rsegovia/Desktop/frames/left/frame_L_0.pgm");
-//    QImage* imRight= new QImage("C:/Users/rsegovia/Desktop/frames/right/frame_R_0.pgm");
-
     Mat leftim(Im1->height(),Im1->width(),CV_8UC1,(uchar*)Im1->bits(),Im1->bytesPerLine());
-
     Mat rightim(Im2->height(),Im2->width(),CV_8UC1,(uchar*)Im2->bits(),Im2->bytesPerLine());
-
 
     Mat l,r;
     if(leftim.channels()==3){cvtColor(leftim,l,CV_BGR2GRAY); qDebug() << "converted to gray";}
-    else l=leftim;
+    else leftim.copyTo(l);
     if(rightim.channels()==3){cvtColor(rightim,r,CV_BGR2GRAY); qDebug() << "converted to gray";}
-    else r=rightim;
+    else rightim.copyTo(r);
 
-    int bd = 0;
-
-    Mat lb,rb;
-    cv::copyMakeBorder(l,lb,0,0,bd,bd,cv::BORDER_REPLICATE);
-    cv::copyMakeBorder(r,rb,0,0,bd,bd,cv::BORDER_REPLICATE);
-
-    const cv::Size imsize = lb.size();
+    const cv::Size imsize = l.size();
     const int32_t dims[3] = {imsize.width,imsize.height,imsize.width}; // bytes per line = width
 
-    cv::Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
-    cv::Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
+    Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
+    Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
 
-    Elas elas(Elas::setting(ui->spinBox_Libelas_setting->value()));
-    elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
+    Elas elas(elasSetting);
+    elas.process(l.data,r.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
     double maxValue = 0;
     double minValue = 0;
@@ -666,7 +654,7 @@ QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     cvtColor(D2,temp,CV_GRAY2RGB);
     QImage tempIm2 = Mat2QImage(temp);
 
-    if(ui->checkBox_colormap->isChecked())
+    if(colormap)
     {
         Mat colormapL, colormapR;
 
