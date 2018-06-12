@@ -21,6 +21,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
@@ -75,6 +76,10 @@ public:
     QRadioButton *radioButton_recordDisk;
     QCheckBox *checkBox_colormap;
     QCheckBox *checkBox_getDepthMap;
+    QSpinBox *spinBox_downSampling;
+    QLabel *label;
+    QSpinBox *spinBox_Libelas_setting;
+    QLabel *label_2;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -311,6 +316,21 @@ public:
         checkBox_getDepthMap = new QCheckBox(centralWidget);
         checkBox_getDepthMap->setObjectName(QStringLiteral("checkBox_getDepthMap"));
         checkBox_getDepthMap->setGeometry(QRect(190, 680, 181, 31));
+        spinBox_downSampling = new QSpinBox(centralWidget);
+        spinBox_downSampling->setObjectName(QStringLiteral("spinBox_downSampling"));
+        spinBox_downSampling->setGeometry(QRect(100, 690, 42, 22));
+        spinBox_downSampling->setMaximum(99);
+        spinBox_downSampling->setSingleStep(2);
+        label = new QLabel(centralWidget);
+        label->setObjectName(QStringLiteral("label"));
+        label->setGeometry(QRect(100, 660, 121, 31));
+        spinBox_Libelas_setting = new QSpinBox(centralWidget);
+        spinBox_Libelas_setting->setObjectName(QStringLiteral("spinBox_Libelas_setting"));
+        spinBox_Libelas_setting->setGeometry(QRect(20, 600, 42, 22));
+        spinBox_Libelas_setting->setMaximum(2);
+        label_2 = new QLabel(centralWidget);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setGeometry(QRect(20, 570, 121, 31));
         MainWindow->setCentralWidget(centralWidget);
         label_display1->raise();
         label_display2->raise();
@@ -320,6 +340,10 @@ public:
         radioButton_recordDisk->raise();
         checkBox_colormap->raise();
         checkBox_getDepthMap->raise();
+        spinBox_downSampling->raise();
+        label->raise();
+        spinBox_Libelas_setting->raise();
+        label_2->raise();
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
@@ -358,6 +382,8 @@ public:
         radioButton_recordDisk->setText(QApplication::translate("MainWindow", "Record in disk", nullptr));
         checkBox_colormap->setText(QApplication::translate("MainWindow", "Color Map", nullptr));
         checkBox_getDepthMap->setText(QApplication::translate("MainWindow", "get Depth map", nullptr));
+        label->setText(QApplication::translate("MainWindow", "DownSampling", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "Libelas settings", nullptr));
     } // retranslateUi
 
 };

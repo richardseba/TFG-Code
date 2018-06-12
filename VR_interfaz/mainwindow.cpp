@@ -6,6 +6,7 @@
 
 #include <QDateTime>
 #include <QProgressBar>
+#include <QApplication>
 
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
@@ -206,7 +207,7 @@ void MainWindow::on_recordingButton_clicked()
 
             QDateTime now;
             now = QDateTime::currentDateTime();
-            QString namefile = QString("./videos/") + QString(now.toString("dd_mm_hh_mm_ss"));
+            QString namefile = QString("./videos/") + QString(now.toString("dd_MM_hh_mm_ss"));
 
             m_videoL.open((namefile+QString("L.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectL.size());
             m_videoR.open((namefile+QString("R.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectR.size());
@@ -265,36 +266,34 @@ void MainWindow::frameTimeEvent()
     {
         if(!ui->checkBox_saveVideo->isChecked() && ui->checkBox_getDepthMap->isChecked())
         {
-            //loading from a gray undistorted file
-//            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/frames/left/frame_L_0.pgm");//.convertToFormat(QImage::Format_RGB888);
-//            QImage imRight= QImage("C:/Users/rsegovia/Desktop/frames/right/frame_R_0.pgm");//.convertToFormat(QImage::Format_RGB888);
-//            QImagePair outDisp;
-//            outDisp = this->processDisparity(&imLeft,&imRight);
-//            qImageL = outDisp.im1.copy();
-//            qImageR = outDisp.im2.copy();
-            //loading from a color file
-            QImage imLeft = QImage("C:/Users/rsegovia/Desktop/raw_frames/left/frame_L_450.png").convertToFormat(QImage::Format_RGB888);
-            QImage imRight= QImage("C:/Users/rsegovia/Desktop/raw_frames/right/frame_R_450.png").convertToFormat(QImage::Format_RGB888);
-            QImage tempL = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
-            QImage tempR = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
-            tempL.save("./test2L.pgm");
-            tempR.save("./test2R.pgm");
+            //runtime processing
+            QImage imLeft = qImageL.convertToFormat(QImage::Format_RGB888);
+            QImage imRight= qImageR.convertToFormat(QImage::Format_RGB888);
+
+            QImage tempL,tempR;
+            int downSampling = ui->spinBox_downSampling->value();
+            if(downSampling >0){
+                Mat subsampL,subsampR, undisL,undisR ;
+                Rect outRect = this->m_cameraL->getCurrentROIRect();
+                Size outSize(outRect.width/downSampling,outRect.height/downSampling);
+
+                undisL = this->m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR);
+                undisR = this->m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR);
+
+                cv::resize(undisL,subsampL,outSize,INTER_LINEAR);
+                cv::resize(undisR,subsampR,outSize,INTER_LINEAR);
+
+                tempL = Mat2QImage(subsampL).convertToFormat(QImage::Format_Grayscale8);
+                tempR = Mat2QImage(subsampR).convertToFormat(QImage::Format_Grayscale8);
+            } else {
+                tempL = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
+                tempR = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
+            }
+
             QImagePair outDisp;
             outDisp = this->processDisparity(&tempL,&tempR);
             qImageL = outDisp.im1.copy();
             qImageR = outDisp.im2.copy();
-
-            //runtime processing
-//            QImage imLeft = qImageL.convertToFormat(QImage::Format_RGB888);
-//            QImage imRight= qImageR.convertToFormat(QImage::Format_RGB888);
-
-//            QImage tempL = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
-//            QImage tempR = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
-
-//            QImagePair outDisp;
-//            outDisp = this->processDisparity(&tempL,&tempR);
-//            qImageL = outDisp.im1.copy();
-//            qImageR = outDisp.im2.copy();
 
         }
         if(ui->checkBox_saveVideo->isChecked())
@@ -314,7 +313,7 @@ void MainWindow::frameTimeEvent()
 
         float currentfps = 1000.0/m_time->restart();
         m_meanfps = (currentfps+m_meanfps)/2;
-//        qDebug() << m_meanfps;
+        qDebug() << m_meanfps;
 
     }
     if(left && !ui->checkBox_saveVideo->isChecked()) {
@@ -344,7 +343,7 @@ bool MainWindow::saveImage(QImage qImage)
     QString imagePath = QFileDialog::getSaveFileName(
                     this,
                     tr("Save File"),
-                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100 6 june/"+filename,
+                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100 12 june/"+filename,
                     tr("PNG (*.png);;JPEG (*.jpg *.jpeg)" )
                     );
     if(!imagePath.isEmpty() && !imagePath.isNull())
@@ -638,7 +637,7 @@ QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2)
     cv::Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
     cv::Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
 
-    Elas elas(Elas::ROBOTICS);
+    Elas elas(Elas::setting(ui->spinBox_Libelas_setting->value()));
     elas.process(lb.data,rb.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
     double maxValue = 0;
