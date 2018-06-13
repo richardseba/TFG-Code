@@ -189,12 +189,18 @@
               <property name="text">
                <string>Left</string>
               </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
              </widget>
             </item>
             <item>
              <widget class="QCheckBox" name="checkBox_continous_right">
               <property name="text">
                <string>Right</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -348,7 +354,7 @@
    <widget class="QSpinBox" name="spinBox_downSampling">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>20</x>
       <y>690</y>
       <width>42</width>
       <height>22</height>
@@ -360,11 +366,14 @@
     <property name="singleStep">
      <number>2</number>
     </property>
+    <property name="value">
+     <number>2</number>
+    </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>100</x>
+      <x>20</x>
       <y>660</y>
       <width>121</width>
       <height>31</height>
@@ -386,6 +395,9 @@
     <property name="maximum">
      <number>2</number>
     </property>
+    <property name="value">
+     <number>2</number>
+    </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
@@ -400,6 +412,19 @@
      <string>Libelas settings</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBox_overLap">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>660</y>
+      <width>201</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Overlap over image</string>
+    </property>
+   </widget>
    <zorder>label_display1</zorder>
    <zorder>label_display2</zorder>
    <zorder>layoutWidget</zorder>
@@ -412,6 +437,7 @@
    <zorder>label</zorder>
    <zorder>spinBox_Libelas_setting</zorder>
    <zorder>label_2</zorder>
+   <zorder>checkBox_overLap</zorder>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>

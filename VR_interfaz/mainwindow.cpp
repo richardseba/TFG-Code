@@ -268,11 +268,11 @@ void MainWindow::frameTimeEvent()
             //runtime processing
             QImage imLeft = qImageL.convertToFormat(QImage::Format_RGB888);
             QImage imRight= qImageR.convertToFormat(QImage::Format_RGB888);
-
+            Mat undisL,undisR ;
             QImage tempL,tempR;
             int downSampling = ui->spinBox_downSampling->value();
             if(downSampling >0){
-                Mat subsampL,subsampR, undisL,undisR ;
+                Mat subsampL,subsampR;
                 Rect outRect = this->m_cameraL->getCurrentROIRect();
                 Size outSize(outRect.width/downSampling,outRect.height/downSampling);
 
@@ -289,10 +289,26 @@ void MainWindow::frameTimeEvent()
                 tempR = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
             }
 
-            QImagePair outDisp;
-            outDisp = this->processDisparity(&tempL,&tempR,ui->checkBox_colormap->isChecked(),Elas::setting(ui->spinBox_Libelas_setting->value()));
-            qImageL = outDisp.im1.copy();
-            qImageR = outDisp.im2.copy();
+            QImagePair out;
+            out = this->processDisparity(&tempL,&tempR,ui->checkBox_colormap->isChecked(),Elas::setting(ui->spinBox_Libelas_setting->value()));
+
+            if(ui->checkBox_overLap->isChecked() && ui->checkBox_colormap->isChecked()){
+                Mat upSampL, downSampL = QImage2Mat(out.l.copy()).clone();
+                cv::resize(downSampL,upSampL,Size(undisL.size().width,undisL.size().height),INTER_LINEAR);
+
+                Mat mixL = getColorFrom(undisL.clone(),upSampL);
+
+                Mat upSampR, downSampR = QImage2Mat(out.r.copy()).clone();
+                cv::resize(downSampR,upSampR,Size(undisR.size().width,undisR.size().height),INTER_LINEAR);
+
+                Mat mixR = getColorFrom(undisR.clone(),upSampR);
+
+                out.l = Mat2QImage(mixL);
+                out.r = Mat2QImage(mixR);
+            }
+
+            qImageL = out.l.copy();
+            qImageR = out.r.copy();
 
         }
         if(ui->checkBox_saveVideo->isChecked())
@@ -666,8 +682,8 @@ QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2, bool colormap, 
     }
 
     QImagePair outPair;
-    outPair.im1 = tempIm1.copy();
-    outPair.im2 = tempIm2.copy();
+    outPair.l = tempIm1.copy();
+    outPair.r = tempIm2.copy();
     return outPair;
 }
 
@@ -682,7 +698,25 @@ void MainWindow::saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter vid
     }
 }
 
+Mat MainWindow::getColorFrom(Mat backgroundSrc, Mat colorSrc)
+{
+    cvtColor(backgroundSrc,backgroundSrc,CV_RGB2YCrCb);
+    cvtColor(colorSrc,colorSrc,CV_RGB2YCrCb);
 
+    Mat channelOrg[3];
+    Mat channelColor[3];
+    split(backgroundSrc,channelOrg);
+    split(colorSrc,channelColor);
+
+    channelOrg[2] = channelColor[2];
+    channelOrg[1] = channelColor[1];
+
+    Mat imgMix(Size(backgroundSrc.size().width,backgroundSrc.size().height),CV_8UC3);
+    merge(channelOrg,3,imgMix);
+
+    cvtColor(imgMix,imgMix,CV_YCrCb2RGB);
+    return imgMix;
+}
 
 
 
