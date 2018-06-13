@@ -328,7 +328,7 @@ void MainWindow::frameTimeEvent()
 
         float currentfps = 1000.0/m_time->restart();
         m_meanfps = (currentfps+m_meanfps)/2;
-        qDebug() << m_meanfps;
+//        qDebug() << m_meanfps;
 
     }
     if(left && !ui->checkBox_saveVideo->isChecked()) {
@@ -651,7 +651,7 @@ QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2, bool colormap, 
     int width = leftdpf.size().width;
     int height = rightdpf.size().height;
 
-//    qDebug() << disp_max << maxValue;
+    qDebug() << "max:" << maxValue;
 
     Mat D1(height,width,CV_8UC1);
     Mat D2(height,width,CV_8UC1);
