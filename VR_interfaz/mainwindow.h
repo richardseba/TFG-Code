@@ -14,7 +14,7 @@
 #include <loadcalibparamsdialog.h>
 #include <selectcameraparamsdialog.h>
 #include "vrfullscreenviewer.h"
-#include "elas.h"
+#include "./libelasSrc/elas.h"
 #include "processingimages.h"
 
 #include "QGraphicsScene"

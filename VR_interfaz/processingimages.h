@@ -2,7 +2,7 @@
 #define PROCESSINGIMAGES_H
 
 #include "utils.h"
-#include "elas.h"
+#include "./libelasSrc/elas.h"
 
 Mat getColorFrom(Mat backgroundSrc, Mat colorSrc);
 QImagePair processDisparity(QImage* Im1, QImage* Im2, bool colormap, Elas::setting elasSetting);

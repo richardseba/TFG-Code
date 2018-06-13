@@ -19,19 +19,20 @@ SOURCES += main.cpp\
     vrfullscreenviewer.cpp \
     vrimageupdater.cpp \
     selectcameraparamsdialog.cpp \
-    vrui.cpp \
-    qgraphicstextitemvr.cpp \
     utils.cpp \
     cameracalibration.cpp \
-    descriptor.cpp \
-    elas.cpp \
-    filter.cpp \
     stereocalibration.cpp \
-    triangle.cpp \
-    matrix.cpp \
     roitransition.cpp \
     temporalmean.cpp \
-    processingimages.cpp
+    processingimages.cpp \
+    libelasSrc/elas.cpp \
+    libelasSrc/descriptor.cpp \
+    libelasSrc/filter.cpp \
+    libelasSrc/matrix.cpp \
+    libelasSrc/triangle.cpp \
+    VR_UI_Src/qgraphicstextitemvr.cpp \
+    VR_UI_Src/vrui.cpp \
+    classificatorsSrc/thresholdclassificator.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -40,27 +41,28 @@ HEADERS  += mainwindow.h \
     vrfullscreenviewer.h \
     vrimageupdater.h \
     selectcameraparamsdialog.h \
-    vrui.h \
-    qgraphicstextitemvr.h \
     utils.h \
     cameracalibration.h \
-    descriptor.h \
-    elas.h \
-    filter.h \
     stereocalibration.h \
-    triangle.h \
-    matrix.h \
     roitransition.h \
     temporalmean.h \
-    processingimages.h
+    processingimages.h \
+    libelasSrc/descriptor.h \
+    libelasSrc/elas.h \
+    libelasSrc/filter.h \
+    libelasSrc/matrix.h \
+    libelasSrc/triangle.h \
+    VR_UI_Src/qgraphicstextitemvr.h \
+    VR_UI_Src/vrui.h \
+    classificatorsSrc/presetclassificator.h \
+    classificatorsSrc/thresholdclassificator.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \
     loadcalibparamsdialog.ui \
     selectcameraparamsdialog.ui
 
-RESOURCES += \
-    Logos/logosr.qrc
+RESOURCES +=
 
 win32 {
     INCLUDEPATH += $$(PYLON_DEV_DIR)/include \

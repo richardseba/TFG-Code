@@ -81,6 +81,7 @@ public:
     QSpinBox *spinBox_Libelas_setting;
     QLabel *label_2;
     QCheckBox *checkBox_overLap;
+    QCheckBox *checkBox_dynamicVergence;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
@@ -315,10 +316,10 @@ public:
         radioButton_recordDisk->setGeometry(QRect(760, 690, 161, 31));
         checkBox_colormap = new QCheckBox(centralWidget);
         checkBox_colormap->setObjectName(QStringLiteral("checkBox_colormap"));
-        checkBox_colormap->setGeometry(QRect(390, 680, 161, 31));
+        checkBox_colormap->setGeometry(QRect(380, 690, 161, 31));
         checkBox_getDepthMap = new QCheckBox(centralWidget);
         checkBox_getDepthMap->setObjectName(QStringLiteral("checkBox_getDepthMap"));
-        checkBox_getDepthMap->setGeometry(QRect(190, 680, 181, 31));
+        checkBox_getDepthMap->setGeometry(QRect(190, 690, 181, 31));
         spinBox_downSampling = new QSpinBox(centralWidget);
         spinBox_downSampling->setObjectName(QStringLiteral("spinBox_downSampling"));
         spinBox_downSampling->setGeometry(QRect(20, 690, 42, 22));
@@ -339,6 +340,9 @@ public:
         checkBox_overLap = new QCheckBox(centralWidget);
         checkBox_overLap->setObjectName(QStringLiteral("checkBox_overLap"));
         checkBox_overLap->setGeometry(QRect(190, 660, 201, 31));
+        checkBox_dynamicVergence = new QCheckBox(centralWidget);
+        checkBox_dynamicVergence->setObjectName(QStringLiteral("checkBox_dynamicVergence"));
+        checkBox_dynamicVergence->setGeometry(QRect(380, 660, 211, 31));
         MainWindow->setCentralWidget(centralWidget);
         label_display1->raise();
         label_display2->raise();
@@ -353,6 +357,7 @@ public:
         spinBox_Libelas_setting->raise();
         label_2->raise();
         checkBox_overLap->raise();
+        checkBox_dynamicVergence->raise();
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
@@ -394,6 +399,7 @@ public:
         label->setText(QApplication::translate("MainWindow", "DownSampling", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "Libelas settings", nullptr));
         checkBox_overLap->setText(QApplication::translate("MainWindow", "Overlap over image", nullptr));
+        checkBox_dynamicVergence->setText(QApplication::translate("MainWindow", "Dynamic Vergence", nullptr));
     } // retranslateUi
 
 };

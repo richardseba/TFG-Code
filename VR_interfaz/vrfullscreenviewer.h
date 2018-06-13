@@ -3,8 +3,8 @@
 
 #include "camera.h"
 #include "vrimageupdater.h"
-#include <vrui.h>
-#include "qgraphicstextitemvr.h"
+#include "./VR_UI_Src/vrui.h"
+#include "./VR_UI_Src/qgraphicstextitemvr.h"
 #include "roitransition.h"
 
 #include "QTimer"
