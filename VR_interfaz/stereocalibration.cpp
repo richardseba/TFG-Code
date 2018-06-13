@@ -1,4 +1,5 @@
 #include "stereocalibration.h"
+#include <QDebug>
 
 StereoCalibration::StereoCalibration()
 {
@@ -19,14 +20,16 @@ StereoCalibration::StereoCalibration(CameraCalibration camLeft, CameraCalibratio
     this->calibrateStereoFromFile(camLeft, CamRight, stereoConfig);
 }
 
-void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, CameraCalibration CamRight,
+void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, CameraCalibration camRight,
                                                  int boardWidth, int boardHeight, int numImgs, float squareSize,
                                                  char *leftImgDir, char *rightImgDir, char *leftImgFilename,
                                                  char *rightImgFilename, char *extension)
 {
     m_isCalibrated = false;
+    m_isInitUndistort = false;
+
     m_camLeft = camLeft;
-    m_camRight = CamRight;
+    m_camRight = camRight;
     m_boardHeight = boardHeight;
     m_boardWidth = boardWidth;
     m_squareSize = squareSize;
@@ -51,22 +54,45 @@ void StereoCalibration::calibrateStereoFromImage(CameraCalibration camLeft, Came
 
     loadFromImagesPoints(numImgs, leftImgDir, rightImgDir,leftImgFilename, rightImgFilename, extension);
 
+    int flagCalib = 0;
     int flag = 0;
-    flag |= CV_CALIB_FIX_INTRINSIC;
+    flagCalib |= CALIB_ZERO_TANGENT_DIST;
+    flag |= CV_CALIB_ZERO_DISPARITY ;
+    flagCalib |= CV_CALIB_FIX_K3;
+    flagCalib |= CV_CALIB_FIX_K4;
+    flagCalib |= CV_CALIB_FIX_K5;
+    flagCalib |= CV_CALIB_FIX_K6;
+//    flagCalib |= CALIB_USE_INTRINSIC_GUESS;
+    flagCalib |= CALIB_FIX_INTRINSIC;
+    flagCalib |= CALIB_FIX_PRINCIPAL_POINT  ;
+    flagCalib |= CALIB_FIX_ASPECT_RATIO  ;
 
-    stereoCalibrate(m_objectPoints, m_leftImagePoints, m_rightImagePoints, camLeft.getIntrinsicMatrix(),
-                    camLeft.getDistorsionVector(), CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(),
-                    m_imageSize, m_R, m_T, m_E, m_F);
+    Mat tempIntrisicL = m_camLeft.getIntrinsicMatrix();
+    Mat tempIntrisicR = m_camRight.getIntrinsicMatrix();
+    Mat tempDistL = m_camLeft.getDistorsionVector();
+    Mat tempDistR = m_camRight.getDistorsionVector();
 
-    stereoRectify(camLeft.getIntrinsicMatrix(), camLeft.getDistorsionVector(),
-                  CamRight.getIntrinsicMatrix(), CamRight.getDistorsionVector(), m_imageSize, m_R, m_T, m_R1,
-                  m_R2, m_P1, m_P2, m_Q, CALIB_ZERO_DISPARITY,0.95);
+    stereoCalibrate(m_objectPoints, m_leftImagePoints, m_rightImagePoints,
+                    tempIntrisicL, tempDistL, tempIntrisicR, tempDistR,
+                    m_imageSize, m_R, m_T, m_E, m_F,flagCalib);
+
+    stereoRectify(tempIntrisicL, tempDistL,
+                  tempIntrisicR, tempDistR, m_imageSize, m_R, m_T, m_R1,
+                  m_R2, m_P1, m_P2, m_Q, flag,0);
+
+    m_camLeft.setIntrinsicMatrix(tempIntrisicL);
+    m_camRight.setIntrinsicMatrix(tempIntrisicR);
+
+    m_camLeft.setDistorsionVector(tempDistL);
+    m_camRight.setDistorsionVector(tempDistR);
+
     m_isCalibrated = true;
 }
 
 void StereoCalibration::calibrateStereoFromFile(CameraCalibration camLeft, CameraCalibration CamRight, char *stereoConfig)
 {
     m_isCalibrated = false;
+    m_isInitUndistort = false;
 
     m_camLeft = camLeft;
     m_camRight = CamRight;
@@ -118,7 +144,7 @@ void StereoCalibration::loadFromImagesPoints(int numImgs, char *leftImgDir, char
       char left_img[100], right_img[100];
       sprintf(left_img, "%s/%s%d.%s", leftImgDir, leftImgFilename, i, extension);
       sprintf(right_img, "%s/%s%d.%s", rightImgDir, rightImgFilename, i, extension);
-      cout << left_img <<"\n" << right_img << "\n";
+
       img1 = imread(left_img, CV_LOAD_IMAGE_COLOR);
       img2 = imread(right_img, CV_LOAD_IMAGE_COLOR);
       m_imageSize = img1.size();
@@ -135,13 +161,13 @@ void StereoCalibration::loadFromImagesPoints(int numImgs, char *leftImgDir, char
       if (found1)
       {
         cv::cornerSubPix(gray1, corners1, cv::Size(5, 5), cv::Size(-1, -1),
-    cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+    cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 100, 0.01));
         cv::drawChessboardCorners(gray1, boardSize, corners1, found1);
       }
       if (found2)
       {
         cv::cornerSubPix(gray2, corners2, cv::Size(5, 5), cv::Size(-1, -1),
-    cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+    cv::TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 100, 0.01));
         cv::drawChessboardCorners(gray2, boardSize, corners2, found2);
       }
 
@@ -151,12 +177,12 @@ void StereoCalibration::loadFromImagesPoints(int numImgs, char *leftImgDir, char
           obj.push_back(Point3f((float)j * m_squareSize, (float)i * m_squareSize, 0));
 
       if (found1 && found2) {
-        cout << i << " Both corners found!" << endl;
+        qDebug() << "Image:" << i << "Both corners found!";
         imagePoints1.push_back(corners1);
         imagePoints2.push_back(corners2);
         m_objectPoints.push_back(obj);
       } else {
-        cout << i << " WARNING Corners not found, Corner1: " << found1 << " Corner2: " << found2 << endl;
+        qDebug() << "Image:" << i << "WARNING Corners not found, Corner1:" << found1 << "Corner2:" << found2;
       }
     }
 
@@ -205,6 +231,7 @@ void StereoCalibration::initUndistortImage()
 void StereoCalibration::initUndistortImage(Size imageSize)
 {
     m_isInitUndistort = false;
+
     cv::initUndistortRectifyMap(m_camLeft.getIntrinsicMatrix(), m_camLeft.getDistorsionVector(),
                                 m_R1, m_P1, imageSize, CV_32F, m_lMapX, m_lMapY);
     cv::initUndistortRectifyMap(m_camRight.getIntrinsicMatrix(), m_camRight.getDistorsionVector(),
@@ -217,6 +244,8 @@ Mat StereoCalibration::undistortLeft(Mat imgLeftIn, int interpolation)
     Mat imgOut;
     if(this->isCalibrated() && this->isInitUndistort())
         cv::remap(imgLeftIn, imgOut, m_lMapX, m_lMapY, interpolation);
+    else
+        qDebug() << "undistort map no initialized or not calibrated";
     return imgOut;
 }
 
@@ -225,6 +254,8 @@ Mat StereoCalibration::undistortRight(Mat imgRightIn, int interpolation)
     Mat imgOut;
     if(this->isCalibrated() && this->isInitUndistort())
         cv::remap(imgRightIn, imgOut, m_rMapX, m_rMapY, interpolation);
+    else
+        qDebug() << "undistort map no initialized or not calibrated";
     return imgOut;
 }
 

@@ -13,22 +13,28 @@ using namespace cv;               //To use opencv
 
 typedef struct
 {
-    QImage im1;
-    QImage im2;
+    QImage l;
+    QImage r;
 } QImagePair;
 
 typedef struct
 {
-    QImage* im1;
-    QImage* im2;
+    QImage* l;
+    QImage* r;
 } QImagePairPtr;
 
 
 typedef struct
 {
-    Mat im1;
-    Mat im2;
+    Mat l;
+    Mat r;
 } MatPair;
+
+typedef struct
+{
+    Mat* l;
+    Mat* r;
+} MatPairPtr;
 
 
 Mat QImage2Mat(QImage const& src);

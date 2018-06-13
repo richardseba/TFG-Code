@@ -33,7 +33,9 @@ public:
     bool isInitUndistort();
 
     Mat getIntrinsicMatrix();
+    void setIntrinsicMatrix(Mat newMatrix);
     Mat getDistorsionVector();
+    void setDistorsionVector(Mat newVect);
 private:
     void loadFromImagesPoints(int numImgs,char* imgFilePath, char* imgsFilename, char* imgExtension);
 

@@ -4,6 +4,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <stdio.h>
 #include <iostream>
+#include <QDebug>
 
 #include "undistort_rectify.h"
 
@@ -12,8 +13,8 @@ using namespace cv;
 
 void makeRectification()
 {
-  char leftimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/1.png";
-  char rightimg_filename[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/1.png";
+  char leftimg_filename[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/left1.jpg";
+  char rightimg_filename[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/right1.jpg";
   char calib_file[] = "./stereoCalibOLD.txt";
   char leftout_filename[] = "./1LU_OLD.png";
   char rightout_filename[] = "./1RU_OLD.png";
@@ -41,12 +42,13 @@ void makeRectification()
 
   cv::Mat lmapx, lmapy, rmapx, rmapy;
   cv::Mat imgU1, imgU2;
-
+  qDebug() << "paso!";
   cv::initUndistortRectifyMap(K1, D1, R1, P1, img1.size(), CV_32F, lmapx, lmapy);
   cv::initUndistortRectifyMap(K2, D2, R2, P2, img2.size(), CV_32F, rmapx, rmapy);
+  qDebug() << "paso2!";
   cv::remap(img1, imgU1, lmapx, lmapy, cv::INTER_LINEAR);
   cv::remap(img2, imgU2, rmapx, rmapy, cv::INTER_LINEAR);
-  
+  qDebug() << "paso3!";
   imwrite(leftout_filename, imgU1);
   imwrite(rightout_filename, imgU2);
 

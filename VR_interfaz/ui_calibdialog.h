@@ -83,8 +83,9 @@ public:
         spinBox_squareSize = new QDoubleSpinBox(groupBox);
         spinBox_squareSize->setObjectName(QStringLiteral("spinBox_squareSize"));
         spinBox_squareSize->setGeometry(QRect(181, 51, 81, 41));
-        spinBox_squareSize->setDecimals(1);
-        spinBox_squareSize->setMinimum(1);
+        spinBox_squareSize->setDecimals(3);
+        spinBox_squareSize->setMinimum(0.001);
+        spinBox_squareSize->setValue(0.024);
         groupBox_2 = new QGroupBox(CalibDialog);
         groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
         groupBox_2->setGeometry(QRect(20, 20, 531, 171));

@@ -19,7 +19,6 @@ void setup_calibration(int board_width, int board_height, int num_imgs,
     sprintf(img_file, "%s%s%d.%s", imgs_directory, imgs_filename, k, extension);
     cout << img_file <<" ";
     img = imread(img_file, CV_LOAD_IMAGE_COLOR);
-
     cvtColor(img, gray, CV_BGR2GRAY);
 
     bool found = false;
@@ -73,15 +72,16 @@ void makeCalibration()
 {
     int board_width, board_height, num_imgs;
     float square_size;
-    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/right/";
-    char imgs_filename[]  = "";
+//    char imgs_directory[] = "C:/Users/rsegovia/Desktop/Dataset/1100x1100 30 may/left/";
+    char imgs_directory[] = "C:/Users/rsegovia/Desktop/TFG/TFG-Code/calibC/1/";
+    char imgs_filename[]  = "right";
     char out_file[] = "calibRightOLD.txt";
-    char extension[] = "png";
+    char extension[] = "jpg";
 
-      board_width = 11;
-      board_height = 7;
+      board_width = 9;
+      board_height = 6;
       num_imgs = 16;
-      square_size = 2,4;
+      square_size = 0.02423;
 
       setup_calibration(board_width, board_height, num_imgs, square_size,
                        imgs_directory, imgs_filename, extension);

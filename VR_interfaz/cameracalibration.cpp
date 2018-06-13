@@ -1,4 +1,5 @@
 #include "cameracalibration.h"
+#include "QDebug"
 
 CameraCalibration::CameraCalibration()
 {
@@ -32,9 +33,19 @@ Mat CameraCalibration::getDistorsionVector()
     return m_distorsionVector;
 }
 
+void CameraCalibration::setDistorsionVector(Mat newVect)
+{
+    m_distorsionVector = newVect;
+}
+
 Mat CameraCalibration::getIntrinsicMatrix()
 {
     return m_intrinsicMatrix;
+}
+
+void CameraCalibration::setIntrinsicMatrix(Mat newMatrix)
+{
+    m_intrinsicMatrix = newMatrix;
 }
 
 void CameraCalibration::calibrateFromFile(char *configFileName)
@@ -51,8 +62,6 @@ void CameraCalibration::calibrateFromFile(char *configFileName)
     fs["calibrationError"] >> m_calibrationError;
     fs["imageSize"] >> m_imageSize;
 
-    //cout <<  "Calibration error: " << m_calibrationError << "\n";
-
     if(m_intrinsicMatrix.data != NULL && m_distorsionVector.data != NULL)
         m_isCalibrated = true;
 }
@@ -60,33 +69,40 @@ void CameraCalibration::calibrateFromFile(char *configFileName)
 void CameraCalibration::calibrateFromImages(int boardWidth, int boardHeight, int numImgs, float squareSize,
                                             char *imgFilePath, char *imgsFilename, char *imgExtension)
 {
-    cout << imgFilePath << " " << imgsFilename << "\n";
-    cout << boardWidth << " " << boardHeight << "\n";
-    cout << numImgs << "\n";
-    cout << squareSize << "\n";
-
+    m_isCalibrated = false;
     m_isInitUndistort = false;
     m_boardWidth = boardWidth;
     m_boardHeight = boardHeight;
     m_squareSize = squareSize;
 
+    m_mapx = Mat();
+    m_mapy = Mat();
+    m_intrinsicMatrix = Mat();
+    m_distorsionVector = Mat();
+
+    m_imagePoints.clear();
+    m_objectPoints.clear();
+
     vector< Mat > rvecs, tvecs;
-    m_isCalibrated = false;
 
     loadFromImagesPoints(numImgs, imgFilePath, imgsFilename, imgExtension);
 
-    printf("Starting Calibration\n");
+//    printf("Starting Calibration\n");
     int flag = 0;
+    flag |= CV_CALIB_FIX_K3;
     flag |= CV_CALIB_FIX_K4;
     flag |= CV_CALIB_FIX_K5;
+    flag |= CV_CALIB_FIX_K6;
+    flag |= CALIB_ZERO_TANGENT_DIST;
+//    flag |= CALIB_FIX_ASPECT_RATIO ;
+//    flag |= CALIB_FIX_PRINCIPAL_POINT;
     calibrateCamera(m_objectPoints, m_imagePoints, m_imageSize, m_intrinsicMatrix, m_distorsionVector, rvecs,
                     tvecs, flag);
 
-    cout << "Calibration error: " << computeReprojectionErrors(rvecs, tvecs) << "\n";
+    qDebug() << "Calibration error: " << computeReprojectionErrors(rvecs, tvecs);
 
     if(m_intrinsicMatrix.data != NULL && m_distorsionVector.data != NULL)
         m_isCalibrated = true;
-
 }
 
 void CameraCalibration::loadFromImagesPoints(int numImgs, char* imgFilePath, char* imgsFilename,
@@ -99,7 +115,7 @@ void CameraCalibration::loadFromImagesPoints(int numImgs, char* imgFilePath, cha
     for (int k = 1; k <= numImgs; k++) {
       char imgFile[100];
       sprintf(imgFile, "%s/%s%d.%s", imgFilePath, imgsFilename, k, imgExtension);
-      cout << imgFile <<" ";
+//      qDebug() << imgFile <<" ";
       img = imread(imgFile, CV_LOAD_IMAGE_COLOR);
       m_imageSize = img.size();
 
@@ -111,7 +127,7 @@ void CameraCalibration::loadFromImagesPoints(int numImgs, char* imgFilePath, cha
       if (found)
       {
         cornerSubPix(gray, corners, cv::Size(5, 5), cv::Size(-1, -1),
-                     TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 30, 0.1));
+                     TermCriteria(CV_TERMCRIT_EPS | CV_TERMCRIT_ITER, 100, 0.01));
         drawChessboardCorners(gray, boardSize, corners, found);
       }
 
@@ -121,11 +137,11 @@ void CameraCalibration::loadFromImagesPoints(int numImgs, char* imgFilePath, cha
           obj.push_back(Point3f((float)j * m_squareSize, (float)i * m_squareSize, 0));
 
       if (found) {
-        cout << k << ". Found corners!" << "\n";
+        qDebug() << k << ". Found corners!";
         m_imagePoints.push_back(corners);
         m_objectPoints.push_back(obj);
       } else {
-        cout << "WARNING!! Corners not found!" << "\n";
+        qDebug() << "WARNING!! Corners not found!";
       }
     }
 }

@@ -13,7 +13,7 @@ public:
 
     StereoCalibration(CameraCalibration camLeft, CameraCalibration CamRight, char* stereoConfig);
 
-    void calibrateStereoFromImage(CameraCalibration camLeft, CameraCalibration CamRight, int boardWidth, int boardHeight,
+    void calibrateStereoFromImage(CameraCalibration camLeft, CameraCalibration camRight, int boardWidth, int boardHeight,
                                   int numImgs, float squareSize, char* leftImgDir, char* rightImgDir,
                                   char* leftImgFilename, char* rightImgFilename, char* extension);
 
