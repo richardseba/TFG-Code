@@ -15,6 +15,7 @@
 #include <selectcameraparamsdialog.h>
 #include "vrfullscreenviewer.h"
 #include "elas.h"
+#include "processingimages.h"
 
 #include "QGraphicsScene"
 #include "QGraphicsItem"
@@ -78,8 +79,8 @@ private:
     bool saveImage(QImage qImage);
     void saveVideo(Mat im1,Mat im2);
     void showVRViewer(int screen=0);
-    QImagePair processDisparity(QImage* Im1, QImage* Im2, bool colormap, Elas::setting elasSetting);
-    Mat getColorFrom(Mat backgroundSrc, Mat colorSrc);
+//    QImagePair processDisparity(QImage* Im1, QImage* Im2, bool colormap, Elas::setting elasSetting);
+//    Mat getColorFrom(Mat backgroundSrc, Mat colorSrc);
     void saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter video, QProgressBar* progress);
 
 

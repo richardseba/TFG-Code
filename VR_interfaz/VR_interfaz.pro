@@ -29,7 +29,9 @@ SOURCES += main.cpp\
     stereocalibration.cpp \
     triangle.cpp \
     matrix.cpp \
-    roitransition.cpp
+    roitransition.cpp \
+    temporalmean.cpp \
+    processingimages.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -48,7 +50,9 @@ HEADERS  += mainwindow.h \
     stereocalibration.h \
     triangle.h \
     matrix.h \
-    roitransition.h
+    roitransition.h \
+    temporalmean.h \
+    processingimages.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \

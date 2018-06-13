@@ -42,4 +42,5 @@ QImage Mat2QImage(Mat const& src);
 int odd2Even(int num);
 
 
+
 #endif // UTILS_H
