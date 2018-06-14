@@ -16,7 +16,6 @@ private:
     float m_th1;
     float m_th2;
     TemporalMean m_oldMean;
-
 };
 
 #endif // THRESHOLDCLASSIFICATOR_H

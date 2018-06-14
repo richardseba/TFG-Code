@@ -19,17 +19,16 @@ ThresholdClassificator::ThresholdClassificator(int numMeanStored, float threshol
 Distance ThresholdClassificator::calcClasificationProximity(Mat imgL, Mat imgR)
 {
     Distance output;
-    cv::Scalar perChannelMeanL = cv::mean(imgL);
-    float meanL = mean(perChannelMeanL)[0];
-    cv::Scalar perChannelMeanR =  cv::mean(imgR);
-    float meanR =mean(perChannelMeanR)[0];
+    cv::Rect rectL; rectL.x = 0; rectL.y = 0; rectL.width = imgL.size().width; rectL.height = imgL.size().height;
+    cv::Rect rectR; rectR.x = 0; rectR.y = 0; rectR.width = imgR.size().width; rectR.height = imgR.size().height;
+    float mean = getMeanOfROI(imgL,imgR,rectL,rectR,0);
+    m_oldMean.setNewValue(mean);
+    mean = m_oldMean.getCurrentMean();
+    qDebug() << "mean" << mean;
 
-    m_oldMean.setNewValue((meanL+meanR)/2);
-    float mean = m_oldMean.getCurrentMean();
-
-    if(mean<m_th1)
+    if(mean>m_th1)
         output = CLOSE;
-    else if(mean<m_th2)
+    else if(mean>m_th2)
         output = MEDIUM;
     else
         output = FAR;

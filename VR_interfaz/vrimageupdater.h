@@ -30,8 +30,6 @@ public:
     float getCurrentFPS();
 public slots:
     void setUpdatingEvent(bool updating);
-    void zoomIn(float zoom);
-    void zoomOut(float zoom);
 private slots:
     void frameUpdateEvent();
 private:

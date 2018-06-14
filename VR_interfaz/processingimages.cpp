@@ -20,7 +20,7 @@ Mat getColorFrom(Mat backgroundSrc, Mat colorSrc)
     return imgMix;
 }
 
-QImagePair processDisparity(QImage* Im1,QImage* Im2, bool colormap, Elas::setting elasSetting)
+MatPair processDisparity(QImage* Im1,QImage* Im2, Elas::setting elasSetting)
 {
     Mat leftim(Im1->height(),Im1->width(),CV_8UC1,(uchar*)Im1->bits(),Im1->bytesPerLine());
     Mat rightim(Im2->height(),Im2->width(),CV_8UC1,(uchar*)Im2->bits(),Im2->bytesPerLine());
@@ -40,14 +40,27 @@ QImagePair processDisparity(QImage* Im1,QImage* Im2, bool colormap, Elas::settin
     Elas elas(elasSetting);
     elas.process(l.data,r.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
 
+    MatPair outputMat;
+
+    outputMat.l = leftdpf.clone();
+    outputMat.r = rightdpf.clone();
+
+    return outputMat;
+}
+
+QImagePair postProcessImages(MatPair src,bool colormap)
+{
     double maxValue = 0;
     double minValue = 0;
+
+    Mat leftdpf = src.l;
+    Mat rightdpf = src.r;
 
     minMaxLoc(leftdpf,&minValue,&maxValue);
     int width = leftdpf.size().width;
     int height = rightdpf.size().height;
 
-    qDebug() << "max:" << maxValue;
+//    qDebug() << "max:" << maxValue;
 
     Mat D1(height,width,CV_8UC1);
     Mat D2(height,width,CV_8UC1);
@@ -84,15 +97,20 @@ QImagePair processDisparity(QImage* Im1,QImage* Im2, bool colormap, Elas::settin
 }
 
 
-float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR)
+float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, float excludedValues)
 {
     Mat cutL = Mat(imL,rectL);
     Mat cutR = Mat(imR,rectR);
 
-    cv::Scalar perChannelMeanL = cv::mean(cutL);
-    double meanL = mean(perChannelMeanL)[0];
-    cv::Scalar perChannelMeanR =  cv::mean(cutR);
-    double meanR =mean(perChannelMeanR)[0];
+
+    Mat maskL = cutL > excludedValues;
+    Mat maskR = cutR > excludedValues;
+
+    cv::Scalar perChannelMeanL = cv::mean(cutL,maskL);
+    float meanL = mean(perChannelMeanL)[0];
+
+    cv::Scalar perChannelMeanR =  cv::mean(cutR,maskR);
+    float meanR = mean(perChannelMeanR)[0];
 
     return (meanL+meanR)/2.0;
 }

@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
         this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
         this->m_stereoCalib.initUndistortImage(Size(roi.width,roi.height));
     }
-    m_classifier = ThresholdClassificator(SIZE_OF_CLASSIFIER_BUFFER,3,7);
+    m_classifier = ThresholdClassificator(SIZE_OF_CLASSIFIER_BUFFER,3,1);
 }
 
 /* Function ~MainWindow
@@ -288,33 +288,40 @@ void MainWindow::frameTimeEvent()
                 tempL = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
                 tempR = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
             }
-
-            QImagePair out;
-            out = processDisparity(&tempL,&tempR,ui->checkBox_colormap->isChecked(),Elas::setting(ui->spinBox_Libelas_setting->value()));
+            MatPair dispOut;
+            QImagePair dispImOut;
+            dispOut = processDisparity(&tempL,&tempR,Elas::setting(ui->spinBox_Libelas_setting->value()));
+            dispImOut = postProcessImages(dispOut,ui->checkBox_colormap->isChecked());
 
             if(ui->checkBox_overLap->isChecked() && ui->checkBox_colormap->isChecked()){
-                Mat upSampL, downSampL = QImage2Mat(out.l.copy()).clone();
+                Mat upSampL, downSampL = QImage2Mat(dispImOut.l.copy()).clone();
                 cv::resize(downSampL,upSampL,Size(undisL.size().width,undisL.size().height),INTER_LINEAR);
 
                 Mat mixL = getColorFrom(undisL.clone(),upSampL);
 
-                Mat upSampR, downSampR = QImage2Mat(out.r.copy()).clone();
+                Mat upSampR, downSampR = QImage2Mat(dispImOut.r.copy()).clone();
                 cv::resize(downSampR,upSampR,Size(undisR.size().width,undisR.size().height),INTER_LINEAR);
 
                 Mat mixR = getColorFrom(undisR.clone(),upSampR);
 
-                out.l = Mat2QImage(mixL);
-                out.r = Mat2QImage(mixR);
+                dispImOut.l = Mat2QImage(mixL);
+                dispImOut.r = Mat2QImage(mixR);
             }
-            if(ui->checkBox_dynamicVergence->isChecked() && !ui->checkBox_overLap->isChecked()){
-//                cv::Rect centerROI = calculateCenteredROI(undisL.size(),550,550);
-//                Mat cutL = Mat(imL,centerROI);
-//                Mat cutR = Mat(imR,centerROI);
-//                qDebug() << m_classifier.calcClasificationProximity(cutL,cutR);
+            if(ui->checkBox_dynamicVergence->isChecked()){
+                cv::Rect centerROI = calculateCenteredROI(dispOut.l.size(),dispOut.l.size().width/downSampling,dispOut.l.size().height/downSampling);
+                Mat cutL = Mat(dispOut.l,centerROI);
+                Mat cutR = Mat(dispOut.r,centerROI);
+                Distance value = m_classifier.calcClasificationProximity(cutL,cutR);
+                if(value == CLOSE)
+                    qDebug() << "near";
+                else if(value == MEDIUM)
+                    qDebug() << "medium";
+                else
+                    qDebug() << "far";
             }
 
-            qImageL = out.l.copy();
-            qImageR = out.r.copy();
+            qImageL = dispImOut.l.copy();
+            qImageR = dispImOut.r.copy();
 
         }
         if(ui->checkBox_saveVideo->isChecked())

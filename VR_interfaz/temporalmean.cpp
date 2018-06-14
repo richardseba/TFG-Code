@@ -41,12 +41,12 @@ float TemporalMean::getCurrentMean()
         float sum = 0;
         int count = 0;
         for(int i = 0; i<m_bufferSize; i++){
-            sum += m_oldMeanVector[0].value;
+            sum += m_oldMeanVector[i].value;
             //if is false we will not count that position;
-            count += m_oldMeanVector[0].isInit;
+            count += m_oldMeanVector[i].isInit;
         }
 
-        m_currentMeanValue = sum/m_bufferSize;
+        m_currentMeanValue = sum/count;
         m_meanAlreadyCalculated = true;
     }
     return m_currentMeanValue;

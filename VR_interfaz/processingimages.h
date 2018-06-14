@@ -5,8 +5,11 @@
 #include "./libelasSrc/elas.h"
 
 Mat getColorFrom(Mat backgroundSrc, Mat colorSrc);
-QImagePair processDisparity(QImage* Im1, QImage* Im2, bool colormap, Elas::setting elasSetting);
-float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR);
+
+MatPair processDisparity(QImage* Im1, QImage* Im2,Elas::setting elasSetting);
+QImagePair postProcessImages(MatPair src,bool colormap);
+
+float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, float excludedValues);
 cv::Rect calculateCenteredROI(Size currentRect,int newWidth,int newHeight);
 
 #endif // PROCESSINGIMAGES_H

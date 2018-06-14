@@ -32,7 +32,7 @@
 using namespace cv;
 
 const int FRAME_TIMER = 0;
-const int SIZE_OF_CLASSIFIER_BUFFER = 34;
+const int SIZE_OF_CLASSIFIER_BUFFER = 10;
 
 const int FRAME_RATE_SAVE = 33;
 const int MAX_FRAME_IN_MEMORY = 1500; //64 bits
