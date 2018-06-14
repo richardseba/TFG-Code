@@ -8,10 +8,10 @@ class ThresholdClassificator : public PresetClassificator
 {
 public:
     ThresholdClassificator();
-    ThresholdClassificator(int numMeanStored,);
+    ThresholdClassificator(int numMeanStored, float threshold1,float threshold2);
     Distance calcClasificationProximity(Mat imgL, Mat imgR);
     float calcClasificationFloat(Mat imgL, Mat imgR);
-//    void saveClasificator(char* namefile);
+    void saveClasificator(char* namefile){}
 private:
     float m_th1;
     float m_th2;

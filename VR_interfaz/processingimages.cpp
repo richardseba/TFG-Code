@@ -97,3 +97,44 @@ float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR)
     return (meanL+meanR)/2.0;
 }
 
+cv::Rect calculateCenteredROI(Size currentRect,int newWidth,int newHeight){
+    cv::Rect roi;
+
+    int centerX = currentRect.width/2;
+    int centerY = currentRect.height/2;
+
+    if(centerX > newWidth/2)
+        roi.x = centerX-newWidth/2;
+    else
+        qDebug() << "ERROR calculating the centered ROI";
+
+    if(centerY > newHeight/2)
+        roi.y = centerY-newHeight/2;
+    else
+        qDebug() << "ERROR calculating the centered ROI";
+
+    roi.width = newWidth;
+    roi.height = newHeight;
+    return roi;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

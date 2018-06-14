@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
         this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
         this->m_stereoCalib.initUndistortImage(Size(roi.width,roi.height));
     }
-
+    m_classifier = ThresholdClassificator(SIZE_OF_CLASSIFIER_BUFFER,3,7);
 }
 
 /* Function ~MainWindow
@@ -305,6 +305,12 @@ void MainWindow::frameTimeEvent()
 
                 out.l = Mat2QImage(mixL);
                 out.r = Mat2QImage(mixR);
+            }
+            if(ui->checkBox_dynamicVergence->isChecked() && !ui->checkBox_overLap->isChecked()){
+//                cv::Rect centerROI = calculateCenteredROI(undisL.size(),550,550);
+//                Mat cutL = Mat(imL,centerROI);
+//                Mat cutR = Mat(imR,centerROI);
+//                qDebug() << m_classifier.calcClasificationProximity(cutL,cutR);
             }
 
             qImageL = out.l.copy();

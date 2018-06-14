@@ -3,14 +3,14 @@
 
 ThresholdClassificator::ThresholdClassificator()
 {
-    oldMean = TemporalMean();
+    m_oldMean = TemporalMean();
     m_th1 = 0;
     m_th2 = 0;
 }
 
-ThresholdClassificator::ThresholdClassificator(int numMeanStored, float threshold1,float threadhold2)
+ThresholdClassificator::ThresholdClassificator(int numMeanStored, float threshold1,float threshold2)
 {
-    oldMean = TemporalMean(numMeanStored);
+    m_oldMean = TemporalMean(numMeanStored);
     m_th1 = threshold1;
     m_th2 = threshold2;
 }

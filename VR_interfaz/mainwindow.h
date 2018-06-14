@@ -15,7 +15,9 @@
 #include <selectcameraparamsdialog.h>
 #include "vrfullscreenviewer.h"
 #include "./libelasSrc/elas.h"
-#include "processingimages.h"
+#include "processingimages.h".
+#include "./classificatorsSrc/presetclassificator.h"
+#include "./classificatorsSrc/thresholdclassificator.h"
 
 #include "QGraphicsScene"
 #include "QGraphicsItem"
@@ -30,6 +32,7 @@
 using namespace cv;
 
 const int FRAME_TIMER = 0;
+const int SIZE_OF_CLASSIFIER_BUFFER = 34;
 
 const int FRAME_RATE_SAVE = 33;
 const int MAX_FRAME_IN_MEMORY = 1500; //64 bits
@@ -101,6 +104,8 @@ private:
     VrFullscreenViewer* m_screen; //distroyed automatically when exited
 
     int m_photosCaptured;
+
+    ThresholdClassificator m_classifier;
 
     //video things
 
