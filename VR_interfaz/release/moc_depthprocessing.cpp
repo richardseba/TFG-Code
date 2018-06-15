@@ -1,16 +1,16 @@
 /****************************************************************************
-** Meta object code from reading C++ file 'vrimageupdater.h'
+** Meta object code from reading C++ file 'depthprocessing.h'
 **
 ** Created by: The Qt Meta Object Compiler version 67 (Qt 5.10.1)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../vrimageupdater.h"
+#include "../depthprocessing.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
-#error "The header file 'vrimageupdater.h' doesn't include <QObject>."
+#error "The header file 'depthprocessing.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
 #error "This file was generated using the moc from 5.10.1. It"
 #error "cannot be used with the include files from this version of Qt."
@@ -20,30 +20,30 @@
 QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-struct qt_meta_stringdata_VRimageUpdater_t {
+struct qt_meta_stringdata_DepthProcessing_t {
     QByteArrayData data[5];
-    char stringdata0[59];
+    char stringdata0[68];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_VRimageUpdater_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_DepthProcessing_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
-static const qt_meta_stringdata_VRimageUpdater_t qt_meta_stringdata_VRimageUpdater = {
+static const qt_meta_stringdata_DepthProcessing_t qt_meta_stringdata_DepthProcessing = {
     {
-QT_MOC_LITERAL(0, 0, 14), // "VRimageUpdater"
-QT_MOC_LITERAL(1, 15, 16), // "setUpdatingEvent"
-QT_MOC_LITERAL(2, 32, 0), // ""
-QT_MOC_LITERAL(3, 33, 8), // "updating"
-QT_MOC_LITERAL(4, 42, 16) // "frameUpdateEvent"
+QT_MOC_LITERAL(0, 0, 15), // "DepthProcessing"
+QT_MOC_LITERAL(1, 16, 18), // "setProcessingEvent"
+QT_MOC_LITERAL(2, 35, 0), // ""
+QT_MOC_LITERAL(3, 36, 10), // "processing"
+QT_MOC_LITERAL(4, 47, 20) // "frameProcessingEvent"
 
     },
-    "VRimageUpdater\0setUpdatingEvent\0\0"
-    "updating\0frameUpdateEvent"
+    "DepthProcessing\0setProcessingEvent\0\0"
+    "processing\0frameProcessingEvent"
 };
 #undef QT_MOC_LITERAL
 
-static const uint qt_meta_data_VRimageUpdater[] = {
+static const uint qt_meta_data_DepthProcessing[] = {
 
  // content:
        7,       // revision
@@ -67,39 +67,39 @@ static const uint qt_meta_data_VRimageUpdater[] = {
        0        // eod
 };
 
-void VRimageUpdater::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void DepthProcessing::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        VRimageUpdater *_t = static_cast<VRimageUpdater *>(_o);
+        DepthProcessing *_t = static_cast<DepthProcessing *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->setUpdatingEvent((*reinterpret_cast< bool(*)>(_a[1]))); break;
-        case 1: _t->frameUpdateEvent(); break;
+        case 0: _t->setProcessingEvent((*reinterpret_cast< bool(*)>(_a[1]))); break;
+        case 1: _t->frameProcessingEvent(); break;
         default: ;
         }
     }
 }
 
-QT_INIT_METAOBJECT const QMetaObject VRimageUpdater::staticMetaObject = {
-    { &QObject::staticMetaObject, qt_meta_stringdata_VRimageUpdater.data,
-      qt_meta_data_VRimageUpdater,  qt_static_metacall, nullptr, nullptr}
+QT_INIT_METAOBJECT const QMetaObject DepthProcessing::staticMetaObject = {
+    { &QObject::staticMetaObject, qt_meta_stringdata_DepthProcessing.data,
+      qt_meta_data_DepthProcessing,  qt_static_metacall, nullptr, nullptr}
 };
 
 
-const QMetaObject *VRimageUpdater::metaObject() const
+const QMetaObject *DepthProcessing::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *VRimageUpdater::qt_metacast(const char *_clname)
+void *DepthProcessing::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_VRimageUpdater.stringdata0))
+    if (!strcmp(_clname, qt_meta_stringdata_DepthProcessing.stringdata0))
         return static_cast<void*>(this);
     return QObject::qt_metacast(_clname);
 }
 
-int VRimageUpdater::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int DepthProcessing::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
     _id = QObject::qt_metacall(_c, _id, _a);
     if (_id < 0)

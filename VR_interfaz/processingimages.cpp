@@ -11,7 +11,7 @@ Mat getColorFrom(Mat backgroundSrc, Mat colorSrc)
     split(colorSrc,channelColor);
 
     channelOrg[2] = channelColor[2];
-    channelOrg[1] = channelColor[1];
+//    channelOrg[1] = channelColor[1];
 
     Mat imgMix(Size(backgroundSrc.size().width,backgroundSrc.size().height),CV_8UC3);
     merge(channelOrg,3,imgMix);

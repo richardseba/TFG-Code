@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     libelasSrc/triangle.cpp \
     VR_UI_Src/qgraphicstextitemvr.cpp \
     VR_UI_Src/vrui.cpp \
-    classificatorsSrc/thresholdclassificator.cpp
+    classificatorsSrc/thresholdclassificator.cpp \
+    depthprocessing.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -55,7 +56,8 @@ HEADERS  += mainwindow.h \
     VR_UI_Src/qgraphicstextitemvr.h \
     VR_UI_Src/vrui.h \
     classificatorsSrc/presetclassificator.h \
-    classificatorsSrc/thresholdclassificator.h
+    classificatorsSrc/thresholdclassificator.h \
+    depthprocessing.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \

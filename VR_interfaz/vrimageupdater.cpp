@@ -1,5 +1,7 @@
 #include "vrimageupdater.h"
 
+#include "processingimages.h"
+
 /* Function VRimageUpdater
  * -------------------------------
  * build-in cosntructor.
@@ -19,6 +21,7 @@ VRimageUpdater::VRimageUpdater(Camera* camera,QTimer* timer, bool mirrored, bool
     this->m_isUndistorted = isUndistorted;
     this->m_camera = camera;
     this->m_crono.start();
+    connect(m_timeTrigger, SIGNAL (timeout()), this, SLOT (frameUpdateEvent()));
 }
 
 /* Function ~VRimageUpdater
