@@ -6,6 +6,7 @@
 #include "./VR_UI_Src/vrui.h"
 #include "./VR_UI_Src/qgraphicstextitemvr.h"
 #include "roitransition.h"
+#include "depthprocessing.h"
 
 #include "QTimer"
 #include <QTime>
@@ -42,7 +43,7 @@ class VrFullscreenViewer : public QGraphicsView
 public:
     VrFullscreenViewer();
     ~VrFullscreenViewer();
-    VrFullscreenViewer(Camera* cameraL,Camera* cameraR);
+    VrFullscreenViewer(Camera* cameraL,Camera* cameraR,StereoCalibration stereoCalib);
 public slots:
     void showFullScreen(int screenSelector);
 private slots:
@@ -50,6 +51,7 @@ private slots:
 signals:
     void setUpdatingR(bool update);
     void setUpdatingL(bool update);
+    void setProcessingDepth(bool update);
 private:
     void initScene();
     void saveUserParameters(QString filename,QString nameSufix="");
@@ -72,6 +74,11 @@ private:
     VRimageUpdater* imageUpdaterR;
     VRimageUpdater* imageUpdaterL;
 
+    DepthProcessing* m_depthProcess;
+    bool m_isProcessing;
+
+    QTimer m_timerDepthProcess;
+
     QGraphicsScene m_scene;
 
     //Images that will be put on the scene
@@ -81,6 +88,7 @@ private:
     //Threads used to grab the images from the cameras
     QThread m_threadR;
     QThread m_threadL;
+    QThread m_threadDepthProcess;
 
     //demo
     QImage m_imgL;

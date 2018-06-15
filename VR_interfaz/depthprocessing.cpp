@@ -1,6 +1,7 @@
 #include "depthprocessing.h"
 
 #include "processingimages.h"
+#include "utils.h"
 
 DepthProcessing::DepthProcessing()
 {
@@ -94,11 +95,19 @@ void DepthProcessing::setSubsampling(int subsampling)
     m_mutexSubsampling.unlock();
 }
 
-void DepthProcessing::setImages2Process(QImagePair imgPair)
+void DepthProcessing::setImages2Process(QImagePair imgPair,Size processingWindowSize)
 {
+    QImagePair cut;
+    cv::Rect rect = calculateCenteredROI(Size(imgPair.l.size().width(), imgPair.l.size().height()) ,
+                              processingWindowSize.width,processingWindowSize.height);
+
+    QRect imrect(rect.x, rect.y, rect.width, rect.height);
+    cut.l =imgPair.l.copy(imrect);
+    cut.r =imgPair.r.copy(imrect);
+
     m_mutexImages2Process.lock();
-    m_images2Process.l = imgPair.l.copy();
-    m_images2Process.r = imgPair.r.copy();
+    m_images2Process.l = cut.l.copy();
+    m_images2Process.r = cut.r.copy();
     m_mutexImages2Process.unlock();
 }
 
@@ -112,55 +121,64 @@ void DepthProcessing::setLibelasSetting(Elas::setting setting)
 //Slots
 void DepthProcessing::setProcessingEvent(bool processing)
 {
+    qDebug() << processing;
     if(processing){
         m_timerTrigger->start();
     } else {
         m_timerTrigger->stop();
     }
+    qDebug() << "is active?" << m_timerTrigger->isActive();
 }
 
 void DepthProcessing::frameProcessingEvent()
 {
+//    qDebug() << "spam!";
     QImagePair currentImages = this->getImages2Process();
 
-    QImage imLeft = currentImages.l.convertToFormat(QImage::Format_RGB888);
-    QImage imRight= currentImages.l.convertToFormat(QImage::Format_RGB888);
-    int downSampling = this->getSubsampling();
+    if(!currentImages.l.isNull() && !currentImages.r.isNull()) {
+        QImage imLeft = currentImages.l.convertToFormat(QImage::Format_RGB888);
+        QImage imRight= currentImages.r.convertToFormat(QImage::Format_RGB888);
+        int downSampling = this->getSubsampling();
 
-    Mat undisL,undisR ;
-    QImage tempL,tempR;
+        Mat undisL,undisR ;
+        QImage tempL,tempR;
 
-    if(downSampling >0){
-        Mat subsampL,subsampR;
-        QRect outRect= imLeft.rect();
-        Size outSize(outRect.width()/downSampling,outRect.height()/downSampling);
+        if(downSampling >0){
+            Mat subsampL,subsampR;
+            QRect outRect= imLeft.rect();
+            Size outSize(outRect.width()/downSampling,outRect.height()/downSampling);
 
-        undisL = m_currentCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR);
-        undisR = m_currentCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR);
+            undisL = m_currentCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR);
+            undisR = m_currentCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR);
 
-        cv::resize(undisL,subsampL,outSize,INTER_LINEAR);
-        cv::resize(undisR,subsampR,outSize,INTER_LINEAR);
+            cv::resize(undisL,subsampL,outSize,INTER_LINEAR);
+            cv::resize(undisR,subsampR,outSize,INTER_LINEAR);
 
-        tempL = Mat2QImage(subsampL).convertToFormat(QImage::Format_Grayscale8);
-        tempR = Mat2QImage(subsampR).convertToFormat(QImage::Format_Grayscale8);
-    } else {
-        tempL = Mat2QImage(m_currentCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
-        tempR = Mat2QImage(m_currentCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
+            tempL = Mat2QImage(subsampL).convertToFormat(QImage::Format_Grayscale8);
+            tempR = Mat2QImage(subsampR).convertToFormat(QImage::Format_Grayscale8);
+        } else {
+            tempL = Mat2QImage(m_currentCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
+            tempR = Mat2QImage(m_currentCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
+        }
+
+        MatPair dispOut;
+
+        dispOut = processDisparity(&tempL,&tempR,this->getLibelasSetting());
+        cv::Rect centerROI = calculateCenteredROI(dispOut.l.size(),dispOut.l.size().width/downSampling,dispOut.l.size().height/downSampling);
+
+        Mat cutL = Mat(dispOut.l,centerROI);
+        Mat cutR = Mat(dispOut.r,centerROI);
+
+        Distance value = m_classifier.calcClasificationProximity(cutL,cutR);
+
+        setCurrentDistance(value);
+//        if(value == CLOSE)
+//            qDebug() << "near";
+//        else if(value == MEDIUM)
+//            qDebug() << "medium";
+//        else
+//            qDebug() << "far";
     }
-
-    MatPair dispOut;
-    dispOut = processDisparity(&tempL,&tempR,this->getLibelasSetting());
-
-    cv::Rect centerROI = calculateCenteredROI(dispOut.l.size(),dispOut.l.size().width/downSampling,dispOut.l.size().height/downSampling);
-    Mat cutL = Mat(dispOut.l,centerROI);
-    Mat cutR = Mat(dispOut.r,centerROI);
-    Distance value = m_classifier.calcClasificationProximity(cutL,cutR);
-    if(value == CLOSE)
-        qDebug() << "near";
-    else if(value == MEDIUM)
-        qDebug() << "medium";
-    else
-        qDebug() << "far";
 }
 
 

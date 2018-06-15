@@ -24,7 +24,7 @@ public:
 
     void setLibelasSetting(Elas::setting setting);
     void setSubsampling(int subsampl);
-    void setImages2Process(QImagePair imageInput);
+    void setImages2Process(QImagePair imgPair,Size processingWindowSize);
 
 public slots:
     void setProcessingEvent(bool processing);

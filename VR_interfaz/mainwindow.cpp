@@ -291,6 +291,7 @@ void MainWindow::frameTimeEvent()
             MatPair dispOut;
             QImagePair dispImOut;
             dispOut = processDisparity(&tempL,&tempR,Elas::setting(ui->spinBox_Libelas_setting->value()));
+
             dispImOut = postProcessImages(dispOut,ui->checkBox_colormap->isChecked());
 
             if(ui->checkBox_overLap->isChecked() && ui->checkBox_colormap->isChecked()){
@@ -309,6 +310,7 @@ void MainWindow::frameTimeEvent()
             }
             if(ui->checkBox_dynamicVergence->isChecked()){
                 cv::Rect centerROI = calculateCenteredROI(dispOut.l.size(),dispOut.l.size().width/downSampling,dispOut.l.size().height/downSampling);
+
                 Mat cutL = Mat(dispOut.l,centerROI);
                 Mat cutR = Mat(dispOut.r,centerROI);
                 Distance value = m_classifier.calcClasificationProximity(cutL,cutR);
@@ -489,7 +491,7 @@ void MainWindow::showVRViewer(int screen)
         ui->groupBox_cameraParams->setEnabled(false);
 
         this->m_timer->stop();
-        this->m_screen = new VrFullscreenViewer(this->m_cameraL,this->m_cameraR);
+        this->m_screen = new VrFullscreenViewer(this->m_cameraL,this->m_cameraR,m_stereoCalib);
         connect(this->m_screen,SIGNAL(destroyed(QObject*)),SLOT(fullscreen_closing()));
         this->m_screen->showFullScreen(screen);
     }

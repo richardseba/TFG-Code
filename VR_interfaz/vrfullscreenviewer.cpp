@@ -9,6 +9,8 @@ VrFullscreenViewer::VrFullscreenViewer()
 {
     m_currentUserParam=1;
     m_isDemo = false;
+    m_doTransitions = false;
+    m_isProcessing = false;
 
     this->m_timer = new QTimer(this);
     connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameUpdateEvent()));
@@ -24,7 +26,7 @@ VrFullscreenViewer::VrFullscreenViewer()
  * NOTE: the setAtributte function is used to set the WA_DeleteOnClose flag on True.
  * This flag will cause the delete of this widget if the close() function is called.
 */
-VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR)
+VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCalibration stereoCalib)
 {
     QDesktopWidget* desk = QApplication::desktop();
     this->setAttribute(Qt::WA_DeleteOnClose);
@@ -35,9 +37,9 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR)
     m_isDemo = false;
     m_isPlayingVideo = false;
     m_doTransitions = false;
+    m_isProcessing = false;
 
-//    this->m_params.offsetLeftX = 0;
-//    this->m_params.offsetLeftY = 0;
+    m_depthProcess = new DepthProcessing(&m_timerDepthProcess,stereoCalib,3,1,10,4);
 
     this->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
     this->setStyleSheet("border: 0px solid black");
@@ -61,15 +63,19 @@ VrFullscreenViewer::~VrFullscreenViewer()
 {
     emit setUpdatingR(false);
     emit setUpdatingL(false);
+    emit setProcessingDepth(false);
 
     imageUpdaterR->deleteLater();
     imageUpdaterL->deleteLater();
+    m_depthProcess->deleteLater();
 
     this->m_threadR.quit();
     this->m_threadL.quit();
+    this->m_threadDepthProcess.quit();
 
     this->m_threadR.wait();
     this->m_threadL.wait();
+    this->m_threadDepthProcess.wait();
 
     if(this->m_timer->isActive())
         this->m_timer->stop();
@@ -142,7 +148,7 @@ void VrFullscreenViewer::initScene()
 
     m_fpsCounter->setPos(600,450);
     m_fpsCounter->setOffset(imageWidth,0);
-    //this->scene()->addItem(m_fpsCounter);
+    this->scene()->addItem(m_fpsCounter);
 
     delete[] qImageL->bits();
     delete qImageL;
@@ -158,17 +164,25 @@ void VrFullscreenViewer::initScene()
     connect(this,SIGNAL(setUpdatingL(bool)),imageUpdaterL,SLOT(setUpdatingEvent(bool)));
     connect(this,SIGNAL(setUpdatingR(bool)),imageUpdaterR,SLOT(setUpdatingEvent(bool)));
 
+    connect(this,SIGNAL(setProcessingDepth(bool)),m_depthProcess,SLOT(setProcessingEvent(bool)));
+
     emit setUpdatingR(true);
     emit setUpdatingL(true);
 
     this->m_timeR.moveToThread(&this->m_threadR);
     this->m_timeL.moveToThread(&this->m_threadL);
 
+    this->m_timerDepthProcess.moveToThread(&this->m_threadDepthProcess);
+
     imageUpdaterR->moveToThread(&this->m_threadR);
     imageUpdaterL->moveToThread(&this->m_threadL);
 
+    m_depthProcess->moveToThread(&this->m_threadDepthProcess);
+
     m_threadR.start();
     m_threadL.start();
+
+    m_threadDepthProcess.start();
 
     this->m_timer->start();
 }
@@ -181,11 +195,26 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
+    QImagePair image;
+    image.l = this->imageUpdaterL->getNextFrame().copy();
+    image.r = this->imageUpdaterR->getNextFrame().copy();
+
     QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
+
     if(!m_isDemo && !m_isPlayingVideo){
-        this->m_frameR.setPixmap(QPixmap::fromImage(this->imageUpdaterR->getNextFrame().copy(rightrect)));
-        this->m_frameL.setPixmap(QPixmap::fromImage(this->imageUpdaterL->getNextFrame().copy(leftrect)));
+        QImagePair cut;
+        cut.l = image.l.copy(leftrect);
+        cut.r = image.r.copy(rightrect);
+
+        this->m_frameL.setPixmap(QPixmap::fromImage(cut.l));
+        this->m_frameR.setPixmap(QPixmap::fromImage(cut.r));
+
+        if(m_isProcessing)
+        {
+            m_depthProcess->setImages2Process(image, Size(1100,1100));
+        }
+
     } else if(m_isDemo){
         this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(leftrect)));
         this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
@@ -207,9 +236,6 @@ void VrFullscreenViewer::frameUpdateEvent()
     this->m_transitionRight.step();
     this->m_frameR.setPos(m_leftSensorROI.width,0);
 
-    m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
-    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
-
     this->m_scene.setSceneRect(0,0, m_leftSensorROI.width+m_rightSensorROI.width ,
                                max(m_leftSensorROI.height,m_rightSensorROI.height));
 
@@ -217,6 +243,10 @@ void VrFullscreenViewer::frameUpdateEvent()
                         max(m_leftSensorROI.height,m_rightSensorROI.height));
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
+    float elapsed = crono.restart();
+    m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
+//    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
+    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)elapsed));
 }
 
 /* Function showFullScreen
@@ -281,9 +311,7 @@ void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
         m_transitionLeft = ROITransition(&m_leftSensorROI);
         m_transitionRight = ROITransition(&m_rightSensorROI);
         m_transitionLeft.setTarget(leftRect,100);
-//        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
         m_transitionRight.setTarget(rightRect,100);
-//        qDebug() << "on target: " << m_transitionLeft.isOnTarget();
     }
 }
 
@@ -321,7 +349,6 @@ void VrFullscreenViewer::zoomOut()
     this->m_frameL.setPos(0,0);
     this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
-
 
 /* Function keyPressEvent
  * -------------------------------
@@ -401,9 +428,12 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         m_rightSensorROI.x += 6;
         break;
     case Qt::Key_T:
-        qDebug() << m_doTransitions;
         m_doTransitions = !m_doTransitions;
-        qDebug() << m_doTransitions;
+        break;
+    case Qt::Key_P:
+        m_isProcessing = !m_isProcessing;
+        qDebug() << m_isProcessing;
+        emit setProcessingDepth(m_isProcessing);
         break;
     //Key events to change de user configuration
     case Qt::Key_1:

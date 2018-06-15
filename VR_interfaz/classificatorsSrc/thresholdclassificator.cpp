@@ -24,7 +24,7 @@ Distance ThresholdClassificator::calcClasificationProximity(Mat imgL, Mat imgR)
     float mean = getMeanOfROI(imgL,imgR,rectL,rectR,0);
     m_oldMean.setNewValue(mean);
     mean = m_oldMean.getCurrentMean();
-    qDebug() << "mean" << mean;
+//    qDebug() << "mean" << mean;
 
     if(mean>m_th1)
         output = CLOSE;
