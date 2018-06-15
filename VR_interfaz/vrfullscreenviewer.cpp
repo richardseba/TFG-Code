@@ -11,11 +11,12 @@ VrFullscreenViewer::VrFullscreenViewer()
     m_isDemo = false;
     m_doTransitions = false;
     m_isProcessing = false;
+    m_currentDistance = Distance(2);
 
     this->m_timer = new QTimer(this);
     connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameUpdateEvent()));
 
-    this->m_timer->start();
+    this->m_timer->start(0);
 }
 
 /* Function VrFullscreenViewer
@@ -38,6 +39,8 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     m_isPlayingVideo = false;
     m_doTransitions = false;
     m_isProcessing = false;
+    m_currentDistance = Distance(2);
+
 
     m_depthProcess = new DepthProcessing(&m_timerDepthProcess,stereoCalib,3,1,10,4);
 
@@ -140,7 +143,7 @@ void VrFullscreenViewer::initScene()
     //adding items to the scene
     this->scene()->addItem(&this->m_frameR);
     this->scene()->addItem(&this->m_frameL);
-    this->scene()->addItem(&m_splitLine);
+//    this->scene()->addItem(&m_splitLine);
 
     QFont panelFont("Helvetica [Cronyx]",25,12,false );
 
@@ -195,14 +198,14 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
-    QImagePair image;
-    image.l = this->imageUpdaterL->getNextFrame().copy();
-    image.r = this->imageUpdaterR->getNextFrame().copy();
-
     QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
 
     if(!m_isDemo && !m_isPlayingVideo){
+        QImagePair image;
+        image.l = this->imageUpdaterL->getNextFrame().copy();
+        image.r = this->imageUpdaterR->getNextFrame().copy();
+
         QImagePair cut;
         cut.l = image.l.copy(leftrect);
         cut.r = image.r.copy(rightrect);
@@ -213,6 +216,31 @@ void VrFullscreenViewer::frameUpdateEvent()
         if(m_isProcessing)
         {
             m_depthProcess->setImages2Process(image, Size(1100,1100));
+            Distance newDistance = m_depthProcess->getCurrentDistance();
+            if(newDistance != m_currentDistance) {
+                m_currentDistance = newDistance;
+                switch (m_currentDistance)
+                {
+                case 2 :
+                    m_currentUserParam = 1;
+                    m_transitionLeft.cancelTransition();
+                    m_transitionRight.cancelTransition();
+                    loadUserParameters("./configFiles/UserParam1.yml",m_doTransitions);
+                    break;
+                case Distance::MEDIUM:
+                    m_currentUserParam = 2;
+                    m_transitionLeft.cancelTransition();
+                    m_transitionRight.cancelTransition();
+                    loadUserParameters("./configFiles/UserParam2.yml",m_doTransitions);
+                    break;
+                case Distance::CLOSE:
+                    m_currentUserParam = 3;
+                    m_transitionLeft.cancelTransition();
+                    m_transitionRight.cancelTransition();
+                    loadUserParameters("./configFiles/UserParam3.yml",m_doTransitions);
+                    break;
+                }
+            }
         }
 
     } else if(m_isDemo){
@@ -234,19 +262,21 @@ void VrFullscreenViewer::frameUpdateEvent()
     //update the movement in the ROI, if any.
     this->m_transitionLeft.step();
     this->m_transitionRight.step();
+
     this->m_frameR.setPos(m_leftSensorROI.width,0);
 
     this->m_scene.setSceneRect(0,0, m_leftSensorROI.width+m_rightSensorROI.width ,
                                max(m_leftSensorROI.height,m_rightSensorROI.height));
 
-    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
-                        max(m_leftSensorROI.height,m_rightSensorROI.height));
+//    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
+//                        max(m_leftSensorROI.height,m_rightSensorROI.height));
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
+
     float elapsed = crono.restart();
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
 //    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
-    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)elapsed));
+    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
 }
 
 /* Function showFullScreen
@@ -432,7 +462,6 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_P:
         m_isProcessing = !m_isProcessing;
-        qDebug() << m_isProcessing;
         emit setProcessingDepth(m_isProcessing);
         break;
     //Key events to change de user configuration

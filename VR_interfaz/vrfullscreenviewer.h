@@ -89,6 +89,7 @@ private:
     QThread m_threadR;
     QThread m_threadL;
     QThread m_threadDepthProcess;
+    Distance m_currentDistance;
 
     //demo
     QImage m_imgL;

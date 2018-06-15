@@ -2,6 +2,7 @@
 
 #include "processingimages.h"
 #include "utils.h"
+#include <QTime>
 
 DepthProcessing::DepthProcessing()
 {
@@ -97,18 +98,20 @@ void DepthProcessing::setSubsampling(int subsampling)
 
 void DepthProcessing::setImages2Process(QImagePair imgPair,Size processingWindowSize)
 {
-    QImagePair cut;
-    cv::Rect rect = calculateCenteredROI(Size(imgPair.l.size().width(), imgPair.l.size().height()) ,
-                              processingWindowSize.width,processingWindowSize.height);
+//    QTime crono;
+//    crono.start();
+
+    cv::Rect rect = calculateCenteredROI(Size(imgPair.l.size().width(), imgPair.l.size().height()),
+                                        processingWindowSize.width,processingWindowSize.height);
 
     QRect imrect(rect.x, rect.y, rect.width, rect.height);
-    cut.l =imgPair.l.copy(imrect);
-    cut.r =imgPair.r.copy(imrect);
 
     m_mutexImages2Process.lock();
-    m_images2Process.l = cut.l.copy();
-    m_images2Process.r = cut.r.copy();
+    m_images2Process.l = imgPair.l.copy(imrect);
+    m_images2Process.r = imgPair.r.copy(imrect);
     m_mutexImages2Process.unlock();
+
+//    qDebug() << crono.restart();
 }
 
 void DepthProcessing::setLibelasSetting(Elas::setting setting)
@@ -121,13 +124,11 @@ void DepthProcessing::setLibelasSetting(Elas::setting setting)
 //Slots
 void DepthProcessing::setProcessingEvent(bool processing)
 {
-    qDebug() << processing;
     if(processing){
         m_timerTrigger->start();
     } else {
         m_timerTrigger->stop();
     }
-    qDebug() << "is active?" << m_timerTrigger->isActive();
 }
 
 void DepthProcessing::frameProcessingEvent()
