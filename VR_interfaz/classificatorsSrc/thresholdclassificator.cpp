@@ -21,7 +21,12 @@ Distance ThresholdClassificator::calcClasificationProximity(Mat imgL, Mat imgR)
     Distance output;
     cv::Rect rectL; rectL.x = 0; rectL.y = 0; rectL.width = imgL.size().width; rectL.height = imgL.size().height;
     cv::Rect rectR; rectR.x = 0; rectR.y = 0; rectR.width = imgR.size().width; rectR.height = imgR.size().height;
-    float mean = getMeanOfROI(imgL,imgR,rectL,rectR,0);
+//    float mean = getMeanOfROI(imgL,imgR,rectL,rectR,0);
+//    float mean = getMaxOfROI(imgL,imgR,rectL,rectR,0);
+//    float mean = getMinOfROI(imgL,imgR,rectL,rectR,0);
+//    float mean = getMedianOfROI(imgL,imgR,rectL,rectR,0);
+
+
     m_oldMean.setNewValue(mean);
     mean = m_oldMean.getCurrentMean();
 //    qDebug() << "mean" << mean;

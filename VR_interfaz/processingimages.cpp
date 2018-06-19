@@ -102,7 +102,6 @@ float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, float exclu
     Mat cutL = Mat(imL,rectL);
     Mat cutR = Mat(imR,rectR);
 
-
     Mat maskL = cutL > excludedValues;
     Mat maskR = cutR > excludedValues;
 
@@ -114,6 +113,76 @@ float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, float exclu
 
     return (meanL+meanR)/2.0;
 }
+
+float getMaxOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, float excludedValues)
+{
+    Mat cutL = Mat(imL,rectL);
+    Mat cutR = Mat(imR,rectR);
+
+    Mat maskL = cutL > excludedValues;
+    Mat maskR = cutR > excludedValues;
+
+    double maxL, minL , maxR, minR;
+    minMaxLoc(cutL,&minL,&maxL,0,0,maskL);
+    minMaxLoc(cutR,&minR,&maxR,0,0,maskR);
+
+    return (maxL+maxR)/2.0;
+}
+
+float getMinOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, float excludedValues)
+{
+    Mat cutL = Mat(imL,rectL);
+    Mat cutR = Mat(imR,rectR);
+
+    Mat maskL = cutL > excludedValues;
+    Mat maskR = cutR > excludedValues;
+
+    double maxL, minL , maxR, minR;
+    minMaxLoc(cutL,&minL,&maxL,0,0,maskL);
+    minMaxLoc(cutR,&minR,&maxR,0,0,maskR);
+
+    return (minL+minR)/2.0;
+}
+
+float getMedianOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, float excludedValues)
+{
+    Mat cutL = Mat(imL,rectL);
+    Mat cutR = Mat(imR,rectR);
+
+    Mat maskL = cutL > excludedValues;
+    Mat maskR = cutR > excludedValues;
+
+    double medianL, medianR;
+    medianL = medianMat(cutL,maskL,3);
+    medianR = medianMat(cutR,maskR,3);
+
+    qDebug() << medianL;
+    return (medianL+medianR)/2.0;
+}
+
+double medianMat(cv::Mat Input, Mat mask, int nVals){
+
+    // COMPUTE HISTOGRAM OF SINGLE CHANNEL MATRIX
+    float range[] = { 0, nVals };
+    const float* histRange = { range };
+    bool uniform = true; bool accumulate = false;
+    cv::Mat hist;
+    calcHist(&Input, 1, 0, mask, hist, 1, &nVals, &histRange, uniform, accumulate);
+
+    // COMPUTE CUMULATIVE DISTRIBUTION FUNCTION (CDF)
+    cv::Mat cdf;
+    hist.copyTo(cdf);
+    for (int i = 1; i <= nVals-1; i++){
+        cdf.at<float>(i) += cdf.at<float>(i - 1);
+    }
+    cdf /= Input.total();
+
+    // COMPUTE MEDIAN
+    double medianVal;
+    for (int i = 0; i <= nVals-1; i++){
+        if (cdf.at<float>(i) >= 0.5) { medianVal = i;  break; }
+}
+return medianVal/nVals; }
 
 cv::Rect calculateCenteredROI(Size currentRect,int newWidth,int newHeight){
     cv::Rect roi;

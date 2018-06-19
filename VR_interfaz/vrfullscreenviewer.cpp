@@ -151,7 +151,7 @@ void VrFullscreenViewer::initScene()
 
     m_fpsCounter->setPos(600,450);
     m_fpsCounter->setOffset(imageWidth,0);
-    this->scene()->addItem(m_fpsCounter);
+//    this->scene()->addItem(m_fpsCounter);
 
     delete[] qImageL->bits();
     delete qImageL;
@@ -276,7 +276,7 @@ void VrFullscreenViewer::frameUpdateEvent()
     float elapsed = crono.restart();
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
 //    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
-    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
+//    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
 }
 
 /* Function showFullScreen
@@ -340,8 +340,8 @@ void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
     } else {
         m_transitionLeft = ROITransition(&m_leftSensorROI);
         m_transitionRight = ROITransition(&m_rightSensorROI);
-        m_transitionLeft.setTarget(leftRect,100);
-        m_transitionRight.setTarget(rightRect,100);
+        m_transitionLeft.setTarget(leftRect,10);
+        m_transitionRight.setTarget(rightRect,10);
     }
 }
 

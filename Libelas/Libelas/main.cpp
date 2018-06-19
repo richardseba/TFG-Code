@@ -241,8 +241,8 @@ void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize)
             Mat subsamplingL;
             Mat subsamplingR;
 
-            pyrDown(tempL,subsamplingL,outSize);
-            pyrDown(tempR,subsamplingR,outSize);
+            cv::resize(tempL,subsamplingL,outSize,INTER_LINEAR);
+            cv::resize(tempR,subsamplingR,outSize,INTER_LINEAR);
 
             tempL = subsamplingL;
             tempR = subsamplingR;
