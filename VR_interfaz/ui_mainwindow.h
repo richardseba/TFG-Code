@@ -14,6 +14,7 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QCheckBox>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
@@ -21,6 +22,7 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QVBoxLayout>
@@ -32,7 +34,14 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
-    QWidget *layoutWidget;
+    QGridLayout *gridLayout;
+    QSpacerItem *verticalSpacer;
+    QSpacerItem *horizontalSpacer;
+    QVBoxLayout *verticalLayout_10;
+    QHBoxLayout *horizontalLayout_19;
+    QLabel *label_display1;
+    QLabel *label_display2;
+    QVBoxLayout *verticalLayout_9;
     QHBoxLayout *horizontalLayout_8;
     QGroupBox *groupBox_cameraParams;
     QHBoxLayout *horizontalLayout_11;
@@ -69,38 +78,84 @@ public:
     QPushButton *pushButton_Fullscreen;
     QPushButton *pushButton_VR;
     QPushButton *recordingButton;
-    QLabel *label_display1;
-    QLabel *label_display2;
-    QCheckBox *checkBox_saveVideo;
-    QRadioButton *radioButton_recordMemory;
-    QRadioButton *radioButton_recordDisk;
+    QHBoxLayout *horizontalLayout_15;
+    QGroupBox *groupBox_2;
+    QHBoxLayout *horizontalLayout_17;
+    QVBoxLayout *verticalLayout_7;
+    QHBoxLayout *horizontalLayout_13;
+    QCheckBox *checkBox_dynamicVergence;
+    QCheckBox *checkBox_overLap;
+    QLabel *label;
+    QSpinBox *spinBox_downSampling;
+    QHBoxLayout *horizontalLayout_14;
     QCheckBox *checkBox_colormap;
     QCheckBox *checkBox_getDepthMap;
-    QSpinBox *spinBox_downSampling;
-    QLabel *label;
-    QSpinBox *spinBox_Libelas_setting;
     QLabel *label_2;
-    QCheckBox *checkBox_overLap;
-    QCheckBox *checkBox_dynamicVergence;
+    QSpinBox *spinBox_Libelas_setting;
+    QGroupBox *groupBox;
+    QHBoxLayout *horizontalLayout_18;
+    QHBoxLayout *horizontalLayout_12;
+    QCheckBox *checkBox_saveVideo;
+    QVBoxLayout *verticalLayout_4;
+    QRadioButton *radioButton_recordDisk;
+    QRadioButton *radioButton_recordMemory;
+    QSpacerItem *horizontalSpacer_2;
+    QSpacerItem *verticalSpacer_2;
     QStatusBar *statusBar;
 
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
-        MainWindow->resize(1355, 759);
+        MainWindow->resize(1430, 825);
         MainWindow->setContextMenuPolicy(Qt::NoContextMenu);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
-        layoutWidget = new QWidget(centralWidget);
-        layoutWidget->setObjectName(QStringLiteral("layoutWidget"));
-        layoutWidget->setGeometry(QRect(152, 510, 1071, 141));
-        horizontalLayout_8 = new QHBoxLayout(layoutWidget);
+        gridLayout = new QGridLayout(centralWidget);
+        gridLayout->setSpacing(6);
+        gridLayout->setContentsMargins(11, 11, 11, 11);
+        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        verticalSpacer = new QSpacerItem(20, 66, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout->addItem(verticalSpacer, 0, 1, 1, 1);
+
+        horizontalSpacer = new QSpacerItem(98, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer, 1, 0, 1, 1);
+
+        verticalLayout_10 = new QVBoxLayout();
+        verticalLayout_10->setSpacing(6);
+        verticalLayout_10->setObjectName(QStringLiteral("verticalLayout_10"));
+        horizontalLayout_19 = new QHBoxLayout();
+        horizontalLayout_19->setSpacing(6);
+        horizontalLayout_19->setObjectName(QStringLiteral("horizontalLayout_19"));
+        label_display1 = new QLabel(centralWidget);
+        label_display1->setObjectName(QStringLiteral("label_display1"));
+        label_display1->setMinimumSize(QSize(600, 450));
+        label_display1->setFrameShape(QFrame::Box);
+        label_display1->setMidLineWidth(0);
+        label_display1->setScaledContents(true);
+
+        horizontalLayout_19->addWidget(label_display1);
+
+        label_display2 = new QLabel(centralWidget);
+        label_display2->setObjectName(QStringLiteral("label_display2"));
+        label_display2->setMinimumSize(QSize(600, 450));
+        label_display2->setFrameShape(QFrame::Box);
+        label_display2->setScaledContents(true);
+
+        horizontalLayout_19->addWidget(label_display2);
+
+
+        verticalLayout_10->addLayout(horizontalLayout_19);
+
+        verticalLayout_9 = new QVBoxLayout();
+        verticalLayout_9->setSpacing(6);
+        verticalLayout_9->setObjectName(QStringLiteral("verticalLayout_9"));
+        horizontalLayout_8 = new QHBoxLayout();
         horizontalLayout_8->setSpacing(6);
-        horizontalLayout_8->setContentsMargins(11, 11, 11, 11);
         horizontalLayout_8->setObjectName(QStringLiteral("horizontalLayout_8"));
-        horizontalLayout_8->setContentsMargins(0, 0, 0, 0);
-        groupBox_cameraParams = new QGroupBox(layoutWidget);
+        groupBox_cameraParams = new QGroupBox(centralWidget);
         groupBox_cameraParams->setObjectName(QStringLiteral("groupBox_cameraParams"));
         horizontalLayout_11 = new QHBoxLayout(groupBox_cameraParams);
         horizontalLayout_11->setSpacing(6);
@@ -149,7 +204,7 @@ public:
 
         horizontalLayout_8->addWidget(groupBox_cameraParams);
 
-        groupBox_3 = new QGroupBox(layoutWidget);
+        groupBox_3 = new QGroupBox(centralWidget);
         groupBox_3->setObjectName(QStringLiteral("groupBox_3"));
         horizontalLayout_5 = new QHBoxLayout(groupBox_3);
         horizontalLayout_5->setSpacing(6);
@@ -185,7 +240,7 @@ public:
 
         horizontalLayout_8->addWidget(groupBox_3);
 
-        groupBox_capture = new QGroupBox(layoutWidget);
+        groupBox_capture = new QGroupBox(centralWidget);
         groupBox_capture->setObjectName(QStringLiteral("groupBox_capture"));
         horizontalLayout_6 = new QHBoxLayout(groupBox_capture);
         horizontalLayout_6->setSpacing(6);
@@ -233,7 +288,7 @@ public:
 
         horizontalLayout_8->addWidget(groupBox_capture);
 
-        groupBox_record = new QGroupBox(layoutWidget);
+        groupBox_record = new QGroupBox(centralWidget);
         groupBox_record->setObjectName(QStringLiteral("groupBox_record"));
         horizontalLayout_7 = new QHBoxLayout(groupBox_record);
         horizontalLayout_7->setSpacing(6);
@@ -294,70 +349,148 @@ public:
 
         horizontalLayout_8->addWidget(groupBox_record);
 
-        label_display1 = new QLabel(centralWidget);
-        label_display1->setObjectName(QStringLiteral("label_display1"));
-        label_display1->setGeometry(QRect(130, 30, 581, 451));
-        label_display1->setFrameShape(QFrame::Box);
-        label_display1->setMidLineWidth(0);
-        label_display1->setScaledContents(true);
-        label_display2 = new QLabel(centralWidget);
-        label_display2->setObjectName(QStringLiteral("label_display2"));
-        label_display2->setGeometry(QRect(714, 30, 581, 451));
-        label_display2->setFrameShape(QFrame::Box);
-        label_display2->setScaledContents(true);
-        checkBox_saveVideo = new QCheckBox(centralWidget);
-        checkBox_saveVideo->setObjectName(QStringLiteral("checkBox_saveVideo"));
-        checkBox_saveVideo->setGeometry(QRect(600, 690, 121, 31));
-        radioButton_recordMemory = new QRadioButton(centralWidget);
-        radioButton_recordMemory->setObjectName(QStringLiteral("radioButton_recordMemory"));
-        radioButton_recordMemory->setGeometry(QRect(960, 690, 131, 31));
-        radioButton_recordDisk = new QRadioButton(centralWidget);
-        radioButton_recordDisk->setObjectName(QStringLiteral("radioButton_recordDisk"));
-        radioButton_recordDisk->setGeometry(QRect(760, 690, 161, 31));
-        checkBox_colormap = new QCheckBox(centralWidget);
-        checkBox_colormap->setObjectName(QStringLiteral("checkBox_colormap"));
-        checkBox_colormap->setGeometry(QRect(380, 690, 161, 31));
-        checkBox_getDepthMap = new QCheckBox(centralWidget);
-        checkBox_getDepthMap->setObjectName(QStringLiteral("checkBox_getDepthMap"));
-        checkBox_getDepthMap->setGeometry(QRect(190, 690, 181, 31));
-        spinBox_downSampling = new QSpinBox(centralWidget);
+
+        verticalLayout_9->addLayout(horizontalLayout_8);
+
+        horizontalLayout_15 = new QHBoxLayout();
+        horizontalLayout_15->setSpacing(6);
+        horizontalLayout_15->setObjectName(QStringLiteral("horizontalLayout_15"));
+        groupBox_2 = new QGroupBox(centralWidget);
+        groupBox_2->setObjectName(QStringLiteral("groupBox_2"));
+        horizontalLayout_17 = new QHBoxLayout(groupBox_2);
+        horizontalLayout_17->setSpacing(6);
+        horizontalLayout_17->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_17->setObjectName(QStringLiteral("horizontalLayout_17"));
+        verticalLayout_7 = new QVBoxLayout();
+        verticalLayout_7->setSpacing(6);
+        verticalLayout_7->setObjectName(QStringLiteral("verticalLayout_7"));
+        horizontalLayout_13 = new QHBoxLayout();
+        horizontalLayout_13->setSpacing(6);
+        horizontalLayout_13->setObjectName(QStringLiteral("horizontalLayout_13"));
+        checkBox_dynamicVergence = new QCheckBox(groupBox_2);
+        checkBox_dynamicVergence->setObjectName(QStringLiteral("checkBox_dynamicVergence"));
+        checkBox_dynamicVergence->setMinimumSize(QSize(160, 0));
+
+        horizontalLayout_13->addWidget(checkBox_dynamicVergence);
+
+        checkBox_overLap = new QCheckBox(groupBox_2);
+        checkBox_overLap->setObjectName(QStringLiteral("checkBox_overLap"));
+        checkBox_overLap->setMinimumSize(QSize(200, 0));
+
+        horizontalLayout_13->addWidget(checkBox_overLap);
+
+        label = new QLabel(groupBox_2);
+        label->setObjectName(QStringLiteral("label"));
+        label->setMinimumSize(QSize(150, 0));
+
+        horizontalLayout_13->addWidget(label);
+
+        spinBox_downSampling = new QSpinBox(groupBox_2);
         spinBox_downSampling->setObjectName(QStringLiteral("spinBox_downSampling"));
-        spinBox_downSampling->setGeometry(QRect(20, 690, 42, 22));
+        spinBox_downSampling->setMinimumSize(QSize(40, 0));
         spinBox_downSampling->setMaximum(99);
         spinBox_downSampling->setSingleStep(2);
         spinBox_downSampling->setValue(2);
-        label = new QLabel(centralWidget);
-        label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(20, 660, 121, 31));
-        spinBox_Libelas_setting = new QSpinBox(centralWidget);
+
+        horizontalLayout_13->addWidget(spinBox_downSampling);
+
+
+        verticalLayout_7->addLayout(horizontalLayout_13);
+
+        horizontalLayout_14 = new QHBoxLayout();
+        horizontalLayout_14->setSpacing(6);
+        horizontalLayout_14->setObjectName(QStringLiteral("horizontalLayout_14"));
+        checkBox_colormap = new QCheckBox(groupBox_2);
+        checkBox_colormap->setObjectName(QStringLiteral("checkBox_colormap"));
+        checkBox_colormap->setMinimumSize(QSize(160, 0));
+
+        horizontalLayout_14->addWidget(checkBox_colormap);
+
+        checkBox_getDepthMap = new QCheckBox(groupBox_2);
+        checkBox_getDepthMap->setObjectName(QStringLiteral("checkBox_getDepthMap"));
+        checkBox_getDepthMap->setMinimumSize(QSize(200, 0));
+
+        horizontalLayout_14->addWidget(checkBox_getDepthMap);
+
+        label_2 = new QLabel(groupBox_2);
+        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setMinimumSize(QSize(150, 0));
+
+        horizontalLayout_14->addWidget(label_2);
+
+        spinBox_Libelas_setting = new QSpinBox(groupBox_2);
         spinBox_Libelas_setting->setObjectName(QStringLiteral("spinBox_Libelas_setting"));
-        spinBox_Libelas_setting->setGeometry(QRect(20, 600, 42, 22));
+        spinBox_Libelas_setting->setMinimumSize(QSize(40, 0));
         spinBox_Libelas_setting->setMaximum(2);
         spinBox_Libelas_setting->setValue(2);
-        label_2 = new QLabel(centralWidget);
-        label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(20, 570, 121, 31));
-        checkBox_overLap = new QCheckBox(centralWidget);
-        checkBox_overLap->setObjectName(QStringLiteral("checkBox_overLap"));
-        checkBox_overLap->setGeometry(QRect(190, 660, 201, 31));
-        checkBox_dynamicVergence = new QCheckBox(centralWidget);
-        checkBox_dynamicVergence->setObjectName(QStringLiteral("checkBox_dynamicVergence"));
-        checkBox_dynamicVergence->setGeometry(QRect(380, 660, 211, 31));
+
+        horizontalLayout_14->addWidget(spinBox_Libelas_setting);
+
+
+        verticalLayout_7->addLayout(horizontalLayout_14);
+
+
+        horizontalLayout_17->addLayout(verticalLayout_7);
+
+
+        horizontalLayout_15->addWidget(groupBox_2);
+
+        groupBox = new QGroupBox(centralWidget);
+        groupBox->setObjectName(QStringLiteral("groupBox"));
+        horizontalLayout_18 = new QHBoxLayout(groupBox);
+        horizontalLayout_18->setSpacing(6);
+        horizontalLayout_18->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_18->setObjectName(QStringLiteral("horizontalLayout_18"));
+        horizontalLayout_12 = new QHBoxLayout();
+        horizontalLayout_12->setSpacing(6);
+        horizontalLayout_12->setObjectName(QStringLiteral("horizontalLayout_12"));
+        checkBox_saveVideo = new QCheckBox(groupBox);
+        checkBox_saveVideo->setObjectName(QStringLiteral("checkBox_saveVideo"));
+
+        horizontalLayout_12->addWidget(checkBox_saveVideo);
+
+        verticalLayout_4 = new QVBoxLayout();
+        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setObjectName(QStringLiteral("verticalLayout_4"));
+        radioButton_recordDisk = new QRadioButton(groupBox);
+        radioButton_recordDisk->setObjectName(QStringLiteral("radioButton_recordDisk"));
+        radioButton_recordDisk->setMinimumSize(QSize(150, 0));
+
+        verticalLayout_4->addWidget(radioButton_recordDisk);
+
+        radioButton_recordMemory = new QRadioButton(groupBox);
+        radioButton_recordMemory->setObjectName(QStringLiteral("radioButton_recordMemory"));
+        radioButton_recordMemory->setMinimumSize(QSize(150, 0));
+
+        verticalLayout_4->addWidget(radioButton_recordMemory);
+
+
+        horizontalLayout_12->addLayout(verticalLayout_4);
+
+
+        horizontalLayout_18->addLayout(horizontalLayout_12);
+
+
+        horizontalLayout_15->addWidget(groupBox);
+
+
+        verticalLayout_9->addLayout(horizontalLayout_15);
+
+
+        verticalLayout_10->addLayout(verticalLayout_9);
+
+
+        gridLayout->addLayout(verticalLayout_10, 1, 1, 2, 1);
+
+        horizontalSpacer_2 = new QSpacerItem(98, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_2, 2, 2, 1, 1);
+
+        verticalSpacer_2 = new QSpacerItem(20, 65, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        gridLayout->addItem(verticalSpacer_2, 3, 1, 1, 1);
+
         MainWindow->setCentralWidget(centralWidget);
-        label_display1->raise();
-        label_display2->raise();
-        layoutWidget->raise();
-        checkBox_saveVideo->raise();
-        radioButton_recordMemory->raise();
-        radioButton_recordDisk->raise();
-        checkBox_colormap->raise();
-        checkBox_getDepthMap->raise();
-        spinBox_downSampling->raise();
-        label->raise();
-        spinBox_Libelas_setting->raise();
-        label_2->raise();
-        checkBox_overLap->raise();
-        checkBox_dynamicVergence->raise();
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
@@ -370,6 +503,8 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "VR Viewer", nullptr));
+        label_display1->setText(QString());
+        label_display2->setText(QString());
         groupBox_cameraParams->setTitle(QApplication::translate("MainWindow", "Camera Setup", nullptr));
         changeParamsL_pushButton->setText(QApplication::translate("MainWindow", "Camera Left", nullptr));
         changeParamsR_pushButton->setText(QApplication::translate("MainWindow", "Camera Right", nullptr));
@@ -389,17 +524,17 @@ public:
         pushButton_Fullscreen->setText(QApplication::translate("MainWindow", "Fullscreen", nullptr));
         pushButton_VR->setText(QApplication::translate("MainWindow", "VR", nullptr));
         recordingButton->setText(QApplication::translate("MainWindow", "Start", nullptr));
-        label_display1->setText(QString());
-        label_display2->setText(QString());
-        checkBox_saveVideo->setText(QApplication::translate("MainWindow", "Record", nullptr));
-        radioButton_recordMemory->setText(QApplication::translate("MainWindow", "Record in memory", nullptr));
-        radioButton_recordDisk->setText(QApplication::translate("MainWindow", "Record in disk", nullptr));
+        groupBox_2->setTitle(QApplication::translate("MainWindow", "Depth map", nullptr));
+        checkBox_dynamicVergence->setText(QApplication::translate("MainWindow", "Dynamic Vergence", nullptr));
+        checkBox_overLap->setText(QApplication::translate("MainWindow", "Overlap over image", nullptr));
+        label->setText(QApplication::translate("MainWindow", "DownSampling", nullptr));
         checkBox_colormap->setText(QApplication::translate("MainWindow", "Color Map", nullptr));
         checkBox_getDepthMap->setText(QApplication::translate("MainWindow", "get Depth map", nullptr));
-        label->setText(QApplication::translate("MainWindow", "DownSampling", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "Libelas settings", nullptr));
-        checkBox_overLap->setText(QApplication::translate("MainWindow", "Overlap over image", nullptr));
-        checkBox_dynamicVergence->setText(QApplication::translate("MainWindow", "Dynamic Vergence", nullptr));
+        groupBox->setTitle(QApplication::translate("MainWindow", "Video Recording", nullptr));
+        checkBox_saveVideo->setText(QApplication::translate("MainWindow", "Record", nullptr));
+        radioButton_recordDisk->setText(QApplication::translate("MainWindow", "Record in disk", nullptr));
+        radioButton_recordMemory->setText(QApplication::translate("MainWindow", "Record in memory", nullptr));
     } // retranslateUi
 
 };
