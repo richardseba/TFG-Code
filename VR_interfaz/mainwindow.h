@@ -35,7 +35,7 @@ const int FRAME_TIMER = 0;
 const int SIZE_OF_CLASSIFIER_BUFFER = 10;
 
 const int FRAME_RATE_SAVE = 33;
-const int MAX_FRAME_IN_MEMORY = 1500; //64 bits
+const int MAX_FRAME_IN_MEMORY = 350; //64 bits
 //const int MAX_FRAME_IN_MEMORY = 450; //32 bits
 
 namespace Ui {

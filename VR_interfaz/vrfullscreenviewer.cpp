@@ -466,36 +466,39 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     //Key events to change de user configuration
     case Qt::Key_1:
-        if(m_currentUserParam == 1)
+        if(m_currentUserParam == 1){
             saveUserParameters("./configFiles/UserParam1.yml");
-        else
-        {
+            qDebug() << "saved 1";
+        } else {
             m_currentUserParam = 1;
             m_transitionLeft.cancelTransition();
             m_transitionRight.cancelTransition();
             loadUserParameters("./configFiles/UserParam1.yml",m_doTransitions);
+            qDebug() << "loaded 1";
         }
         break;
     case Qt::Key_2:
-        if(m_currentUserParam == 2)
+        if(m_currentUserParam == 2) {
             saveUserParameters("./configFiles/UserParam2.yml");
-        else
-        {
+            qDebug() << "saved 2 ";
+        } else {
             m_currentUserParam = 2;
             m_transitionLeft.cancelTransition();
             m_transitionRight.cancelTransition();
             loadUserParameters("./configFiles/UserParam2.yml",m_doTransitions);
+            qDebug() << "loaded 2";
         }
         break;
     case Qt::Key_3:
-        if(m_currentUserParam == 3)
+        if(m_currentUserParam == 3) {
             saveUserParameters("./configFiles/UserParam3.yml");
-        else
-        {
+            qDebug() << "saved 3";
+        } else {
             m_currentUserParam = 3;
             m_transitionLeft.cancelTransition();
             m_transitionRight.cancelTransition();
             loadUserParameters("./configFiles/UserParam3.yml",m_doTransitions);
+            qDebug() << "loaded 3";
         }
         break;
     case Qt::Key_4:
