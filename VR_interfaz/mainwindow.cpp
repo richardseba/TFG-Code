@@ -373,7 +373,7 @@ bool MainWindow::saveImage(QImage qImage)
     QString imagePath = QFileDialog::getSaveFileName(
                     this,
                     tr("Save File"),
-                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100 12 june/"+filename,
+                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100 22 june/"+filename,
                     tr("PNG (*.png);;JPEG (*.jpg *.jpeg)" )
                     );
     if(!imagePath.isEmpty() && !imagePath.isNull())

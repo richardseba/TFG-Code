@@ -125,7 +125,7 @@ public:
           speckle_size          = 200;
           ipol_gap_width        = 10;
           filter_median         = 0;
-          filter_adaptive_mean  = 0;
+          filter_adaptive_mean  = 1;
           postprocess_only_left = 1;
           subsampling           = 0;
       // default settings for middlebury benchmark
