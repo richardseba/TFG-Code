@@ -258,18 +258,15 @@ void VrFullscreenViewer::frameUpdateEvent()
            this->m_frameR.setPixmap(QPixmap::fromImage(Mat2QImage(matR).copy(rightrect)));
        }
     }
-
     //update the movement in the ROI, if any.
     this->m_transitionLeft.step();
     this->m_transitionRight.step();
 
+    this->m_frameL.setPos(0,0);
     this->m_frameR.setPos(m_leftSensorROI.width,0);
 
     this->m_scene.setSceneRect(0,0, m_leftSensorROI.width+m_rightSensorROI.width ,
                                max(m_leftSensorROI.height,m_rightSensorROI.height));
-
-//    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
-//                        max(m_leftSensorROI.height,m_rightSensorROI.height));
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 
@@ -277,6 +274,9 @@ void VrFullscreenViewer::frameUpdateEvent()
     m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
 //    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 //    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
+//    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
+//                        max(m_leftSensorROI.height,m_rightSensorROI.height));
+
 }
 
 /* Function showFullScreen
@@ -340,8 +340,8 @@ void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
     } else {
         m_transitionLeft = ROITransition(&m_leftSensorROI);
         m_transitionRight = ROITransition(&m_rightSensorROI);
-        m_transitionLeft.setTarget(leftRect,10);
-        m_transitionRight.setTarget(rightRect,10);
+        m_transitionLeft.setTarget(leftRect,STEPS_IN_TRANSITION);
+        m_transitionRight.setTarget(rightRect,STEPS_IN_TRANSITION);
     }
 }
 
@@ -359,8 +359,8 @@ void VrFullscreenViewer::zoomIn()
     m_rightSensorROI.height -= 18;
     m_rightSensorROI.width -= 16;
 
-    this->m_frameL.setPos(0,0);
-    this->m_frameR.setPos(m_leftSensorROI.width,0);
+//    this->m_frameL.setPos(0,0);
+//    this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
 void VrFullscreenViewer::zoomOut()
 {
@@ -376,8 +376,8 @@ void VrFullscreenViewer::zoomOut()
     m_rightSensorROI.height += 18;
     m_rightSensorROI.width += 16;
 
-    this->m_frameL.setPos(0,0);
-    this->m_frameR.setPos(m_leftSensorROI.width,0);
+//    this->m_frameL.setPos(0,0);
+//    this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
 
 /* Function keyPressEvent

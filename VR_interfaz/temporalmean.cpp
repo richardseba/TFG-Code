@@ -4,7 +4,7 @@
 TemporalMean::TemporalMean()
 {
     m_bufferSize = DEFAULT_BUFFER_SIZE;
-    m_oldMeanVector = (floatInitialized*) malloc(m_bufferSize*sizeof(floatInitialized));
+    m_oldMeanVector = new  floatInitialized[DEFAULT_BUFFER_SIZE];
     m_oldestValue = 0;
     m_meanAlreadyCalculated = false;
 }
@@ -13,7 +13,7 @@ TemporalMean::TemporalMean(int bufferSize)
 {
 //    qDebug() << "me creo con tamaño!";
     m_bufferSize = bufferSize;
-    m_oldMeanVector = (floatInitialized*) malloc(m_bufferSize*sizeof(floatInitialized));
+    m_oldMeanVector = new  floatInitialized[bufferSize];
     m_oldestValue = 0;
     m_meanAlreadyCalculated = false;
 }

@@ -28,6 +28,7 @@
 
 #include "QTime"
 
+const int STEPS_IN_TRANSITION = 10;
 
 /* Class VrFullscreenViewer
  * -------------------------------

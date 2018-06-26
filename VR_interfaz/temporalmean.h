@@ -22,6 +22,7 @@ public:
 
     void setNewValue(float value);
     float getCurrentMean();
+        int m_oldestValue;
 private:
     floatInitialized* m_oldMeanVector;
 
@@ -29,7 +30,6 @@ private:
     float m_currentMeanValue;
 
     int m_bufferSize;
-    int m_oldestValue;
 };
 
 #endif // TEMPORALMEAN_H
