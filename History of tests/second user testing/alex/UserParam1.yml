@@ -1,0 +1,10 @@
+%YAML:1.0
+---
+LeftSensorROI_X: 588
+LeftSensorROI_Y: 252
+LeftSensorROI_Width: 560
+LeftSensorROI_Height: 630
+RightSensorROI_X: 660
+RightSensorROI_Y: 246
+RightSensorROI_Width: 560
+RightSensorROI_Height: 630
