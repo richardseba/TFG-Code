@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
         this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
         this->m_stereoCalib.initUndistortImage(Size(roi.width,roi.height));
     }
-    m_classifier = ThresholdClassificator(SIZE_OF_CLASSIFIER_BUFFER,3,1);
+    m_classifier = ThresholdClassificator(SIZE_OF_CLASSIFIER_BUFFER,12,5);
 }
 
 /* Function ~MainWindow
