@@ -15,6 +15,7 @@ ROITransition::ROITransition(Rect* linkedROIRect)
     m_currentRect = linkedROIRect;
     m_isTransitionOn = false;
     m_isOnCorrectZoom = true;
+    m_lastWasZoom = false;
 
     m_stepX = 0;
     m_stepY = 0;
@@ -32,11 +33,11 @@ void ROITransition::setTarget(Rect targetRect, int numberOfSteps)
 
     incX = (int)max(incX/numberOfSteps,1);
     incY = (int)max(incY/numberOfSteps,1);
-//    incW = (int)max(incW/numberOfSteps,1);
-//    incH = (int)max(incH/numberOfSteps,1);
-    incW = 8; //We need to enforce an 8 by 9 aspect ratio to prevent issues while building the scene
-    incH = 9;
-    qDebug() << incX << incY;
+    incW = 8*(int)max(incW/numberOfSteps/8,1);
+    incH = 9*(int)max(incH/numberOfSteps/9,1);
+//    incW = 8; //We need to enforce an 8 by 9 aspect ratio to prevent issues while building the scene
+//    incH = 9;
+    qDebug() << incX << incY << incW << incH;
 
     if(m_currentRect->x > m_targetRect.x)
     {
@@ -98,7 +99,7 @@ void ROITransition::step()
 {
     if(!isOnTarget())
     {
-        if(!m_isOnCorrectZoom)
+        if(!m_isOnCorrectZoom && !m_lastWasZoom)
         {
             if(m_currentRect->width != m_targetRect.width)
                 if(m_WOrientation == growing)
@@ -126,6 +127,7 @@ void ROITransition::step()
                     else
                         m_currentRect->height = m_targetRect.height;
                 }
+            m_lastWasZoom = !m_lastWasZoom;
         }else {
             qDebug() << "step in movement";
             if(m_currentRect->x != m_targetRect.x)
@@ -155,6 +157,7 @@ void ROITransition::step()
                     else
                         m_currentRect->y = m_targetRect.y;
                 }
+            m_lastWasZoom = !m_lastWasZoom;
         }
         qDebug() << m_currentRect->width << m_targetRect.width << m_currentRect->height << m_targetRect.height;
         if(m_currentRect->width == m_targetRect.width && m_currentRect->height == m_targetRect.height)

@@ -38,6 +38,7 @@ private:
 
     bool m_isTransitionOn;
     bool m_isOnCorrectZoom;
+    bool m_lastWasZoom;
 };
 
 #endif // ROITRANSITION_H

@@ -14,7 +14,10 @@
 #include <loadcalibparamsdialog.h>
 #include <selectcameraparamsdialog.h>
 #include "vrfullscreenviewer.h"
-#include "elas.h"
+#include "./libelasSrc/elas.h"
+#include "processingimages.h".
+#include "./classificatorsSrc/presetclassificator.h"
+#include "./classificatorsSrc/thresholdclassificator.h"
 
 #include "QGraphicsScene"
 #include "QGraphicsItem"
@@ -29,9 +32,10 @@
 using namespace cv;
 
 const int FRAME_TIMER = 0;
+const int SIZE_OF_CLASSIFIER_BUFFER = 10;
 
 const int FRAME_RATE_SAVE = 33;
-const int MAX_FRAME_IN_MEMORY = 1500; //64 bits
+const int MAX_FRAME_IN_MEMORY = 350; //64 bits
 //const int MAX_FRAME_IN_MEMORY = 450; //32 bits
 
 namespace Ui {
@@ -78,8 +82,8 @@ private:
     bool saveImage(QImage qImage);
     void saveVideo(Mat im1,Mat im2);
     void showVRViewer(int screen=0);
-    QImagePair processDisparity(QImage* Im1, QImage* Im2, bool colormap, Elas::setting elasSetting);
-    Mat getColorFrom(Mat backgroundSrc, Mat colorSrc);
+//    QImagePair processDisparity(QImage* Im1, QImage* Im2, bool colormap, Elas::setting elasSetting);
+//    Mat getColorFrom(Mat backgroundSrc, Mat colorSrc);
     void saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter video, QProgressBar* progress);
 
 
@@ -100,6 +104,8 @@ private:
     VrFullscreenViewer* m_screen; //distroyed automatically when exited
 
     int m_photosCaptured;
+
+    ThresholdClassificator m_classifier;
 
     //video things
 

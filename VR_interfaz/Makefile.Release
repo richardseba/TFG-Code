@@ -53,23 +53,27 @@ SOURCES       = main.cpp \
 		vrfullscreenviewer.cpp \
 		vrimageupdater.cpp \
 		selectcameraparamsdialog.cpp \
-		vrui.cpp \
-		qgraphicstextitemvr.cpp \
 		utils.cpp \
 		cameracalibration.cpp \
-		descriptor.cpp \
-		elas.cpp \
-		filter.cpp \
 		stereocalibration.cpp \
-		triangle.cpp \
-		matrix.cpp \
-		roitransition.cpp release\qrc_logosr.cpp \
-		release\moc_mainwindow.cpp \
+		roitransition.cpp \
+		temporalmean.cpp \
+		processingimages.cpp \
+		libelasSrc\elas.cpp \
+		libelasSrc\descriptor.cpp \
+		libelasSrc\filter.cpp \
+		libelasSrc\matrix.cpp \
+		libelasSrc\triangle.cpp \
+		VR_UI_Src\qgraphicstextitemvr.cpp \
+		VR_UI_Src\vrui.cpp \
+		classificatorsSrc\thresholdclassificator.cpp \
+		depthprocessing.cpp release\moc_mainwindow.cpp \
 		release\moc_calibdialog.cpp \
 		release\moc_loadcalibparamsdialog.cpp \
 		release\moc_vrfullscreenviewer.cpp \
 		release\moc_vrimageupdater.cpp \
-		release\moc_selectcameraparamsdialog.cpp
+		release\moc_selectcameraparamsdialog.cpp \
+		release\moc_depthprocessing.cpp
 OBJECTS       = release\main.obj \
 		release\mainwindow.obj \
 		release\camera.obj \
@@ -78,24 +82,28 @@ OBJECTS       = release\main.obj \
 		release\vrfullscreenviewer.obj \
 		release\vrimageupdater.obj \
 		release\selectcameraparamsdialog.obj \
-		release\vrui.obj \
-		release\qgraphicstextitemvr.obj \
 		release\utils.obj \
 		release\cameracalibration.obj \
-		release\descriptor.obj \
-		release\elas.obj \
-		release\filter.obj \
 		release\stereocalibration.obj \
-		release\triangle.obj \
-		release\matrix.obj \
 		release\roitransition.obj \
-		release\qrc_logosr.obj \
+		release\temporalmean.obj \
+		release\processingimages.obj \
+		release\elas.obj \
+		release\descriptor.obj \
+		release\filter.obj \
+		release\matrix.obj \
+		release\triangle.obj \
+		release\qgraphicstextitemvr.obj \
+		release\vrui.obj \
+		release\thresholdclassificator.obj \
+		release\depthprocessing.obj \
 		release\moc_mainwindow.obj \
 		release\moc_calibdialog.obj \
 		release\moc_loadcalibparamsdialog.obj \
 		release\moc_vrfullscreenviewer.obj \
 		release\moc_vrimageupdater.obj \
-		release\moc_selectcameraparamsdialog.obj
+		release\moc_selectcameraparamsdialog.obj \
+		release\moc_depthprocessing.obj
 
 DIST          =  mainwindow.h \
 		camera.h \
@@ -104,17 +112,22 @@ DIST          =  mainwindow.h \
 		vrfullscreenviewer.h \
 		vrimageupdater.h \
 		selectcameraparamsdialog.h \
-		vrui.h \
-		qgraphicstextitemvr.h \
 		utils.h \
 		cameracalibration.h \
-		descriptor.h \
-		elas.h \
-		filter.h \
 		stereocalibration.h \
-		triangle.h \
-		matrix.h \
-		roitransition.h main.cpp \
+		roitransition.h \
+		temporalmean.h \
+		processingimages.h \
+		libelasSrc\descriptor.h \
+		libelasSrc\elas.h \
+		libelasSrc\filter.h \
+		libelasSrc\matrix.h \
+		libelasSrc\triangle.h \
+		VR_UI_Src\qgraphicstextitemvr.h \
+		VR_UI_Src\vrui.h \
+		classificatorsSrc\presetclassificator.h \
+		classificatorsSrc\thresholdclassificator.h \
+		depthprocessing.h main.cpp \
 		mainwindow.cpp \
 		camera.cpp \
 		calibdialog.cpp \
@@ -122,17 +135,21 @@ DIST          =  mainwindow.h \
 		vrfullscreenviewer.cpp \
 		vrimageupdater.cpp \
 		selectcameraparamsdialog.cpp \
-		vrui.cpp \
-		qgraphicstextitemvr.cpp \
 		utils.cpp \
 		cameracalibration.cpp \
-		descriptor.cpp \
-		elas.cpp \
-		filter.cpp \
 		stereocalibration.cpp \
-		triangle.cpp \
-		matrix.cpp \
-		roitransition.cpp
+		roitransition.cpp \
+		temporalmean.cpp \
+		processingimages.cpp \
+		libelasSrc\elas.cpp \
+		libelasSrc\descriptor.cpp \
+		libelasSrc\filter.cpp \
+		libelasSrc\matrix.cpp \
+		libelasSrc\triangle.cpp \
+		VR_UI_Src\qgraphicstextitemvr.cpp \
+		VR_UI_Src\vrui.cpp \
+		classificatorsSrc\thresholdclassificator.cpp \
+		depthprocessing.cpp
 QMAKE_TARGET  = VR_interfaz
 DESTDIR        = release\ #avoid trailing-slash linebreak
 TARGET         = VR_interfaz.exe
@@ -141,6 +158,46 @@ DESTDIR_TARGET = release\VR_interfaz.exe
 ####### Implicit rules
 
 .SUFFIXES: .c .cpp .cc .cxx
+
+{classificatorsSrc}.cpp{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{classificatorsSrc}.cc{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{classificatorsSrc}.cxx{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{classificatorsSrc}.c{release\}.obj::
+	$(CC) -c $(CFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{VR_UI_Src}.cpp{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{VR_UI_Src}.cc{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{VR_UI_Src}.cxx{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{VR_UI_Src}.c{release\}.obj::
+	$(CC) -c $(CFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
 
 {release}.cpp{release\}.obj::
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
@@ -182,6 +239,26 @@ DESTDIR_TARGET = release\VR_interfaz.exe
 	$<
 <<
 
+{libelasSrc}.cpp{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{libelasSrc}.cc{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{libelasSrc}.cxx{release\}.obj::
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
+{libelasSrc}.c{release\}.obj::
+	$(CC) -c $(CFLAGS) $(INCPATH) -Forelease\ @<<
+	$<
+<<
+
 ####### Build rules
 
 first: all
@@ -189,7 +266,7 @@ all: Makefile.Release  $(DESTDIR_TARGET)
 
 $(DESTDIR_TARGET): ui_mainwindow.h ui_calibdialog.h ui_loadcalibparamsdialog.h ui_selectcameraparamsdialog.h $(OBJECTS) 
 	$(LINKER) $(LFLAGS) /MANIFEST:embed /OUT:$(DESTDIR_TARGET) @<<
-release\main.obj release\mainwindow.obj release\camera.obj release\calibdialog.obj release\loadcalibparamsdialog.obj release\vrfullscreenviewer.obj release\vrimageupdater.obj release\selectcameraparamsdialog.obj release\vrui.obj release\qgraphicstextitemvr.obj release\utils.obj release\cameracalibration.obj release\descriptor.obj release\elas.obj release\filter.obj release\stereocalibration.obj release\triangle.obj release\matrix.obj release\roitransition.obj release\qrc_logosr.obj release\moc_mainwindow.obj release\moc_calibdialog.obj release\moc_loadcalibparamsdialog.obj release\moc_vrfullscreenviewer.obj release\moc_vrimageupdater.obj release\moc_selectcameraparamsdialog.obj
+release\main.obj release\mainwindow.obj release\camera.obj release\calibdialog.obj release\loadcalibparamsdialog.obj release\vrfullscreenviewer.obj release\vrimageupdater.obj release\selectcameraparamsdialog.obj release\utils.obj release\cameracalibration.obj release\stereocalibration.obj release\roitransition.obj release\temporalmean.obj release\processingimages.obj release\elas.obj release\descriptor.obj release\filter.obj release\matrix.obj release\triangle.obj release\qgraphicstextitemvr.obj release\vrui.obj release\thresholdclassificator.obj release\depthprocessing.obj release\moc_mainwindow.obj release\moc_calibdialog.obj release\moc_loadcalibparamsdialog.obj release\moc_vrfullscreenviewer.obj release\moc_vrimageupdater.obj release\moc_selectcameraparamsdialog.obj release\moc_depthprocessing.obj
 $(LIBS)
 <<
 
@@ -199,10 +276,10 @@ qmake: FORCE
 qmake_all: FORCE
 
 dist:
-	$(ZIP) VR_interfaz.zip $(SOURCES) $(DIST) VR_interfaz.pro C:\Qt\5.10.1\msvc2015_64\mkspecs\features\spec_pre.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\common\angle.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\qconfig.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_charts.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_charts_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_datavisualization.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_datavisualization_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_networkauth.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_networkauth_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_purchasing.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_purchasing_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_script.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_script_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_scripttools.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_scripttools_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webengine.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webengine_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginecore.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginecore_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginecoreheaders_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginewidgets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginewidgets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\features\qt_functions.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\qt_config.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.10.1\msvc2015_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\common\msvc-version.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\toolchain.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\default_pre.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\win32\default_pre.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\resolve_config.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\default_post.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\build_pass.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\precompile_header.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\warn_on.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\qt.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\resources.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\moc.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\win32\opengl.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\uic.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\qmake_use.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\file_copies.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\win32\windows.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\testcase_targets.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\exceptions.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\yacc.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\lex.prf VR_interfaz.pro Logos\logosr.qrc C:\Qt\5.10.1\msvc2015_64\lib\qtmain.prl C:\Qt\5.10.1\msvc2015_64\lib\Qt5Widgets.prl C:\Qt\5.10.1\msvc2015_64\lib\Qt5Gui.prl C:\Qt\5.10.1\msvc2015_64\lib\Qt5Core.prl   Logos\logosr.qrc C:\Qt\5.10.1\msvc2015_64\mkspecs\features\data\dummy.cpp mainwindow.h camera.h calibdialog.h loadcalibparamsdialog.h vrfullscreenviewer.h vrimageupdater.h selectcameraparamsdialog.h vrui.h qgraphicstextitemvr.h utils.h cameracalibration.h descriptor.h elas.h filter.h stereocalibration.h triangle.h matrix.h roitransition.h  main.cpp mainwindow.cpp camera.cpp calibdialog.cpp loadcalibparamsdialog.cpp vrfullscreenviewer.cpp vrimageupdater.cpp selectcameraparamsdialog.cpp vrui.cpp qgraphicstextitemvr.cpp utils.cpp cameracalibration.cpp descriptor.cpp elas.cpp filter.cpp stereocalibration.cpp triangle.cpp matrix.cpp roitransition.cpp mainwindow.ui calibdialog.ui loadcalibparamsdialog.ui selectcameraparamsdialog.ui    
+	$(ZIP) VR_interfaz.zip $(SOURCES) $(DIST) VR_interfaz.pro C:\Qt\5.10.1\msvc2015_64\mkspecs\features\spec_pre.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\common\angle.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\common\windows-vulkan.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\common\msvc-desktop.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\qconfig.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3danimation.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3danimation_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dcore.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dcore_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dextras.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dextras_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dinput.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dinput_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dlogic.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dlogic_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquick.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquick_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickextras_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickinput_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickrender_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3drender.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_3drender_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_accessibility_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axbase.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axbase_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axcontainer.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axcontainer_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axserver.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_axserver_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_bluetooth.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_bluetooth_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_bootstrap_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_charts.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_charts_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_concurrent.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_concurrent_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_core.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_core_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_datavisualization.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_datavisualization_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_dbus.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_dbus_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_designer.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_designer_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_designercomponents_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_edid_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_egl_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_fb_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_gamepad.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_gamepad_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_gui.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_gui_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_help.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_help_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_location.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_location_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_multimedia.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_multimedia_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_network.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_network_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_networkauth.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_networkauth_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_nfc.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_nfc_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_opengl.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_opengl_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_openglextensions.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_openglextensions_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_packetprotocol_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_positioning.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_positioning_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_printsupport.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_printsupport_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_purchasing.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_purchasing_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qml.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qml_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qmldebug_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qmldevtools_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qmltest.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qmltest_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quick.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quick_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickparticles_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_quickwidgets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_remoteobjects_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_repparser.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_repparser_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_script.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_script_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_scripttools.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_scripttools_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_scxml.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_scxml_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_sensors.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_sensors_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_serialbus.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_serialbus_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_serialport.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_serialport_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_sql.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_sql_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_svg.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_svg_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_testlib.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_testlib_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_texttospeech.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_texttospeech_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_theme_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_uiplugin.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_uitools.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_uitools_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_vulkan_support_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webchannel.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webchannel_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webengine.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webengine_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginecore.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginecore_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginecoreheaders_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginewidgets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webenginewidgets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_websockets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_websockets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webview.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_webview_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_widgets.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_widgets_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_winextras.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_winextras_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_xml.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_xml_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\modules\qt_lib_zlib_private.pri C:\Qt\5.10.1\msvc2015_64\mkspecs\features\qt_functions.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\qt_config.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\win32-msvc\qmake.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\spec_post.prf .qmake.stash C:\Qt\5.10.1\msvc2015_64\mkspecs\features\exclusive_builds.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\common\msvc-version.conf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\toolchain.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\default_pre.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\win32\default_pre.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\resolve_config.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\exclusive_builds_post.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\default_post.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\build_pass.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\precompile_header.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\warn_on.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\qt.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\resources.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\moc.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\win32\opengl.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\uic.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\qmake_use.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\file_copies.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\win32\windows.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\testcase_targets.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\exceptions.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\yacc.prf C:\Qt\5.10.1\msvc2015_64\mkspecs\features\lex.prf VR_interfaz.pro C:\Qt\5.10.1\msvc2015_64\lib\qtmain.prl C:\Qt\5.10.1\msvc2015_64\lib\Qt5Widgets.prl C:\Qt\5.10.1\msvc2015_64\lib\Qt5Gui.prl C:\Qt\5.10.1\msvc2015_64\lib\Qt5Core.prl    C:\Qt\5.10.1\msvc2015_64\mkspecs\features\data\dummy.cpp mainwindow.h camera.h calibdialog.h loadcalibparamsdialog.h vrfullscreenviewer.h vrimageupdater.h selectcameraparamsdialog.h utils.h cameracalibration.h stereocalibration.h roitransition.h temporalmean.h processingimages.h libelasSrc\descriptor.h libelasSrc\elas.h libelasSrc\filter.h libelasSrc\matrix.h libelasSrc\triangle.h VR_UI_Src\qgraphicstextitemvr.h VR_UI_Src\vrui.h classificatorsSrc\presetclassificator.h classificatorsSrc\thresholdclassificator.h depthprocessing.h  main.cpp mainwindow.cpp camera.cpp calibdialog.cpp loadcalibparamsdialog.cpp vrfullscreenviewer.cpp vrimageupdater.cpp selectcameraparamsdialog.cpp utils.cpp cameracalibration.cpp stereocalibration.cpp roitransition.cpp temporalmean.cpp processingimages.cpp libelasSrc\elas.cpp libelasSrc\descriptor.cpp libelasSrc\filter.cpp libelasSrc\matrix.cpp libelasSrc\triangle.cpp VR_UI_Src\qgraphicstextitemvr.cpp VR_UI_Src\vrui.cpp classificatorsSrc\thresholdclassificator.cpp depthprocessing.cpp mainwindow.ui calibdialog.ui loadcalibparamsdialog.ui selectcameraparamsdialog.ui    
 
 clean: compiler_clean 
-	-$(DEL_FILE) release\main.obj release\mainwindow.obj release\camera.obj release\calibdialog.obj release\loadcalibparamsdialog.obj release\vrfullscreenviewer.obj release\vrimageupdater.obj release\selectcameraparamsdialog.obj release\vrui.obj release\qgraphicstextitemvr.obj release\utils.obj release\cameracalibration.obj release\descriptor.obj release\elas.obj release\filter.obj release\stereocalibration.obj release\triangle.obj release\matrix.obj release\roitransition.obj release\qrc_logosr.obj release\moc_mainwindow.obj release\moc_calibdialog.obj release\moc_loadcalibparamsdialog.obj release\moc_vrfullscreenviewer.obj release\moc_vrimageupdater.obj release\moc_selectcameraparamsdialog.obj
+	-$(DEL_FILE) release\main.obj release\mainwindow.obj release\camera.obj release\calibdialog.obj release\loadcalibparamsdialog.obj release\vrfullscreenviewer.obj release\vrimageupdater.obj release\selectcameraparamsdialog.obj release\utils.obj release\cameracalibration.obj release\stereocalibration.obj release\roitransition.obj release\temporalmean.obj release\processingimages.obj release\elas.obj release\descriptor.obj release\filter.obj release\matrix.obj release\triangle.obj release\qgraphicstextitemvr.obj release\vrui.obj release\thresholdclassificator.obj release\depthprocessing.obj release\moc_mainwindow.obj release\moc_calibdialog.obj release\moc_loadcalibparamsdialog.obj release\moc_vrfullscreenviewer.obj release\moc_vrimageupdater.obj release\moc_selectcameraparamsdialog.obj release\moc_depthprocessing.obj
 	-$(DEL_FILE) release\VR_interfaz.exp
 
 distclean: clean 
@@ -220,23 +297,17 @@ benchmark: first
 
 compiler_no_pch_compiler_make_all:
 compiler_no_pch_compiler_clean:
-compiler_rcc_make_all: release\qrc_logosr.cpp
+compiler_rcc_make_all:
 compiler_rcc_clean:
-	-$(DEL_FILE) release\qrc_logosr.cpp
-release\qrc_logosr.cpp: Logos\logosr.qrc \
-		C:\Qt\5.10.1\msvc2015_64\bin\rcc.exe \
-		Logos\CVC_CAT_CMYK.gif
-	C:\Qt\5.10.1\msvc2015_64\bin\rcc.exe -name logosr Logos\logosr.qrc -o release\qrc_logosr.cpp
-
 compiler_moc_predefs_make_all: release\moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) release\moc_predefs.h
 release\moc_predefs.h: C:\Qt\5.10.1\msvc2015_64\mkspecs\features\data\dummy.cpp
 	cl -BxC:\Qt\5.10.1\msvc2015_64\bin\qmake.exe -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStrings -Zc:throwingNew -O2 -MD -W3 -w34100 -w34189 -w44996 -w44456 -w44457 -w44458 -wd4577 -wd4467 -E C:\Qt\5.10.1\msvc2015_64\mkspecs\features\data\dummy.cpp 2>NUL >release\moc_predefs.h
 
-compiler_moc_header_make_all: release\moc_mainwindow.cpp release\moc_calibdialog.cpp release\moc_loadcalibparamsdialog.cpp release\moc_vrfullscreenviewer.cpp release\moc_vrimageupdater.cpp release\moc_selectcameraparamsdialog.cpp
+compiler_moc_header_make_all: release\moc_mainwindow.cpp release\moc_calibdialog.cpp release\moc_loadcalibparamsdialog.cpp release\moc_vrfullscreenviewer.cpp release\moc_vrimageupdater.cpp release\moc_selectcameraparamsdialog.cpp release\moc_depthprocessing.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) release\moc_mainwindow.cpp release\moc_calibdialog.cpp release\moc_loadcalibparamsdialog.cpp release\moc_vrfullscreenviewer.cpp release\moc_vrimageupdater.cpp release\moc_selectcameraparamsdialog.cpp
+	-$(DEL_FILE) release\moc_mainwindow.cpp release\moc_calibdialog.cpp release\moc_loadcalibparamsdialog.cpp release\moc_vrfullscreenviewer.cpp release\moc_vrimageupdater.cpp release\moc_selectcameraparamsdialog.cpp release\moc_depthprocessing.cpp
 release\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWindow \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qmainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
@@ -581,7 +652,7 @@ release\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWind
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qthread.h \
-		vrui.h \
+		VR_UI_Src\vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
@@ -605,7 +676,7 @@ release\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWind
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsScene \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsscene.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItemGroup \
-		qgraphicstextitemvr.h \
+		VR_UI_Src\qgraphicstextitemvr.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsTextItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QFont \
 		roitransition.h \
@@ -623,6 +694,11 @@ release\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWind
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem \
+		libelasSrc\elas.h \
+		processingimages.h \
+		classificatorsSrc\presetclassificator.h \
+		classificatorsSrc\thresholdclassificator.h \
+		temporalmean.h \
 		mainwindow.h \
 		release\moc_predefs.h \
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
@@ -1232,7 +1308,7 @@ release\moc_vrfullscreenviewer.cpp: camera.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qthread.h \
-		vrui.h \
+		VR_UI_Src\vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
@@ -1259,7 +1335,7 @@ release\moc_vrfullscreenviewer.cpp: camera.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsScene \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsscene.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItemGroup \
-		qgraphicstextitemvr.h \
+		VR_UI_Src\qgraphicstextitemvr.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsTextItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QFont \
 		roitransition.h \
@@ -1756,6 +1832,156 @@ release\moc_selectcameraparamsdialog.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWid
 		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
 	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include release/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv3.4/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" selectcameraparamsdialog.h -o release\moc_selectcameraparamsdialog.cpp
 
+release\moc_depthprocessing.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QMutex \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtimer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasictimer.h \
+		utils.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		stereocalibration.h \
+		cameracalibration.h \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
+		classificatorsSrc\thresholdclassificator.h \
+		classificatorsSrc\presetclassificator.h \
+		temporalmean.h \
+		depthprocessing.h \
+		release\moc_predefs.h \
+		C:\Qt\5.10.1\msvc2015_64\bin\moc.exe
+	C:\Qt\5.10.1\msvc2015_64\bin\moc.exe $(DEFINES) --compiler-flavor=msvc --include release/moc_predefs.h -IC:/Qt/5.10.1/msvc2015_64/mkspecs/win32-msvc -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz -I"C:/Program Files/Basler/pylon 5/development/include" -IC:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/INCLUDEPATH -I"C:/Users/rsegovia/Desktop/TFG/TFG-Code/VR_interfaz/+=" -IC:/opencv3.4/build/include -IC:/Qt/5.10.1/msvc2015_64/include -IC:/Qt/5.10.1/msvc2015_64/include/QtWidgets -IC:/Qt/5.10.1/msvc2015_64/include/QtGui -IC:/Qt/5.10.1/msvc2015_64/include/QtANGLE -IC:/Qt/5.10.1/msvc2015_64/include/QtCore -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\INCLUDE" -I"C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\ATLMFC\INCLUDE" -I"C:\Program Files (x86)\Windows Kits\10\include\10.0.10240.0\ucrt" -I"C:\Program Files (x86)\Windows Kits\NETFXSDK\4.6.1\include\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\shared" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\um" -I"C:\Program Files (x86)\Windows Kits\8.1\include\\winrt" depthprocessing.h -o release\moc_depthprocessing.cpp
+
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
 compiler_moc_source_make_all:
@@ -1785,7 +2011,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 
 
@@ -2136,7 +2362,7 @@ release\main.obj: main.cpp mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qthread.h \
-		vrui.h \
+		VR_UI_Src/vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
@@ -2160,7 +2386,7 @@ release\main.obj: main.cpp mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsScene \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsscene.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItemGroup \
-		qgraphicstextitemvr.h \
+		VR_UI_Src/qgraphicstextitemvr.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsTextItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QFont \
 		roitransition.h \
@@ -2177,7 +2403,12 @@ release\main.obj: main.cpp mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem \
+		libelasSrc/elas.h \
+		processingimages.h \
+		classificatorsSrc/presetclassificator.h \
+		classificatorsSrc/thresholdclassificator.h \
+		temporalmean.h
 
 release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWindow \
@@ -2524,7 +2755,7 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qthread.h \
-		vrui.h \
+		VR_UI_Src/vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
@@ -2548,7 +2779,7 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsScene \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsscene.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItemGroup \
-		qgraphicstextitemvr.h \
+		VR_UI_Src/qgraphicstextitemvr.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsTextItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QFont \
 		roitransition.h \
@@ -2566,6 +2797,11 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractscrollarea.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsRectItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsLineItem \
+		libelasSrc/elas.h \
+		processingimages.h \
+		classificatorsSrc/presetclassificator.h \
+		classificatorsSrc/thresholdclassificator.h \
+		temporalmean.h \
 		ui_mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QVariant \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QAction \
@@ -2594,10 +2830,11 @@ release\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qpushbutton.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QRadioButton \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qradiobutton.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QSpinBox \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qspinbox.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QStatusBar \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstatusbar.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QVBoxLayout \
-		elas.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDateTime
 
 release\camera.obj: camera.cpp camera.h \
@@ -3614,7 +3851,7 @@ release\vrfullscreenviewer.obj: vrfullscreenviewer.cpp vrfullscreenviewer.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qthread.h \
-		vrui.h \
+		VR_UI_Src/vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
@@ -3641,7 +3878,7 @@ release\vrfullscreenviewer.obj: vrfullscreenviewer.cpp vrfullscreenviewer.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsScene \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsscene.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItemGroup \
-		qgraphicstextitemvr.h \
+		VR_UI_Src/qgraphicstextitemvr.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsTextItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QFont \
 		roitransition.h \
@@ -4173,240 +4410,6 @@ release\selectcameraparamsdialog.obj: selectcameraparamsdialog.cpp selectcamerap
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QSpinBox \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qspinbox.h
 
-release\vrui.obj: vrui.cpp vrui.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QStyleOptionGraphicsItem \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstyleoption.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qwidget.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpalette.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qsizepolicy.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcursor.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qkeysequence.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qevent.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qurl.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qurlquery.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qfile.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qfiledevice.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qvector2d.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtouchdevice.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qvalidator.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregularexpression.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qicon.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qslider.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractslider.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstyle.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtabbar.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtabwidget.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qrubberband.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qframe.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qabstractitemmodel.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QWidget \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QPointF \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QVector \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPolygonF \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsPolygonItem \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsScene \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsscene.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItemGroup
-
-release\qgraphicstextitemvr.obj: qgraphicstextitemvr.cpp qgraphicstextitemvr.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsTextItem \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QFont \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug
-
 release\utils.obj: utils.cpp utils.h \
 		C:\opencv3.4\build\include\opencv2\core\core.hpp \
 		C:\opencv3.4\build\include\opencv2\core.hpp \
@@ -4582,17 +4585,71 @@ release\cameracalibration.obj: cameracalibration.cpp cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv3.4\build\include\opencv2\imgproc.hpp
-
-release\descriptor.obj: descriptor.cpp descriptor.h \
-		filter.h
-
-release\elas.obj: elas.cpp elas.h \
-		descriptor.h \
-		triangle.h \
-		matrix.h
-
-release\filter.obj: filter.cpp filter.h
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h
 
 release\stereocalibration.obj: stereocalibration.cpp stereocalibration.h \
 		cameracalibration.h \
@@ -4643,11 +4700,71 @@ release\stereocalibration.obj: stereocalibration.cpp stereocalibration.h \
 		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
-		C:\opencv3.4\build\include\opencv2\imgproc.hpp
-
-release\triangle.obj: triangle.cpp triangle.h
-
-release\matrix.obj: matrix.cpp matrix.h
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h
 
 release\roitransition.obj: roitransition.cpp roitransition.h \
 		C:\opencv3.4\build\include\opencv2\core\core.hpp \
@@ -4755,7 +4872,789 @@ release\roitransition.obj: roitransition.cpp roitransition.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h
 
-release\qrc_logosr.obj: release\qrc_logosr.cpp 
+release\temporalmean.obj: temporalmean.cpp temporalmean.h \
+		utils.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h
+
+release\processingimages.obj: processingimages.cpp processingimages.h \
+		utils.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		libelasSrc/elas.h
+
+release\elas.obj: libelasSrc\elas.cpp libelasSrc/elas.h \
+		libelasSrc/descriptor.h \
+		libelasSrc/triangle.h \
+		libelasSrc/matrix.h
+
+release\descriptor.obj: libelasSrc\descriptor.cpp libelasSrc/descriptor.h \
+		libelasSrc/filter.h
+
+release\filter.obj: libelasSrc\filter.cpp libelasSrc/filter.h
+
+release\matrix.obj: libelasSrc\matrix.cpp libelasSrc/matrix.h
+
+release\triangle.obj: libelasSrc\triangle.cpp libelasSrc/triangle.h
+
+release\qgraphicstextitemvr.obj: VR_UI_Src\qgraphicstextitemvr.cpp VR_UI_Src/qgraphicstextitemvr.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsTextItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QFont \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug
+
+release\vrui.obj: VR_UI_Src\vrui.cpp VR_UI_Src/vrui.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgets-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QStyleOptionGraphicsItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstyleoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qwidget.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpalette.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qsizepolicy.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcursor.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qkeysequence.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qurl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qurlquery.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qfile.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qfiledevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qvector2d.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtouchdevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qvalidator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregularexpression.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qicon.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qslider.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractslider.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstyle.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtabbar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtabwidget.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qrubberband.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qframe.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qabstractitemmodel.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QWidget \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QPointF \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QVector \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPolygonF \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsPolygonItem \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsScene \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsscene.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItemGroup
+
+release\thresholdclassificator.obj: classificatorsSrc\thresholdclassificator.cpp classificatorsSrc/thresholdclassificator.h \
+		classificatorsSrc/presetclassificator.h \
+		utils.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		temporalmean.h \
+		processingimages.h \
+		libelasSrc/elas.h
+
+release\depthprocessing.obj: depthprocessing.cpp depthprocessing.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QThread \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qthread.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnamespace.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig-bootstrapped.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qconfig.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtcore-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsystemdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qprocessordetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcompilerdetection.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtypeinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsysinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlogging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qflags.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasicatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_bootstrap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qgenericatomic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_cxx11.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qatomic_msvc.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qglobalstatic.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmutex.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qnumeric.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qversiontagging.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobjectdefs_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstring.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qchar.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrefcount.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qarraydata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringliteral.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringview.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringbuilder.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qalgorithms.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiterator.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhashfunctions.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpair.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbytearraylist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringlist.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qregexp.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qstringmatcher.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcoreevent.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qscopedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmetatype.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvarlengtharray.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontainerfwd.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qobject_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QMutex \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QTimer \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtimer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qbasictimer.h \
+		utils.h \
+		C:\opencv3.4\build\include\opencv2\core\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvdef.h \
+		C:\opencv3.4\build\include\opencv2\core\hal\interface.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_dispatch.h \
+		C:\opencv3.4\build\include\opencv2\core\cv_cpu_helper.h \
+		C:\opencv3.4\build\include\opencv2\core\version.hpp \
+		C:\opencv3.4\build\include\opencv2\core\base.hpp \
+		C:\opencv3.4\build\include\opencv2\opencv_modules.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ptr.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\neon_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\vsx_utils.hpp \
+		C:\opencv3.4\build\include\opencv2\core\traits.hpp \
+		C:\opencv3.4\build\include\opencv2\core\matx.hpp \
+		C:\opencv3.4\build\include\opencv2\core\saturate.hpp \
+		C:\opencv3.4\build\include\opencv2\core\fast_math.hpp \
+		C:\opencv3.4\build\include\opencv2\core\types.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.hpp \
+		C:\opencv3.4\build\include\opencv2\core\bufferpool.hpp \
+		C:\opencv3.4\build\include\opencv2\core\mat.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\persistence.hpp \
+		C:\opencv3.4\build\include\opencv2\core\operations.hpp \
+		C:\opencv3.4\build\include\opencv2\core\cvstd.inl.hpp \
+		C:\opencv3.4\build\include\opencv2\core\utility.hpp \
+		C:\opencv3.4\build\include\opencv2\core\core_c.h \
+		C:\opencv3.4\build\include\opencv2\core\types_c.h \
+		C:\opencv3.4\build\include\opencv2\core\optim.hpp \
+		C:\opencv3.4\build\include\opencv2\core\ovx.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc.hpp \
+		C:\opencv3.4\build\include\opencv2\imgproc\imgproc_c.h \
+		C:\opencv3.4\build\include\opencv2\imgproc\types_c.h \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui.hpp \
+		C:\opencv3.4\build\include\opencv2\imgcodecs.hpp \
+		C:\opencv3.4\build\include\opencv2\videoio.hpp \
+		C:\opencv3.4\build\include\opencv2\highgui\highgui_c.h \
+		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
+		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qpoint.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvector.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qiodevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdebug.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qhash.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmap.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qtextstream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qlocale.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qvariant.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qshareddata.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		stereocalibration.h \
+		cameracalibration.h \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
+		C:\opencv3.4\build\include\opencv2\features2d.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\miniflann.hpp \
+		C:\opencv3.4\build\include\opencv2\flann\defines.h \
+		C:\opencv3.4\build\include\opencv2\flann\config.h \
+		C:\opencv3.4\build\include\opencv2\core\affine.hpp \
+		C:\opencv3.4\build\include\opencv2\calib3d\calib3d_c.h \
+		classificatorsSrc/thresholdclassificator.h \
+		classificatorsSrc/presetclassificator.h \
+		temporalmean.h
 
 release\moc_mainwindow.obj: release\moc_mainwindow.cpp 
 
@@ -4768,6 +5667,8 @@ release\moc_vrfullscreenviewer.obj: release\moc_vrfullscreenviewer.cpp
 release\moc_vrimageupdater.obj: release\moc_vrimageupdater.cpp 
 
 release\moc_selectcameraparamsdialog.obj: release\moc_selectcameraparamsdialog.cpp 
+
+release\moc_depthprocessing.obj: release\moc_depthprocessing.cpp 
 
 ####### Install
 

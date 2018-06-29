@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
         this->m_cameraL->initUndistortMap(Size(roi.width,roi.height));
         this->m_stereoCalib.initUndistortImage(Size(roi.width,roi.height));
     }
-
+    m_classifier = ThresholdClassificator(SIZE_OF_CLASSIFIER_BUFFER,3,1);
 }
 
 /* Function ~MainWindow
@@ -288,27 +288,42 @@ void MainWindow::frameTimeEvent()
                 tempL = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
                 tempR = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR)).convertToFormat(QImage::Format_Grayscale8);
             }
+            MatPair dispOut;
+            QImagePair dispImOut;
+            dispOut = processDisparity(&tempL,&tempR,Elas::setting(ui->spinBox_Libelas_setting->value()));
 
-            QImagePair out;
-            out = this->processDisparity(&tempL,&tempR,ui->checkBox_colormap->isChecked(),Elas::setting(ui->spinBox_Libelas_setting->value()));
+            dispImOut = postProcessImages(dispOut,ui->checkBox_colormap->isChecked());
 
             if(ui->checkBox_overLap->isChecked() && ui->checkBox_colormap->isChecked()){
-                Mat upSampL, downSampL = QImage2Mat(out.l.copy()).clone();
+                Mat upSampL, downSampL = QImage2Mat(dispImOut.l.copy()).clone();
                 cv::resize(downSampL,upSampL,Size(undisL.size().width,undisL.size().height),INTER_LINEAR);
 
                 Mat mixL = getColorFrom(undisL.clone(),upSampL);
 
-                Mat upSampR, downSampR = QImage2Mat(out.r.copy()).clone();
+                Mat upSampR, downSampR = QImage2Mat(dispImOut.r.copy()).clone();
                 cv::resize(downSampR,upSampR,Size(undisR.size().width,undisR.size().height),INTER_LINEAR);
 
                 Mat mixR = getColorFrom(undisR.clone(),upSampR);
 
-                out.l = Mat2QImage(mixL);
-                out.r = Mat2QImage(mixR);
+                dispImOut.l = Mat2QImage(mixL);
+                dispImOut.r = Mat2QImage(mixR);
+            }
+            if(ui->checkBox_dynamicVergence->isChecked()){
+                cv::Rect centerROI = calculateCenteredROI(dispOut.l.size(),dispOut.l.size().width/downSampling,dispOut.l.size().height/downSampling);
+
+                Mat cutL = Mat(dispOut.l,centerROI);
+                Mat cutR = Mat(dispOut.r,centerROI);
+                Distance value = m_classifier.calcClasificationProximity(cutL,cutR);
+                if(value == CLOSE)
+                    qDebug() << "near";
+                else if(value == MEDIUM)
+                    qDebug() << "medium";
+                else
+                    qDebug() << "far";
             }
 
-            qImageL = out.l.copy();
-            qImageR = out.r.copy();
+            qImageL = dispImOut.l.copy();
+            qImageR = dispImOut.r.copy();
 
         }
         if(ui->checkBox_saveVideo->isChecked())
@@ -358,7 +373,7 @@ bool MainWindow::saveImage(QImage qImage)
     QString imagePath = QFileDialog::getSaveFileName(
                     this,
                     tr("Save File"),
-                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100 12 june/"+filename,
+                    "C:/Users/rsegovia/Desktop/Dataset/1100x1100 22 june/"+filename,
                     tr("PNG (*.png);;JPEG (*.jpg *.jpeg)" )
                     );
     if(!imagePath.isEmpty() && !imagePath.isNull())
@@ -476,7 +491,7 @@ void MainWindow::showVRViewer(int screen)
         ui->groupBox_cameraParams->setEnabled(false);
 
         this->m_timer->stop();
-        this->m_screen = new VrFullscreenViewer(this->m_cameraL,this->m_cameraR);
+        this->m_screen = new VrFullscreenViewer(this->m_cameraL,this->m_cameraR,m_stereoCalib);
         connect(this->m_screen,SIGNAL(destroyed(QObject*)),SLOT(fullscreen_closing()));
         this->m_screen->showFullScreen(screen);
     }
@@ -624,72 +639,8 @@ void MainWindow::on_switchCamera_pushButton_clicked()
     qDebug() <<"WARNING! Stereo undistort will not work!\n";
 }
 
-QImagePair MainWindow::processDisparity(QImage* Im1,QImage* Im2, bool colormap, Elas::setting elasSetting)
-{
-    Mat leftim(Im1->height(),Im1->width(),CV_8UC1,(uchar*)Im1->bits(),Im1->bytesPerLine());
-    Mat rightim(Im2->height(),Im2->width(),CV_8UC1,(uchar*)Im2->bits(),Im2->bytesPerLine());
-
-    Mat l,r;
-    if(leftim.channels()==3){cvtColor(leftim,l,CV_BGR2GRAY); qDebug() << "converted to gray";}
-    else leftim.copyTo(l);
-    if(rightim.channels()==3){cvtColor(rightim,r,CV_BGR2GRAY); qDebug() << "converted to gray";}
-    else rightim.copyTo(r);
-
-    const cv::Size imsize = l.size();
-    const int32_t dims[3] = {imsize.width,imsize.height,imsize.width}; // bytes per line = width
-
-    Mat leftdpf = cv::Mat::zeros(imsize,CV_32F);
-    Mat rightdpf = cv::Mat::zeros(imsize,CV_32F);
-
-    Elas elas(elasSetting);
-    elas.process(l.data,r.data,leftdpf.ptr<float>(0),rightdpf.ptr<float>(0),dims);
-
-    double maxValue = 0;
-    double minValue = 0;
-
-    minMaxLoc(leftdpf,&minValue,&maxValue);
-    int width = leftdpf.size().width;
-    int height = rightdpf.size().height;
-
-    qDebug() << "max:" << maxValue;
-
-    Mat D1(height,width,CV_8UC1);
-    Mat D2(height,width,CV_8UC1);
-
-    for (int32_t i=0; i<height; i++) {
-        for(int  j = 0; j<width; j++){
-            Point2d point(j,i);
-            D1.at<uint8_t>(point) = (uint8_t)max(255.0*(leftdpf.at<float>(point)/maxValue),0.0);
-            D2.at<uint8_t>(point) = (uint8_t)max(255.0*(rightdpf.at<float>(point)/maxValue),0.0);
-        }
-    }
-
-    Mat temp;
-    cvtColor(D1,temp,CV_GRAY2RGB);
-    QImage tempIm1 = Mat2QImage(temp);
-    cvtColor(D2,temp,CV_GRAY2RGB);
-    QImage tempIm2 = Mat2QImage(temp);
-
-    if(colormap)
-    {
-        Mat colormapL, colormapR;
-
-        applyColorMap(D1,colormapL,COLORMAP_JET);
-        applyColorMap(D2,colormapR,COLORMAP_JET);
-
-        tempIm1 = Mat2QImage(colormapL);
-        tempIm2 = Mat2QImage(colormapR);
-    }
-
-    QImagePair outPair;
-    outPair.l = tempIm1.copy();
-    outPair.r = tempIm2.copy();
-    return outPair;
-}
-
 void MainWindow::saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter video, QProgressBar *progress)
 {
-//    qDebug() << buffer.size();
     for(int i = 0; i < buffer.size(); i++) {
         video << QImage2Mat(buffer[i]);
         progress->setValue(progress->value()+1);
@@ -697,39 +648,6 @@ void MainWindow::saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter vid
         this->update();
     }
 }
-
-Mat MainWindow::getColorFrom(Mat backgroundSrc, Mat colorSrc)
-{
-    cvtColor(backgroundSrc,backgroundSrc,CV_RGB2YCrCb);
-    cvtColor(colorSrc,colorSrc,CV_RGB2YCrCb);
-
-    Mat channelOrg[3];
-    Mat channelColor[3];
-    split(backgroundSrc,channelOrg);
-    split(colorSrc,channelColor);
-
-    channelOrg[2] = channelColor[2];
-    channelOrg[1] = channelColor[1];
-
-    Mat imgMix(Size(backgroundSrc.size().width,backgroundSrc.size().height),CV_8UC3);
-    merge(channelOrg,3,imgMix);
-
-    cvtColor(imgMix,imgMix,CV_YCrCb2RGB);
-    return imgMix;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

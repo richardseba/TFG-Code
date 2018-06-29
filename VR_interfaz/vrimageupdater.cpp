@@ -1,5 +1,7 @@
 #include "vrimageupdater.h"
 
+#include "processingimages.h"
+
 /* Function VRimageUpdater
  * -------------------------------
  * build-in cosntructor.
@@ -19,6 +21,7 @@ VRimageUpdater::VRimageUpdater(Camera* camera,QTimer* timer, bool mirrored, bool
     this->m_isUndistorted = isUndistorted;
     this->m_camera = camera;
     this->m_crono.start();
+    connect(m_timeTrigger, SIGNAL (timeout()), this, SLOT (frameUpdateEvent()));
 }
 
 /* Function ~VRimageUpdater
@@ -126,57 +129,6 @@ void VRimageUpdater::setUpdatingEvent(bool updating)
         m_mutex.unlock();
     }
 }
-
-/* public slot zoomIn
- * -------------------------------
- * function that will zoom in on the camera sensor
- *
- * zoom : Zoom quantity in the camera sensor
-*/
-void VRimageUpdater::zoomIn(float zoom)
-{
-    Rect newRoi =Rect(0,0,0,0);
-    int maxWidth, maxHeight = 0;
-
-    setUpdatingEvent(false);
-    maxWidth = this->m_camera->getMaxWidth();
-    maxHeight = this->m_camera->getMaxHeight();
-
-    Rect oldRoi = this->m_camera->getCurrentROIRect();
-    newRoi.width =oldRoi.width - zoom;
-    newRoi.height =oldRoi.height - zoom;
-    newRoi.x = maxWidth/2-newRoi.width/2;
-    newRoi.y = maxHeight/2-newRoi.height/2;
-
-    this->m_camera->setROIRect(newRoi);
-    setUpdatingEvent(true);
-}
-
-/* public slot zoomOut
- * -------------------------------
- * function that will zoom in on the camera sensor
- *
- * zoom : Zoom quantity in the camera sensor
-*/
-void VRimageUpdater::zoomOut(float zoom)
-{
-    Rect newRoi =Rect(0,0,0,0);
-    int maxWidth, maxHeight = 0;
-
-    setUpdatingEvent(false);
-    maxWidth = this->m_camera->getMaxWidth();
-    maxHeight = this->m_camera->getMaxHeight();
-
-    Rect oldRoi = this->m_camera->getCurrentROIRect();
-    newRoi.width =oldRoi.width + zoom;
-    newRoi.height =oldRoi.height + zoom;
-    newRoi.x = maxWidth/2-newRoi.width/2;
-    newRoi.y = maxHeight/2-newRoi.height/2;
-
-    this->m_camera->setROIRect(newRoi);
-    setUpdatingEvent(true);
-}
-
 
 
 

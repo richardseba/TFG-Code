@@ -28,6 +28,8 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 #include "utils.h"
 #include "../../VR_interfaz/stereocalibration.h"
 #include "../../VR_interfaz/cameracalibration.h"
+#include "../../VR_interfaz/processingimages.h"
+#include "../../VR_interfaz/temporalmean.h"
 
 #include <QImage>
 #include <QImage>
@@ -40,33 +42,53 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 using namespace std;
 using namespace cv;
 
-float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR)
-{
-    Mat cutL = Mat(imL,rectL);
-    Mat cutR = Mat(imL,rectR);
+enum OperationClass { meanopt=0, maxopt=1, minopt=2, medianopt=3};
+enum SizeOperation { supsampling=0, roi=1, noOpt=2};
 
-    float sumL = 0;
-    float sumR = 0;
-    int widthL = cutL.size().width;
-    int heightL = cutL.size().height;
-    for (int i=0; i<heightL; i++) {
-        for(int j = 0; j<widthL; j++){
-          sumL += cutL.at<float>(i,j);
-        }
+
+float getValueFromROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, TemporalMean &oldValues, OperationClass typeOpt )
+{
+    float mean = 0;
+    switch (typeOpt) {
+    case meanopt:
+        mean = getMeanOfROI(imL,imR,rectL,rectR,0);
+        break;
+    case maxopt:
+        mean = getMaxOfROI(imL,imR,rectL,rectR,0);
+        break;
+    case minopt:
+        mean = getMinOfROI(imL,imR,rectL,rectR,0);
+        break;
+    case medianopt:
+        mean = getMedianOfROI(imL,imR,rectL,rectR,0);
+        break;
     }
-    int widthR = cutR.size().width;
-    int heightR = cutR.size().height;
-    for (int i=0; i<heightR; i++) {
-        for(int j = 0; j<widthR; j++){
-          sumR += cutR.at<float>(i,j);
-        }
-    }
-    float meanL = sumL/(widthL*heightL);
-    float meanR = sumR/(widthR*heightR);
-    return (meanL+meanR)/2.0;
-    return 0;
+//    qDebug() << mean;
+    oldValues.setNewValue(mean);
+    mean = oldValues.getCurrentMean();
+    return mean;
 }
 
+void writeMatToFile(cv::Mat& m, const char* filename)
+{
+    ofstream fout(filename);
+
+    if(!fout)
+    {
+        qDebug() <<"File Not Opened"<<endl;  return;
+    }
+
+    for(int i=0; i<m.rows; i++)
+    {
+        for(int j=0; j<m.cols; j++)
+        {
+            fout<<m.at<float>(i,j)<<", ";
+        }
+        fout<<endl;
+    }
+
+    fout.close();
+}
 
 void process (Mat I1,Mat I2, QImage &Im1, QImage &Im2, bool colorMap) {
 
@@ -195,7 +217,7 @@ void processframes(QString path_L,QString path_R,bool colorMap)
     newVideoR.release();
 }
 
-void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize)
+void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize,OperationClass optType,SizeOperation typeSize, bool saveVideo, char* outfilename)
 {
     VideoCapture videoL(path_L.toLatin1().data());
     VideoCapture videoR(path_R.toLatin1().data());
@@ -218,11 +240,16 @@ void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize)
     StereoCalibration stereocalib = StereoCalibration(CameraCalibration(pathLeft),CameraCalibration(pathRight),pathStereo);
     stereocalib.initUndistortImage();
 
+    TemporalMean oldValues(10);
+    Mat outputValues(1,nFrames,CV_32F);
+
     Mat frameL, frameR;
     QImage out1,out2;
 
-    newVideoL.open("new_video_out_L.avi",-1,33,outSize);
-    newVideoR.open("new_video_out_R.avi",-1,33,outSize);
+    if(saveVideo){
+        newVideoL.open("./video/Lejos_L.avi",-1,33,outSize);
+        newVideoR.open("./video/Lejos_R.avi",-1,33,outSize);
+    }
 
     for(int i = 0; i < nFrames; i++)
     {
@@ -236,23 +263,43 @@ void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize)
         Mat tempL = stereocalib.undistortLeft(QImage2Mat(imLeft),CV_INTER_LINEAR);
         Mat tempR = stereocalib.undistortRight(QImage2Mat(imRight),CV_INTER_LINEAR);
 
-        if(outSize != originalSize)
-        {
+        if(typeSize == supsampling) {
             Mat subsamplingL;
             Mat subsamplingR;
 
-            pyrDown(tempL,subsamplingL,outSize);
-            pyrDown(tempR,subsamplingR,outSize);
+            cv::resize(tempL,subsamplingL,outSize,INTER_LINEAR);
+            cv::resize(tempR,subsamplingR,outSize,INTER_LINEAR);
 
-            tempL = subsamplingL;
-            tempR = subsamplingR;
+            subsamplingL.copyTo(tempL);
+            subsamplingR.copyTo(tempR);
         }
-        process(tempL,tempR,out1,out2,colorMap);
-        newVideoL << QImage2Mat(out1);
-        newVideoR << QImage2Mat(out2);
+        if(typeSize == roi) {
+                cv::Rect rect = calculateCenteredROI(Size(tempL.size().width,tempL.size().height),outSize.width,outSize.height);
+                tempL = Mat(tempL,rect);
+                tempR = Mat(tempR,rect);
+        }
+
+        QImage qtempL = Mat2QImage(tempL).convertToFormat(QImage::Format_Grayscale8);
+        QImage qtempR = Mat2QImage(tempR).convertToFormat(QImage::Format_Grayscale8);
+
+        MatPair output = processDisparity(&qtempL,&qtempR,Elas::CVC);
+
+        cv::Rect rect = calculateCenteredROI(outSize,outSize.width/2,outSize.height/2);
+
+        outputValues.at<float>(0,i) = getValueFromROI(output.l,output.r,rect,rect,oldValues,optType);
+
+        if(saveVideo){
+            QImagePair dispImOut = postProcessImages(output,colorMap);
+            newVideoL << QImage2Mat(dispImOut.l.copy());
+            newVideoR << QImage2Mat(dispImOut.r.copy());
+        }
     }
-    newVideoL.release();
-    newVideoR.release();
+    writeMatToFile(outputValues,outfilename);
+
+    if(saveVideo){
+        newVideoL.release();
+        newVideoR.release();
+    }
 }
 
 int main (int argc, char** argv) {
@@ -280,7 +327,9 @@ int main (int argc, char** argv) {
     processframes(argv[2],argv[3],colormap);
   } else if (argc==4 && !strcmp(argv[1],"videov")){
       cout << "procesing videov \n";
-      processVideos(argv[2],argv[3],colormap,Size(550,550));
+      OperationClass typeopt = meanopt;
+      processVideos(argv[2],argv[3],colormap,Size(550,550),typeopt, roi, true, (char*)"./outfiles/Lejos/roi/meanopt.txt");
+
   // display help
   } else if (argc==2 && !strcmp(argv[1],"test")){
 //      getMeanOfROI();
