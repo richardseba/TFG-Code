@@ -106,10 +106,10 @@ float getMeanOfROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, float exclu
     Mat maskR = cutR > excludedValues;
 
     cv::Scalar perChannelMeanL = cv::mean(cutL,maskL);
-    float meanL = mean(perChannelMeanL)[0];
+    float meanL = perChannelMeanL[0];
 
     cv::Scalar perChannelMeanR =  cv::mean(cutR,maskR);
-    float meanR = mean(perChannelMeanR)[0];
+    float meanR = perChannelMeanR[0];
 
     return (meanL+meanR)/2.0;
 }

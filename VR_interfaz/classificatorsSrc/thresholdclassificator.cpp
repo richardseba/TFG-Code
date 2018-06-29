@@ -29,7 +29,7 @@ Distance ThresholdClassificator::calcClasificationProximity(Mat imgL, Mat imgR)
 
     m_oldMean.setNewValue(mean);
     mean = m_oldMean.getCurrentMean();
-//    qDebug() << "mean" << mean;
+    qDebug() << "mean" << mean;
 
     if(mean>m_th1)
         output = CLOSE;

@@ -63,6 +63,7 @@ float getValueFromROI(Mat imL, Mat imR, cv::Rect rectL, cv::Rect rectR, Temporal
         mean = getMedianOfROI(imL,imR,rectL,rectR,0);
         break;
     }
+//    qDebug() << mean;
     oldValues.setNewValue(mean);
     mean = oldValues.getCurrentMean();
     return mean;
@@ -216,7 +217,7 @@ void processframes(QString path_L,QString path_R,bool colorMap)
     newVideoR.release();
 }
 
-void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize,OperationClass optType,SizeOperation typeSize, bool saveVideo, char* outfilename, char* filename2)
+void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize,OperationClass optType,SizeOperation typeSize, bool saveVideo, char* outfilename)
 {
     VideoCapture videoL(path_L.toLatin1().data());
     VideoCapture videoR(path_R.toLatin1().data());
@@ -241,7 +242,6 @@ void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize,Oper
 
     TemporalMean oldValues(10);
     Mat outputValues(1,nFrames,CV_32F);
-    Mat cronoval(1,nFrames,CV_32F);
 
     Mat frameL, frameR;
     QImage out1,out2;
@@ -253,13 +253,10 @@ void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize,Oper
 
     for(int i = 0; i < nFrames; i++)
     {
-        QTime cronoTotal;
-        QTime cronoLibelas;
-
         if(i%50 == 0) qDebug() << i << "frames procesed";
         videoL >> frameL;
         videoR >> frameR;
-        cronoTotal.restart();
+
         QImage imLeft = Mat2QImage(frameL).convertToFormat(QImage::Format_RGB888);
         QImage imRight= Mat2QImage(frameR).convertToFormat(QImage::Format_RGB888);
 
@@ -285,16 +282,12 @@ void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize,Oper
         QImage qtempL = Mat2QImage(tempL).convertToFormat(QImage::Format_Grayscale8);
         QImage qtempR = Mat2QImage(tempR).convertToFormat(QImage::Format_Grayscale8);
 
-        cronoLibelas.restart();
-        MatPair output = processDisparity(&qtempL,&qtempR,Elas::CVC);
-        cronoval.at<float>(0,i) = cronoLibelas.restart();
+        MatPair output = processDisparity(&qtempL,&qtempR,Elas::MIDDLEBURY);
 
         cv::Rect rect = calculateCenteredROI(outSize,outSize.width/2,outSize.height/2);
 
-        getValueFromROI(output.l,output.r,rect,rect,oldValues,optType);
+        outputValues.at<float>(0,i) = getValueFromROI(output.l,output.r,rect,rect,oldValues,optType);
 
-
-        outputValues.at<float>(0,i) = cronoTotal.restart();
         if(saveVideo){
             QImagePair dispImOut = postProcessImages(output,colorMap);
             newVideoL << QImage2Mat(dispImOut.l.copy());
@@ -302,7 +295,6 @@ void processVideos(QString path_L,QString path_R,bool colorMap,Size outSize,Oper
         }
     }
     writeMatToFile(outputValues,outfilename);
-    writeMatToFile(cronoval,filename2);
 
     if(saveVideo){
         newVideoL.release();
@@ -337,44 +329,75 @@ int main (int argc, char** argv) {
       cout << "procesing videov \n";
       char LejosL[] = "C:/Users/rsegovia/Desktop/VideosParaPruebas/Lejos_L.avi";
       char LejosR[] = "C:/Users/rsegovia/Desktop/VideosParaPruebas/Lejos_R.avi";
+      OperationClass typeopt = meanopt;
+//      processVideos(LejosL,LejosR,colormap,Size(1100,1100),typeopt,noOpt,         false,(char*)"./outfiles/Lejos/org/minopt.txt");
+//      qDebug() << "first done";
+//      processVideos(LejosL,LejosR,colormap,Size(550,550),  typeopt,roi,           false,(char*)"./outfiles/Lejos/roi/meanopt.txt");
 
-      processVideos(LejosL,LejosR,colormap,Size(275,275),  meanopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 4/TotalTime.txt",(char*)"./outfiles/Lejos/sup 4/LibelasTime.txt");
-      qDebug() << "first done";
-      processVideos(LejosL,LejosR,colormap,Size(183,183),  meanopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 6/TotalTime.txt",(char*)"./outfiles/Lejos/sup 6/LibelasTime.txt");
-      qDebug() << "second done";
-      processVideos(LejosL,LejosR,colormap,Size(137,137),  meanopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 8/TotalTime.txt",(char*)"./outfiles/Lejos/sup 8/LibelasTime.txt");
-      qDebug() << "third done";
-      processVideos(LejosL,LejosR,colormap,Size(110,110),  meanopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 10/TotalTime.txt",(char*)"./outfiles/Lejos/sup 10/LibelasTime.txt");
+//      processVideos(LejosL,LejosR,colormap,Size(275,275),  typeopt,roi,           true,(char*)"./outfiles/Lejos/roi 4/meanopt.txt");
+
+//      processVideos(LejosL,LejosR,colormap,Size(91,91),  typeopt,roi,           true,(char*)"./outfiles/Lejos/roi 12/meanopt.txt");
+//      qDebug() << "second done";
+//      processVideos(LejosL,LejosR,colormap,Size(550,550),  typeopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 2/maxopt.txt");
+
+//      processVideos(LejosL,LejosR,colormap,Size(275,275),  typeopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 4/minopt.txt");
+//      qDebug() << "first done";
+//      processVideos(LejosL,LejosR,colormap,Size(183,183),  typeopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 6/maxopt.txt");
+//      qDebug() << "second done";
+//      processVideos(LejosL,LejosR,colormap,Size(137,137),  typeopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 8/maxopt.txt");
+//      qDebug() << "third done";
+//      processVideos(LejosL,LejosR,colormap,Size(110,110),  typeopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 10/maxopt.txt");
       qDebug() << "fift done";
-      processVideos(LejosL,LejosR,colormap,Size(91,91),  meanopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 12/TotalTime.txt",(char*)"./outfiles/Lejos/sup 12/LibelasTime.txt");
+//      processVideos(LejosL,LejosR,colormap,Size(91,91),  typeopt,supsampling,   false,(char*)"./outfiles/Lejos/sup 12/minopt.txt");
 
       qDebug() << "------------Medium Processing";
       char MediumL[] = "C:/Users/rsegovia/Desktop/VideosParaPruebas/Medium_L.avi";
       char MediumR[] = "C:/Users/rsegovia/Desktop/VideosParaPruebas/Medium_R.avi";
 
-      processVideos(MediumL,MediumR,colormap,Size(275,275),  meanopt,supsampling,   false,(char*)"./outfiles/Medium/sup 4/TotalTime.txt",(char*)"./outfiles/Medium/sup 4/LibelasTime.txt");
-      qDebug() << "first done";
-      processVideos(MediumL,MediumR,colormap,Size(183,183),  meanopt,supsampling,   false,(char*)"./outfiles/Medium/sup 6/TotalTime.txt",(char*)"./outfiles/Medium/sup 6/LibelasTime.txt");
-      qDebug() << "second done";
-      processVideos(MediumL,MediumR,colormap,Size(137,137),  meanopt,supsampling,   false,(char*)"./outfiles/Medium/sup 8/TotalTime.txt",(char*)"./outfiles/Medium/sup 8/LibelasTime.txt");
-      qDebug() << "third done";
-      processVideos(MediumL,MediumR,colormap,Size(110,110),  meanopt,supsampling,   false,(char*)"./outfiles/Medium/sup 10/TotalTime.txt",(char*)"./outfiles/Medium/sup 10/LibelasTime.txt");
-      qDebug() << "fift done";
-      processVideos(MediumL,MediumR,colormap,Size(91,91),  meanopt,supsampling,   false,(char*)"./outfiles/Medium/sup 12/TotalTime.txt",(char*)"./outfiles/Medium/sup 12/LibelasTime.txt");
+
+//      processVideos(MediumL,MediumR,colormap,Size(1100,1100),typeopt,noOpt,         false,(char*)"./outfiles/Medium/org/maxopt.txt");
+//      qDebug() << "first done";
+//      processVideos(MediumL,MediumR,colormap,Size(550,550),  typeopt,roi,           false,(char*)"./outfiles/Medium/roi/meanopt.txt");
+
+//      processVideos(MediumL,MediumR,colormap,Size(275,275),  typeopt,roi,           false,(char*)"./outfiles/Medium/roi 4/meanopt.txt");
+
+//      processVideos(MediumL,MediumR,colormap,Size(91,91),  typeopt,roi,           true,(char*)"./outfiles/Medium/roi 12/meanopt.txt");
+//      qDebug() << "second done";
+//      processVideos(MediumL,MediumR,colormap,Size(550,550),  typeopt,supsampling,   false,(char*)"./outfiles/Medium/sup 2/minopt.txt");
+//      qDebug() << "third done";
+//      processVideos(MediumL,MediumR,colormap,Size(275,275),  typeopt,supsampling,   false,(char*)"./outfiles/Medium/sup 4/minopt.txt");
+//      qDebug() << "forth done";
+//      processVideos(MediumL,MediumR,colormap,Size(183,183),  typeopt,supsampling,   false,(char*)"./outfiles/Medium/sup 6/minopt.txt");
+//      qDebug() << "fift done";
+//      processVideos(MediumL,MediumR,colormap,Size(137,137),  typeopt,supsampling,   false,(char*)"./outfiles/Medium/sup 8/minopt.txt");
+//      qDebug() << "sixth done";
+//      processVideos(MediumL,MediumR,colormap,Size(110,110),  typeopt,supsampling,   false,(char*)"./outfiles/Medium/sup 10/minopt.txt");
+//      qDebug() << "seventh done";
+//      processVideos(MediumL,MediumR,colormap,Size(91,91),  typeopt,supsampling,   false,(char*)"./outfiles/Medium/sup 12/meanopt.txt");
 
       qDebug() << "------------Closer Processing";
       char CercaL[] = "C:/Users/rsegovia/Desktop/VideosParaPruebas/Cerca_L.avi";
       char CercaR[] = "C:/Users/rsegovia/Desktop/VideosParaPruebas/Cerca_R.avi";
 
-      processVideos(CercaL,CercaR,colormap,Size(275,275),  meanopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 4/TotalTime.txt",(char*)"./outfiles/Cerca/sup 4/LibelasTime.txt");
-      qDebug() << "first done";
-      processVideos(CercaL,CercaR,colormap,Size(183,183),  meanopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 6/TotalTime.txt",(char*)"./outfiles/Cerca/sup 6/LibelasTime.txt");
-      qDebug() << "second done";
-      processVideos(CercaL,CercaR,colormap,Size(137,137),  meanopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 8/TotalTime.txt",(char*)"./outfiles/Cerca/sup 8/LibelasTime.txt");
-      qDebug() << "third done";
-      processVideos(CercaL,CercaR,colormap,Size(110,110),  meanopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 10/TotalTime.txt",(char*)"./outfiles/Cerca/sup 10/LibelasTime.txt");
-      qDebug() << "fift done";
-      processVideos(CercaL,CercaR,colormap,Size(91,91),  meanopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 12/TotalTime.txt",(char*)"./outfiles/Cerca/sup 12/LibelasTime.txt");
+//      processVideos(CercaL,CercaR,colormap,Size(1100,1100),typeopt,noOpt,         false,(char*)"./outfiles/Cerca/org/minopt.txt");
+//      qDebug() << "first done";
+//      processVideos(CercaL,CercaR,colormap,Size(550,550),  typeopt,roi,           false,(char*)"./outfiles/Cerca/roi/meanopt.txt");
+
+//      processVideos(CercaL,CercaR,colormap,Size(275,275),  typeopt,roi,           true,(char*)"./outfiles/Cerca/roi 4/meanopt.txt");
+
+      processVideos(CercaL,CercaR,colormap,Size(91,91),  typeopt,roi,           true,(char*)"./outfiles/Cerca/roi 12/meanopt.txt");
+//      qDebug() << "second done";
+//      processVideos(CercaL,CercaR,colormap,Size(550,550),  typeopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 2/undisTime.txt");
+//      qDebug() << "third done";
+//      processVideos(CercaL,CercaR,colormap,Size(275,275),  typeopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 4/meanopt.txt");
+//      qDebug() << "forth done";
+//      processVideos(CercaL,CercaR,colormap,Size(183,183),  typeopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 6/undisTime.txt");
+//      qDebug() << "fift done";
+//      processVideos(CercaL,CercaR,colormap,Size(137,137),  typeopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 8/undisTime.txt");
+//      qDebug() << "sixth done";
+//      processVideos(CercaL,CercaR,colormap,Size(110,110),  typeopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 10/undisTime.txt");
+//      qDebug() << "seventh done";
+//      processVideos(CercaL,CercaR,colormap,Size(91,91),  typeopt,supsampling,   false,(char*)"./outfiles/Cerca/sup 12/minopt.txt");
 
 
   // display help
