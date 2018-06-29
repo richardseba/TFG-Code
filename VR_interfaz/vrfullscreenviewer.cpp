@@ -42,7 +42,7 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     m_currentDistance = Distance(2);
 
 
-    m_depthProcess = new DepthProcessing(&m_timerDepthProcess,stereoCalib,3,1,10,4);
+    m_depthProcess = new DepthProcessing(&m_timerDepthProcess,stereoCalib,12,4,10,4);
 
     this->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
     this->setStyleSheet("border: 0px solid black");
