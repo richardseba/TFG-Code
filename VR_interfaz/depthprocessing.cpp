@@ -133,7 +133,6 @@ void DepthProcessing::setProcessingEvent(bool processing)
 
 void DepthProcessing::frameProcessingEvent()
 {
-//    qDebug() << "spam!";
     QImagePair currentImages = this->getImages2Process();
 
     if(!currentImages.l.isNull() && !currentImages.r.isNull()) {

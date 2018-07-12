@@ -106,14 +106,11 @@ void MainWindow::on_captureButton_clicked()
         QImage copy;
         if(ui->checkBox_undistort->isChecked())
         {
-            //copy = this->m_cameraL->undistortMapImage(*ImgL, CV_INTER_LINEAR);
             copy = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(*ImgL), CV_INTER_LINEAR));
             ui->label_display1->setPixmap(QPixmap::fromImage(copy));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(copy);
-        }
-        else
-        {
+        } else {
             ui->label_display1->setPixmap(QPixmap::fromImage(*ImgL));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(*ImgL);
@@ -124,9 +121,7 @@ void MainWindow::on_captureButton_clicked()
         delete[] ImgL->bits();
         delete ImgL;
         ImgL = NULL;
-    }
-    else
-    {
+    } else {
         qDebug() << "no left image recieved";
     }
 
@@ -135,14 +130,11 @@ void MainWindow::on_captureButton_clicked()
         QImage copy;
         if(ui->checkBox_undistort->isChecked())
         {
-            //copy = this->m_cameraR->undistortMapImage(*ImgR, CV_INTER_LINEAR);
             copy = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(*ImgR), CV_INTER_LINEAR));
             ui->label_display2->setPixmap(QPixmap::fromImage(copy));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(copy);
-        }
-        else
-        {
+        } else {
             ui->label_display2->setPixmap(QPixmap::fromImage(*ImgR));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(*ImgR);
@@ -153,9 +145,7 @@ void MainWindow::on_captureButton_clicked()
         delete[] ImgR->bits();
         delete ImgR;
         ImgR = NULL;
-    }
-    else
-    {
+    } else {
         qDebug() << "no right image recieved";
     }
 }
@@ -197,9 +187,7 @@ void MainWindow::on_recordingButton_clicked()
         ui->groupBox_capture->setEnabled(true);
         ui->pushButton_Fullscreen->setEnabled(true);
         ui->pushButton_VR->setEnabled(true);
-    }
-    else
-    {
+    } else {
         if(ui->checkBox_saveVideo->isChecked()){
             Rect rectL = m_cameraL->getCurrentROIRect();
             Rect rectR = m_cameraR->getCurrentROIRect();

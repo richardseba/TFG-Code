@@ -99,26 +99,9 @@ VrFullscreenViewer::~VrFullscreenViewer()
 void VrFullscreenViewer::initScene()
 {
     bool ret;
-    QImage *qImageL;
-    QImage *qImageR;
 
-    this->m_cameraL->stopGrabbing();
-    this->m_cameraL->setROIRect(cv::Rect(0,0,this->m_cameraL->getMaxWidth(), this->m_cameraL->getMaxHeight()));
-    this->m_cameraL->startGrabbing();
-
-    this->m_cameraR->stopGrabbing();
-    this->m_cameraR->setROIRect(cv::Rect(0,0,this->m_cameraR->getMaxWidth(), this->m_cameraR->getMaxHeight()));
-    this->m_cameraR->startGrabbing();
-
-    qImageL = this->m_cameraL->single_grab_image(ret);
-    qImageR = this->m_cameraR->single_grab_image(ret);
-
-    this->m_frameR.setPixmap(QPixmap::fromImage(*qImageR));
-    this->m_frameL.setPixmap(QPixmap::fromImage(*qImageL));
-
-    //Setting up the scene
-    int imageWidth = this->m_frameR.pixmap().width();
-    int imageHeight = this->m_frameR.pixmap().height();
+    int imageWidth = this->m_cameraR->getCurrentROIRect().width;
+    int imageHeight = this->m_cameraR->getCurrentROIRect().height;
 
     m_leftSensorROI = Rect(0,0,imageWidth,imageHeight);
     m_rightSensorROI = Rect(0,0,imageWidth,imageHeight);
@@ -136,14 +119,9 @@ void VrFullscreenViewer::initScene()
 
     this->setScene(&this->m_scene);
 
-    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
-                        max(m_leftSensorROI.height,m_rightSensorROI.height));
-    m_splitLine.setPen(QPen(Qt::red));
-
     //adding items to the scene
     this->scene()->addItem(&this->m_frameR);
     this->scene()->addItem(&this->m_frameL);
-//    this->scene()->addItem(&m_splitLine);
 
     QFont panelFont("Helvetica [Cronyx]",25,12,false );
 
@@ -152,13 +130,6 @@ void VrFullscreenViewer::initScene()
     m_fpsCounter->setPos(600,450);
     m_fpsCounter->setOffset(imageWidth,0);
 //    this->scene()->addItem(m_fpsCounter);
-
-    delete[] qImageL->bits();
-    delete qImageL;
-    qImageL = NULL;
-    delete[] qImageR->bits();
-    delete qImageR;
-    qImageR = NULL;
 
     //setting up the threads used to grab the images from the camera
     imageUpdaterR = new VRimageUpdater(m_cameraR, &m_timeR, false, this->m_useUndistort);
@@ -274,9 +245,6 @@ void VrFullscreenViewer::frameUpdateEvent()
 //    m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
 //    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 //    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
-//    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
-//                        max(m_leftSensorROI.height,m_rightSensorROI.height));
-
 }
 
 /* Function showFullScreen
