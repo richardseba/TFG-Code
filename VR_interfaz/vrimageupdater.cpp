@@ -14,14 +14,18 @@ VRimageUpdater::VRimageUpdater()
  * -------------------------------
  * Overloaded constructor
 */
-VRimageUpdater::VRimageUpdater(Camera* camera,QTimer* timer, bool mirrored, bool isUndistorted)
+VRimageUpdater::VRimageUpdater(Camera* camera, bool mirrored, bool isUndistorted)
 {
-    this->m_timeTrigger = timer;
     this->m_mirrored = mirrored;
     this->m_isUndistorted = isUndistorted;
     this->m_camera = camera;
     this->m_crono.start();
-    connect(m_timeTrigger, SIGNAL (timeout()), this, SLOT (frameUpdateEvent()));
+
+//    m_timeTrigger.start();
+    m_timeTrigger.moveToThread(&m_currentThread);
+    connect(&m_timeTrigger, SIGNAL (timeout()), this, SLOT (frameUpdateEvent()));
+    this->moveToThread(&m_currentThread);
+    m_currentThread.start();
 }
 
 /* Function ~VRimageUpdater
@@ -30,7 +34,9 @@ VRimageUpdater::VRimageUpdater(Camera* camera,QTimer* timer, bool mirrored, bool
 */
 VRimageUpdater::~VRimageUpdater()
 {
-    this->m_timeTrigger->stop();
+    qDebug() << "removing thread" << thread()->currentThreadId();
+    this->m_currentThread.quit();
+    qDebug() << this->m_currentThread.wait();
 }
 
 /* Private slot frameUpdateEvent
@@ -41,7 +47,8 @@ VRimageUpdater::~VRimageUpdater()
 */
 void VRimageUpdater::frameUpdateEvent()
 {
-    m_mutex.lock();
+    m_isUpdating.lock();
+
     if(this->m_camera->isGrabbing())
     {
         bool ret;
@@ -51,12 +58,15 @@ void VRimageUpdater::frameUpdateEvent()
 
         if(ret)
         {
+            m_mutex.lock();
             if(this->m_isUndistorted && this->m_camera->getIsinitUndistort())
                 //Undistort Image
                 m_frame = this->m_camera->undistortMapImage(*qImage,CV_INTER_LINEAR);
             else
                 //NOT undistort
                 m_frame = qImage->copy(qImage->rect());
+
+            m_mutex.unlock();
 
             delete[] qImage->bits();
             delete qImage;
@@ -65,7 +75,15 @@ void VRimageUpdater::frameUpdateEvent()
             m_currentFps = 1000.0/(this->m_crono.restart());
         }
     }
-    m_mutex.unlock();
+    m_isUpdating.unlock();
+}
+
+void VRimageUpdater::waitUpdateFinished()
+{
+    m_isUpdating.lock();
+    m_isUpdating.unlock();
+//    m_mutex.lock();
+//    m_mutex.unlock();
 }
 
 /* public Function getCurrentFPS
@@ -118,14 +136,16 @@ void VRimageUpdater::setUpdatingEvent(bool updating)
     if(updating)
     {
         this->m_camera->startGrabbing(GrabStrategy_LatestImageOnly);
-        this->m_timeTrigger->start();
+        qDebug() << "starting thread" << thread()->currentThreadId();
+        this->m_timeTrigger.start();
     }
     else
     {
         m_mutex.lock();
-        this->m_timeTrigger->stop();
+        qDebug() << "stopping thread" << thread()->currentThreadId();
+        this->m_timeTrigger.stop();
+        qDebug() << "is running" << m_timeTrigger.isActive();
         this->m_camera->stopGrabbing();
-//        qDebug() << "from updater" << this->m_camera->isGrabbing();
         m_mutex.unlock();
     }
 }

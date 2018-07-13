@@ -24,10 +24,11 @@ class VRimageUpdater : public QObject
 public:
     VRimageUpdater();
     ~VRimageUpdater();
-    VRimageUpdater(Camera* camera, QTimer* timer, bool mirrored,bool isUndistorted);
+    VRimageUpdater(Camera* camera, bool mirrored,bool isUndistorted);
     QImage getNextFrame();
     void setIsUndistorted(bool isUndistorted);
     float getCurrentFPS();
+    void waitUpdateFinished();
 public slots:
     void setUpdatingEvent(bool updating);
 private slots:
@@ -37,7 +38,6 @@ private:
     bool m_mirrored;
     bool m_isUndistorted;
 
-    QTimer* m_timeTrigger;
     QTime m_crono; //used for debugging reasons only
     Camera* m_camera;
     QImage m_frame;
@@ -45,6 +45,10 @@ private:
     float m_currentFps;
 
     QMutex  m_mutex;
+    QMutex  m_isUpdating;
+
+    QTimer m_timeTrigger;
+    QThread m_currentThread;
 };
 
 #endif // VRIMAGEUPDATER_H

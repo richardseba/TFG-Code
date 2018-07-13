@@ -86,10 +86,6 @@ private:
     QGraphicsPixmapItem m_frameR;
     QGraphicsPixmapItem m_frameL;
 
-    //Threads used to grab the images from the cameras
-    QThread m_threadR;
-    QThread m_threadL;
-    QThread m_threadDepthProcess;
     Distance m_currentDistance;
 
     //demo

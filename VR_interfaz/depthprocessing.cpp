@@ -12,19 +12,29 @@ DepthProcessing::DepthProcessing(QTimer* timer, StereoCalibration stereoCalib,
                                  float threshold1, float threshold2, int meanBuffSize,
                                  int subsampling, Elas::setting elasSetting)
 {
-    m_timerTrigger = timer;
     m_currentCalib = stereoCalib;
     m_classifier = ThresholdClassificator(meanBuffSize,threshold1,threshold2);
     m_currentDistance = FAR;
     m_currentDistanceValue = 0;
     m_subsampling = subsampling;
     m_libelasSettings = elasSetting;
-    connect(m_timerTrigger, SIGNAL (timeout()), this, SLOT (frameProcessingEvent()));
+
+    m_timerTrigger.moveToThread(&m_currentThread);
+    connect(&m_timerTrigger, SIGNAL (timeout()), this, SLOT (frameProcessingEvent()));
+    this->moveToThread(&m_currentThread);
+    m_currentThread.start();
 }
 
 DepthProcessing::~DepthProcessing()
 {
-    m_timerTrigger->stop();
+    this->m_currentThread.exit(0);
+    qDebug() << this->m_currentThread.wait();
+}
+
+void DepthProcessing::waitUpdateFinished()
+{
+    m_mutexUpdateFinished.lock();
+    m_mutexUpdateFinished.unlock();
 }
 
 //Gets
@@ -125,14 +135,15 @@ void DepthProcessing::setLibelasSetting(Elas::setting setting)
 void DepthProcessing::setProcessingEvent(bool processing)
 {
     if(processing){
-        m_timerTrigger->start();
+        m_timerTrigger.start();
     } else {
-        m_timerTrigger->stop();
+        m_timerTrigger.stop();
     }
 }
 
 void DepthProcessing::frameProcessingEvent()
 {
+    m_mutexUpdateFinished.lock();
     QImagePair currentImages = this->getImages2Process();
 
     if(!currentImages.l.isNull() && !currentImages.r.isNull()) {
@@ -179,6 +190,7 @@ void DepthProcessing::frameProcessingEvent()
 //        else
 //            qDebug() << "far";
     }
+    m_mutexUpdateFinished.unlock();
 }
 
 

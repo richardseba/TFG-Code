@@ -25,7 +25,7 @@ public:
     void setLibelasSetting(Elas::setting setting);
     void setSubsampling(int subsampl);
     void setImages2Process(QImagePair imgPair,Size processingWindowSize);
-
+    void waitUpdateFinished();
 public slots:
     void setProcessingEvent(bool processing);
 
@@ -50,13 +50,15 @@ private:
     Distance m_currentDistance;
     float m_currentDistanceValue;
 
-    QTimer* m_timerTrigger;
+    QTimer m_timerTrigger;
+    QThread m_currentThread;
 
     QMutex m_mutexDistance;
     QMutex m_mutexDistanceValue;
     QMutex m_mutexSubsampling;
     QMutex m_mutexImages2Process;
     QMutex m_mutexElasSettings;
+    QMutex m_mutexUpdateFinished;
 };
 
 #endif // DEPTHPROCESSING_H
