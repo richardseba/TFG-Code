@@ -168,9 +168,9 @@ void MainWindow::on_recordingButton_clicked()
         {
             QProgressBar progress(this);
             progress.setMaximum(m_vectorVideoL.size()+m_vectorVideoR.size());
+            qDebug() << m_vectorVideoL.size() << m_vectorVideoR.size();
             progress.show();
             progress.setFixedSize(250,50);
-            qDebug() << m_vectorVideoL.size();
             saveVideoFromMemory(m_vectorVideoL, m_videoL,&progress);
             saveVideoFromMemory(m_vectorVideoR, m_videoR,&progress);
             m_vectorVideoL.clear();
@@ -627,11 +627,13 @@ void MainWindow::on_switchCamera_pushButton_clicked()
     qDebug() <<"WARNING! Stereo undistort will not work!\n";
 }
 
+
 void MainWindow::saveVideoFromMemory(std::vector<QImage> buffer, VideoWriter video, QProgressBar *progress)
 {
     for(int i = 0; i < buffer.size(); i++) {
         video << QImage2Mat(buffer[i]);
         progress->setValue(progress->value()+1);
+        qApp->processEvents();
         progress->update();
         this->update();
     }

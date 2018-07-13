@@ -61,21 +61,17 @@ private:
     void zoomOut();
     int m_currentUserParam;
 
-
     Camera* m_cameraL;
     Camera* m_cameraR;
 
     QTime crono; //use to perform test, not necessary
     QTimer* m_timer;
 
-    //Timers for the update events in the threads
-    QTimer m_timeR;
-    QTimer m_timeL;
-
+    //associated threads for image capturing and processing
     VRimageUpdater* imageUpdaterR;
     VRimageUpdater* imageUpdaterL;
-
     DepthProcessing* m_depthProcess;
+
     bool m_isProcessing;
 
     QTimer m_timerDepthProcess;
@@ -98,7 +94,7 @@ private:
 
     //User Interface
     QGraphicsTextItemVR* m_fpsCounter;
-    QGraphicsLineItem m_splitLine;
+
     float m_mean;
 
     Rect m_leftSensorROI;

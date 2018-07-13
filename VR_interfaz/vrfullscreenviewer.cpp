@@ -41,8 +41,7 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     m_isProcessing = false;
     m_currentDistance = Distance(2);
 
-
-    m_depthProcess = new DepthProcessing(&m_timerDepthProcess,stereoCalib,12,4,10,4);
+    m_depthProcess = new DepthProcessing(stereoCalib,12,4,10,4);
 
     this->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
     this->setStyleSheet("border: 0px solid black");
@@ -67,10 +66,6 @@ VrFullscreenViewer::~VrFullscreenViewer()
     emit setUpdatingR(false);
     emit setUpdatingL(false);
     emit setProcessingDepth(false);
-
-    imageUpdaterL->waitUpdateFinished();
-    imageUpdaterR->waitUpdateFinished();
-    m_depthProcess->waitUpdateFinished();
 
     delete imageUpdaterL;
     delete imageUpdaterR;

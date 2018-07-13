@@ -14,7 +14,7 @@ class DepthProcessing : public QObject
 {
     Q_OBJECT
 public:
-    DepthProcessing(QTimer* timer, StereoCalibration stereoCalib,
+    DepthProcessing(StereoCalibration stereoCalib,
                      float threshold1, float threshold2, int meanBuffSize,
                      int subsampling=1, Elas::setting elasSetting = Elas::CVC);
     ~DepthProcessing();

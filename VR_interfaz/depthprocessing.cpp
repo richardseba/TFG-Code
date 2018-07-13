@@ -8,7 +8,7 @@ DepthProcessing::DepthProcessing()
 {
 }
 
-DepthProcessing::DepthProcessing(QTimer* timer, StereoCalibration stereoCalib,
+DepthProcessing::DepthProcessing(StereoCalibration stereoCalib,
                                  float threshold1, float threshold2, int meanBuffSize,
                                  int subsampling, Elas::setting elasSetting)
 {
@@ -27,14 +27,18 @@ DepthProcessing::DepthProcessing(QTimer* timer, StereoCalibration stereoCalib,
 
 DepthProcessing::~DepthProcessing()
 {
+    this->waitUpdateFinished();
     this->m_currentThread.exit(0);
-    qDebug() << this->m_currentThread.wait();
+    this->m_currentThread.wait();
 }
 
 void DepthProcessing::waitUpdateFinished()
 {
-    m_mutexUpdateFinished.lock();
-    m_mutexUpdateFinished.unlock();
+    while(this->m_timerTrigger.isActive())
+    {
+        m_mutexUpdateFinished.lock();
+        m_mutexUpdateFinished.unlock();
+    }
 }
 
 //Gets
