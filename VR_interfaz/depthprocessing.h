@@ -26,11 +26,17 @@ public:
     void setSubsampling(int subsampl);
     void setImages2Process(QImagePair imgPair,Size processingWindowSize);
     void waitUpdateFinished();
-public slots:
-    void setProcessingEvent(bool processing);
+    void start();
+    void stop();
 
 private slots:
     void frameProcessingEvent();
+    void startEvent();
+    void stopEvent();
+
+signals:
+    void startSignal();
+    void stopSignal();
 
 private:
     DepthProcessing();

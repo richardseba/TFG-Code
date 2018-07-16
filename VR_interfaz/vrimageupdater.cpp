@@ -23,6 +23,8 @@ VRimageUpdater::VRimageUpdater(Camera* camera, bool mirrored, bool isUndistorted
 
     m_timeTrigger.moveToThread(&m_currentThread);
     connect(&m_timeTrigger, SIGNAL (timeout()), this, SLOT (frameUpdateEvent()));
+    connect(this, SIGNAL (startSignal()), this, SLOT (startEvent()));
+    connect(this, SIGNAL (stopSignal()), this, SLOT (stopEvent()));
     this->moveToThread(&m_currentThread);
     m_currentThread.start();
 }
@@ -33,6 +35,7 @@ VRimageUpdater::VRimageUpdater(Camera* camera, bool mirrored, bool isUndistorted
 */
 VRimageUpdater::~VRimageUpdater()
 {
+    this->stop();
     if(m_timeTrigger.isActive())
     {
         this->waitUpdateFinished();
@@ -125,31 +128,29 @@ void VRimageUpdater::setIsUndistorted(bool isUndistorted)
     this->m_isUndistorted = isUndistorted;
 }
 
-/* public slot setUpdatingEvent
- * -------------------------------
- * function that starts or stops updating the image
- *
- * isUndistorted : True -> the image will be captured
- *                 False -> the image won't be captured
-*/
-void VRimageUpdater::setUpdatingEvent(bool updating)
+void VRimageUpdater::start()
 {
-    if(updating)
-    {
-        this->m_camera->startGrabbing(GrabStrategy_LatestImageOnly);
-        this->m_timeTrigger.start();
-    }
-    else
-    {
-        m_mutex.lock();
-        this->m_timeTrigger.stop();
-        this->m_camera->stopGrabbing();
-        m_mutex.unlock();
-    }
+    emit startSignal();
 }
 
+void VRimageUpdater::startEvent()
+{
+    this->m_camera->startGrabbing(GrabStrategy_LatestImageOnly);
+    this->m_timeTrigger.start();
+}
 
+void VRimageUpdater::stop()
+{
+    emit stopSignal();
+}
 
+void VRimageUpdater::stopEvent()
+{
+    m_mutex.lock();
+    this->m_timeTrigger.stop();
+    this->m_camera->stopGrabbing();
+    m_mutex.unlock();
+}
 
 
 

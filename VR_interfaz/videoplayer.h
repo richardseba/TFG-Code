@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QMutex>
+#include <Qtime>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -35,6 +36,8 @@ signals:
     void stopSignal();
 
 private:
+
+    QTime m_crono;
 
     QImagePair m_currentFrames;
 

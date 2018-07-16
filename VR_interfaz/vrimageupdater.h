@@ -29,10 +29,18 @@ public:
     void setIsUndistorted(bool isUndistorted);
     float getCurrentFPS();
     void waitUpdateFinished();
-public slots:
-    void setUpdatingEvent(bool updating);
+    void start();
+    void stop();
+
 private slots:
     void frameUpdateEvent();
+    void startEvent();
+    void stopEvent();
+
+signals:
+    void startSignal();
+    void stopSignal();
+
 private:
     void updateUserParamInFrame();
     bool m_mirrored;

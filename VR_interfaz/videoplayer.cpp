@@ -17,7 +17,7 @@ VideoPlayer::VideoPlayer(char* namefileL, char* namefileR)
 
 VideoPlayer::~VideoPlayer()
 {
-    emit stopSignal();
+    this->stop();
     if(m_timeTrigger.isActive())
     {
         this->waitEndGrabEvent();
@@ -47,7 +47,9 @@ void VideoPlayer::startEvent()
     if(!m_timeTrigger.isActive())
     {
         int fps = (int)m_videoLeft.get(CAP_PROP_FPS);
-        m_timeTrigger.start(1000/fps);
+
+//        m_timeTrigger.start(1000/fps);
+        m_timeTrigger.start();
     }
 }
 
@@ -75,7 +77,9 @@ bool VideoPlayer::isVideoFinished()
 
 void VideoPlayer::frameGrabEvent()
 {
-    Mat imageL, imageR;
+   QTime tempcrono; tempcrono.start();
+
+   Mat imageL, imageR;
 
    m_videoLeft >> imageL;
    m_videoRight >> imageR;
@@ -90,6 +94,8 @@ void VideoPlayer::frameGrabEvent()
    {
        this->stop();
    }
+
+   qDebug() << "Total Time" << m_crono.restart() << "process" << tempcrono.restart() ;
 }
 
 QImagePair VideoPlayer::getFrames()

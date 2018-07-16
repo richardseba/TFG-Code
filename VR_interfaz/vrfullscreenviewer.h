@@ -50,12 +50,7 @@ public slots:
     void showFullScreen(int screenSelector);
 private slots:
     void frameUpdateEvent();
-signals:
-    void setUpdatingR(bool update);
-    void setUpdatingL(bool update);
-    void setProcessingDepth(bool update);
-    void startVideoPlayer();
-    void stopVideoPlayer();
+
 private:
     void initScene();
     void saveUserParameters(QString filename,QString nameSufix="");
@@ -74,7 +69,6 @@ private:
     VRimageUpdater* imageUpdaterR;
     VRimageUpdater* imageUpdaterL;
     DepthProcessing* m_depthProcess;
-
     bool m_isProcessing;
 
     QTimer m_timerDepthProcess;
