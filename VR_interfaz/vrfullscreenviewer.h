@@ -7,6 +7,7 @@
 #include "./VR_UI_Src/qgraphicstextitemvr.h"
 #include "roitransition.h"
 #include "depthprocessing.h"
+#include "videoplayer.h"
 
 #include "QTimer"
 #include <QTime>
@@ -53,6 +54,8 @@ signals:
     void setUpdatingR(bool update);
     void setUpdatingL(bool update);
     void setProcessingDepth(bool update);
+    void startVideoPlayer();
+    void stopVideoPlayer();
 private:
     void initScene();
     void saveUserParameters(QString filename,QString nameSufix="");
@@ -104,9 +107,7 @@ private:
     ROITransition m_transitionRight;
     bool m_doTransitions;
 
-    //video demo
-    VideoCapture* m_videoR;
-    VideoCapture* m_videoL;
+    VideoPlayer* m_videoPlayer;
     bool m_isPlayingVideo;
 
 protected:

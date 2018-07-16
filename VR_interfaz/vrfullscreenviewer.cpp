@@ -1,6 +1,5 @@
 #include "vrfullscreenviewer.h"
 
-
 /* Function VrFullscreenViewer
  * -------------------------------
  * build in constructor.
@@ -75,6 +74,10 @@ VrFullscreenViewer::~VrFullscreenViewer()
         this->m_timer->stop();
     delete this->m_timer;
 
+    if(m_isPlayingVideo != NULL) {
+        delete m_videoPlayer;
+    }
+
     delete m_fpsCounter;
     qDebug() << "fullscreen closed";
 }
@@ -128,7 +131,7 @@ void VrFullscreenViewer::initScene()
     connect(this,SIGNAL(setUpdatingL(bool)),imageUpdaterL,SLOT(setUpdatingEvent(bool)));
     connect(this,SIGNAL(setUpdatingR(bool)),imageUpdaterR,SLOT(setUpdatingEvent(bool)));
 
-    connect(this,SIGNAL(setProcessingDepth(bool)),m_depthProcess,SLOT(setProcessingEvent(bool)));
+    connect(this, SIGNAL(setProcessingDepth(bool)), m_depthProcess, SLOT(setProcessingEvent(bool)));
 
     emit setUpdatingR(true);
     emit setUpdatingL(true);
@@ -194,15 +197,12 @@ void VrFullscreenViewer::frameUpdateEvent()
         this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(leftrect)));
         this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
     } if(m_isPlayingVideo){ //playing video on
-       Mat matL ,matR;
-       m_videoL->grab();
-       m_videoR->grab();
-       m_videoL->read(matL);
-       m_videoR->read(matR);
-       if(!matL.empty()&& !matR.empty())
+       QImagePair frames = m_videoPlayer->getFrames();
+
+       if(!frames.l.isNull() && !frames.r.isNull())
        {
-           this->m_frameL.setPixmap(QPixmap::fromImage(Mat2QImage(matL).copy(leftrect)));
-           this->m_frameR.setPixmap(QPixmap::fromImage(Mat2QImage(matR).copy(rightrect)));
+           this->m_frameL.setPixmap(QPixmap::fromImage(frames.l.copy(leftrect)));
+           this->m_frameR.setPixmap(QPixmap::fromImage(frames.r.copy(rightrect)));
        }
     }
     //update the movement in the ROI, if any.
@@ -459,13 +459,11 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_5:
         if(!m_isPlayingVideo){
             m_isPlayingVideo = true;
-            m_videoL = new VideoCapture("./videos/Loadable_L.avi");
-            m_videoR = new VideoCapture("./videos/Loadable_R.avi");
-        }else
-        {
+            m_videoPlayer = new VideoPlayer((char*)"./videos/Loadable_L.avi",(char*)"./videos/Loadable_R.avi");
+            m_videoPlayer->start();
+        } else {
             m_isPlayingVideo = false;
-            delete m_videoL;
-            delete m_videoR;
+            m_videoPlayer->stop();
         }
         //Keys for show 1 static image
     case Qt::Key_8:

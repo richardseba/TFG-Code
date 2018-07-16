@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     VR_UI_Src/qgraphicstextitemvr.cpp \
     VR_UI_Src/vrui.cpp \
     classificatorsSrc/thresholdclassificator.cpp \
-    depthprocessing.cpp
+    depthprocessing.cpp \
+    videoplayer.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -57,7 +58,8 @@ HEADERS  += mainwindow.h \
     VR_UI_Src/vrui.h \
     classificatorsSrc/presetclassificator.h \
     classificatorsSrc/thresholdclassificator.h \
-    depthprocessing.h
+    depthprocessing.h \
+    videoplayer.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \
