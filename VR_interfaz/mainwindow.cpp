@@ -98,9 +98,9 @@ void MainWindow::on_captureButton_clicked()
     if(ui->checkBox_capture_left->isChecked())
         ImgL = this->m_cameraL->single_grab_image(retL);
 
-    if(ui->checkBox_capture_right->isChecked())
+    if(ui->checkBox_capture_right->isChecked()){
         ImgR = this->m_cameraR->single_grab_image(retR);
-
+    }
     if(retL)
     {
         QImage copy;

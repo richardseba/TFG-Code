@@ -50,6 +50,8 @@ public:
     bool hasImage();
     bool getIsinitUndistort();
     bool isCalibrated();
+    bool isCameraConnected();
+    bool reconnect(int CamNum);
 
     void setBinning(int binningValueHorizontal,int binningValueVertical);
     void setflipYOutput(bool flip);
@@ -78,15 +80,11 @@ public:
     QImage undistortMapImage(QImage src, int interpolation);
 
 private:
-
     CameraCalibration m_calib;
-    CInstantCamera* m_pylon_camera;
-    Mat m_map1;
-    Mat m_map2;
-    QTime crono; //temporal used for debugging
-    Mat m_intrinsic;
-    Mat m_distCoeffs;
 
+    CInstantCamera* m_pylon_camera;
+
+    QTime crono; //temporal used for debugging
 };
 
 #endif // CAMERA_H

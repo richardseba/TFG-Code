@@ -56,6 +56,7 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     this->m_useUndistort = false;
 
     this->initScene();
+//    this->setRenderHint( QPainter::SmoothPixmapTransform);
 
     //setting up the threads used to grab the images from the camera
     imageUpdaterR = new VRimageUpdater(m_cameraR,  false, this->m_useUndistort);
@@ -155,7 +156,6 @@ void VrFullscreenViewer::frameUpdateEvent()
         QImagePair image;
         image.l = this->imageUpdaterL->getNextFrame().copy();
         image.r = this->imageUpdaterR->getNextFrame().copy();
-
         QImagePair cut;
         cut.l = image.l.copy(leftrect);
         cut.r = image.r.copy(rightrect);
@@ -219,7 +219,7 @@ void VrFullscreenViewer::frameUpdateEvent()
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 
-//    qDebug()  << crono.restart();
+    qDebug()  << crono.restart();
 //    m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
 //    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 //    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );

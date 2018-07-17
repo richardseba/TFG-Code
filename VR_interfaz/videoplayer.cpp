@@ -64,11 +64,8 @@ void VideoPlayer::stopEvent()
 
 bool VideoPlayer::isVideoFinished()
 {
-    bool isFinished = false;
-    double framePos = m_video.get(CAP_PROP_POS_AVI_RATIO  );
-
-    if( framePos >= 1) isFinished = true;
-    return isFinished;
+    double framePos = m_video.get(CAP_PROP_POS_AVI_RATIO );
+    return framePos >= 1;
 }
 
 void VideoPlayer::frameGrabEvent()
@@ -80,7 +77,9 @@ void VideoPlayer::frameGrabEvent()
    m_video >> image;
    if(!image.empty() && !isVideoFinished()){
         m_mutex.lock();
+        QTime asd; asd.restart();
         m_currentFrame = Mat2QImage(image);
+        qDebug() << asd.restart();
         m_mutex.unlock();
    }
 
