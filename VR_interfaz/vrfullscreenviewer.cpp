@@ -1,4 +1,5 @@
 #include "vrfullscreenviewer.h"
+#include "qtfilter.h"
 
 /* Function VrFullscreenViewer
  * -------------------------------
@@ -42,7 +43,11 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
 
     m_depthProcess = new DepthProcessing(stereoCalib,12,4,10,4);
 
+//    QtFilter* tmpfilter = new QtFilter();
     this->m_timer = new QTimer(this);
+//    this->m_timer->installEventFilter(tmpfilter);
+//    this->installEventFilter(tmpfilter);
+
     connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameUpdateEvent()));
 
     this->m_cameraL = cameraL;
@@ -140,6 +145,7 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
+//    qDebug() << "starting main loop";
 //    qDebug() << crono.restart();
     QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
@@ -210,7 +216,7 @@ void VrFullscreenViewer::frameUpdateEvent()
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 
-    crono.restart();
+//    qDebug()  << crono.restart();
 //    m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
 //    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 //    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
@@ -513,9 +519,6 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     }
     this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
-
-
-
 
 
 

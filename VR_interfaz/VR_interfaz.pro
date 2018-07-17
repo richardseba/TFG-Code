@@ -59,7 +59,8 @@ HEADERS  += mainwindow.h \
     classificatorsSrc/presetclassificator.h \
     classificatorsSrc/thresholdclassificator.h \
     depthprocessing.h \
-    videoplayer.h
+    videoplayer.h \
+    qtfilter.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \

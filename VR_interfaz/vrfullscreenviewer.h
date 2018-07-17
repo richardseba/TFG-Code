@@ -46,8 +46,10 @@ public:
     VrFullscreenViewer();
     ~VrFullscreenViewer();
     VrFullscreenViewer(Camera* cameraL,Camera* cameraR,StereoCalibration stereoCalib);
+
 public slots:
     void showFullScreen(int screenSelector);
+
 private slots:
     void frameUpdateEvent();
 
@@ -107,5 +109,7 @@ private:
 protected:
     void keyPressEvent(QKeyEvent *event);
 };
+
+
 
 #endif // VRFULLSCREENVIEWER_H
