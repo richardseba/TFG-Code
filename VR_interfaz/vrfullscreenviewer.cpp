@@ -82,7 +82,8 @@ VrFullscreenViewer::~VrFullscreenViewer()
     delete this->m_timer;
 
     if(m_isPlayingVideo != NULL) {
-        delete m_videoPlayer;
+        delete m_videoPlayerL;
+        delete m_videoPlayerR;
     }
 
     delete m_fpsCounter;
@@ -196,7 +197,9 @@ void VrFullscreenViewer::frameUpdateEvent()
         this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(leftrect)));
         this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
     } if(m_isPlayingVideo){ //playing video on
-       QImagePair frames = m_videoPlayer->getFrames();
+       QImagePair frames;
+       frames.l = m_videoPlayerL->getFrame();
+       frames.r = m_videoPlayerR->getFrame();
 
        if(!frames.l.isNull() && !frames.r.isNull())
        {
@@ -461,15 +464,18 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_5:
         if(!m_isPlayingVideo){
             imageUpdaterL->stop();
-            imageUpdaterL->stop();
+            imageUpdaterR->stop();
             m_isPlayingVideo = true;
-            m_videoPlayer = new VideoPlayer((char*)"./videos/Loadable_L.avi",(char*)"./videos/Loadable_R.avi");
-            m_videoPlayer->start();
+            m_videoPlayerL = new VideoPlayer((char*)"./videos/Loadable_L.avi");
+            m_videoPlayerR = new VideoPlayer((char*)"./videos/Loadable_R.avi");
+            m_videoPlayerL->start();
+            m_videoPlayerR->start();
         } else {
             imageUpdaterL->start();
-            imageUpdaterL->start();
+            imageUpdaterR->start();
             m_isPlayingVideo = false;
-            m_videoPlayer->stop();
+            m_videoPlayerL->stop();
+            m_videoPlayerR->stop();
         }
         break;
         //Keys for show 1 static image

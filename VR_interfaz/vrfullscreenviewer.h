@@ -103,7 +103,8 @@ private:
     ROITransition m_transitionRight;
     bool m_doTransitions;
 
-    VideoPlayer* m_videoPlayer;
+    VideoPlayer* m_videoPlayerL;
+    VideoPlayer* m_videoPlayerR;
     bool m_isPlayingVideo;
 
 protected:

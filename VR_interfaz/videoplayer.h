@@ -19,8 +19,8 @@ class VideoPlayer : public QObject
 public:
     VideoPlayer();
     ~VideoPlayer();
-    VideoPlayer(char* namefileL, char* namefileR);
-    QImagePair getFrames();
+    VideoPlayer(char* namefile);
+    QImage getFrame();
     void waitEndGrabEvent();
     bool isVideoFinished();
     void start();
@@ -38,16 +38,16 @@ signals:
 private:
 
     QTime m_crono;
+    int m_expectedTimeInterFrames;
 
-    QImagePair m_currentFrames;
+    QImage m_currentFrame;
 
     QMutex m_mutex;
 
     QThread m_thread;
     QTimer m_timeTrigger;
 
-    VideoCapture m_videoLeft;
-    VideoCapture m_videoRight;
+    VideoCapture m_video;
 };
 
 #endif // VIDEOPLAYER_H

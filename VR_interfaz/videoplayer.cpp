@@ -2,10 +2,9 @@
 
 VideoPlayer::VideoPlayer(){}
 
-VideoPlayer::VideoPlayer(char* namefileL, char* namefileR)
+VideoPlayer::VideoPlayer(char* namefile)
 {
-    m_videoLeft = VideoCapture(namefileL);
-    m_videoRight = VideoCapture(namefileR);
+    m_video = VideoCapture(namefile);
 
     m_timeTrigger.moveToThread(&m_thread);
     connect(&m_timeTrigger, SIGNAL (timeout()), this, SLOT (frameGrabEvent()));
@@ -22,8 +21,7 @@ VideoPlayer::~VideoPlayer()
     {
         this->waitEndGrabEvent();
     }
-    m_videoLeft.release();
-    m_videoRight.release();
+    m_video.release();
     this->m_thread.quit();
     this->m_thread.wait();
 }
@@ -46,10 +44,9 @@ void VideoPlayer::startEvent()
 {
     if(!m_timeTrigger.isActive())
     {
-        int fps = (int)m_videoLeft.get(CAP_PROP_FPS);
-
-//        m_timeTrigger.start(1000/fps);
-        m_timeTrigger.start();
+        int fps = (int)m_video.get(CAP_PROP_FPS);
+        m_expectedTimeInterFrames = 1000/fps;
+        m_timeTrigger.start(m_expectedTimeInterFrames);
     }
 }
 
@@ -68,10 +65,9 @@ void VideoPlayer::stopEvent()
 bool VideoPlayer::isVideoFinished()
 {
     bool isFinished = false;
-    double framePosL = m_videoLeft.get(CAP_PROP_POS_AVI_RATIO  );
-    double framePosR = m_videoRight.get(CAP_PROP_POS_AVI_RATIO  );
+    double framePos = m_video.get(CAP_PROP_POS_AVI_RATIO  );
 
-    if( max(framePosL,framePosR) >= 1) isFinished = true;
+    if( framePos >= 1) isFinished = true;
     return isFinished;
 }
 
@@ -79,14 +75,12 @@ void VideoPlayer::frameGrabEvent()
 {
    QTime tempcrono; tempcrono.start();
 
-   Mat imageL, imageR;
+   Mat image;
 
-   m_videoLeft >> imageL;
-   m_videoRight >> imageR;
-   if(!imageL.empty() && !imageR.empty() && !isVideoFinished()){
+   m_video >> image;
+   if(!image.empty() && !isVideoFinished()){
         m_mutex.lock();
-        m_currentFrames.l = Mat2QImage(imageL);
-        m_currentFrames.r = Mat2QImage(imageR);
+        m_currentFrame = Mat2QImage(image);
         m_mutex.unlock();
    }
 
@@ -94,17 +88,16 @@ void VideoPlayer::frameGrabEvent()
    {
        this->stop();
    }
-
-   qDebug() << "Total Time" << m_crono.restart() << "process" << tempcrono.restart() ;
+   m_timeTrigger.setInterval(max(m_expectedTimeInterFrames-tempcrono.restart(),0));
+//   qDebug() << "Total Time" << m_crono.restart();
 }
 
-QImagePair VideoPlayer::getFrames()
+QImage VideoPlayer::getFrame()
 {
-    QImagePair out;
+    QImage out;
 
     m_mutex.lock();
-    out.l = m_currentFrames.l.copy();
-    out.r = m_currentFrames.r.copy();
+    out = m_currentFrame.copy();
     m_mutex.unlock();
 
     return out;
