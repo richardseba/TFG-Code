@@ -50,17 +50,14 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
 
     connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameUpdateEvent()));
 
-    this->m_cameraL = cameraL;
-    this->m_cameraR = cameraR;
-
     this->m_useUndistort = false;
 
     this->initScene();
 //    this->setRenderHint( QPainter::SmoothPixmapTransform);
 
     //setting up the threads used to grab the images from the camera
-    imageUpdaterR = new VRimageUpdater(m_cameraR,  false, this->m_useUndistort);
-    imageUpdaterL = new VRimageUpdater(m_cameraL,  false, this->m_useUndistort);
+    imageUpdaterR = new VRimageUpdater(cameraR,  false, this->m_useUndistort);
+    imageUpdaterL = new VRimageUpdater(cameraL,  false, this->m_useUndistort);
 
     imageUpdaterL->start();
     imageUpdaterR->start();
@@ -105,15 +102,6 @@ void VrFullscreenViewer::initScene()
     this->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
     this->setStyleSheet("border: 0px solid black");
 
-    int imageWidth = this->m_cameraR->getCurrentROIRect().width;
-    int imageHeight = this->m_cameraR->getCurrentROIRect().height;
-
-    m_leftSensorROI = Rect(0,0,imageWidth,imageHeight);
-    m_rightSensorROI = Rect(0,0,imageWidth,imageHeight);
-
-    m_transitionLeft = ROITransition(&m_leftSensorROI);
-    m_transitionRight = ROITransition(&m_rightSensorROI);
-
     m_currentUserParam = 1;
     loadUserParameters("./configFiles/UserParam1.yml");
 
@@ -133,10 +121,8 @@ void VrFullscreenViewer::initScene()
     m_fpsCounter = new QGraphicsTextItemVR("## FPS",0,0,0,0,panelFont);
 
     m_fpsCounter->setPos(600,450);
-    m_fpsCounter->setOffset(imageWidth,0);
+//    m_fpsCounter->setOffset(imageWidth,0);
 //    this->scene()->addItem(m_fpsCounter);
-
-
 }
 
 /* Function frameTimeEvent

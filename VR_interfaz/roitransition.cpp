@@ -3,13 +3,16 @@
 
 ROITransition::ROITransition()
 {
-    m_currentRect = NULL;
+    m_currentRect = new Rect();
+    m_targetRect = Rect();
+
     m_isTransitionOn = false;
     m_isOnCorrectZoom = false;
 
     m_stepX = 0;
     m_stepY = 0;
 }
+
 ROITransition::ROITransition(Rect* linkedROIRect)
 {
     m_currentRect = linkedROIRect;
@@ -19,6 +22,10 @@ ROITransition::ROITransition(Rect* linkedROIRect)
 
     m_stepX = 0;
     m_stepY = 0;
+}
+
+ROITransition::~ROITransition()
+{
 }
 
 

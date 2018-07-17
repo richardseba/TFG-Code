@@ -61,9 +61,6 @@ private:
     void zoomOut();
     int m_currentUserParam;
 
-    Camera* m_cameraL;
-    Camera* m_cameraR;
-
     QTime crono; //use to perform test, not necessary
     QTimer* m_timer;
 
