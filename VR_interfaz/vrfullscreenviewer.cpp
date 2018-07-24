@@ -452,8 +452,8 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             imageUpdaterL->stop();
             imageUpdaterR->stop();
             m_isPlayingVideo = true;
-            m_videoPlayerL = new VideoPlayer((char*)"./videos/Loadable_L.avi");
-            m_videoPlayerR = new VideoPlayer((char*)"./videos/Loadable_R.avi");
+            m_videoPlayerL = new VideoPlayer((char*)"./videos/1L.avi");
+            m_videoPlayerR = new VideoPlayer((char*)"./videos/1R.avi");
             m_videoPlayerL->start();
             m_videoPlayerR->start();
         } else {
