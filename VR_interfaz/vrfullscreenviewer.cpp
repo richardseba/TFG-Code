@@ -1,5 +1,5 @@
 #include "vrfullscreenviewer.h"
-
+#include "qtfilter.h"
 
 /* Function VrFullscreenViewer
  * -------------------------------
@@ -41,50 +41,49 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     m_isProcessing = false;
     m_currentDistance = Distance(2);
 
+    m_depthProcess = new DepthProcessing(stereoCalib,12,4,10,4);
 
-    m_depthProcess = new DepthProcessing(&m_timerDepthProcess,stereoCalib,12,4,10,4);
-
-    this->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
-    this->setStyleSheet("border: 0px solid black");
-
+//    QtFilter* tmpfilter = new QtFilter();
     this->m_timer = new QTimer(this);
-    connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameUpdateEvent()));
+//    this->m_timer->installEventFilter(tmpfilter);
+//    this->installEventFilter(tmpfilter);
 
-    this->m_cameraL = cameraL;
-    this->m_cameraR = cameraR;
+    connect(this->m_timer, SIGNAL(timeout()), this, SLOT(frameUpdateEvent()));
 
     this->m_useUndistort = false;
 
     this->initScene();
+//    this->setRenderHint( QPainter::SmoothPixmapTransform);
+
+    //setting up the threads used to grab the images from the camera
+    imageUpdaterR = new VRimageUpdater(cameraR,  false, this->m_useUndistort);
+    imageUpdaterL = new VRimageUpdater(cameraL,  false, this->m_useUndistort);
+
+    imageUpdaterL->start();
+    imageUpdaterR->start();
+
+    this->m_timer->start();
 }
 
 /* Function ~VrFullscreenViewer
  * -------------------------------
- * build in destructor
+ * build-in destructor
 */
 VrFullscreenViewer::~VrFullscreenViewer()
 {
-    emit setUpdatingR(false);
-    emit setUpdatingL(false);
-    emit setProcessingDepth(false);
-
-    imageUpdaterR->deleteLater();
-    imageUpdaterL->deleteLater();
-    m_depthProcess->deleteLater();
-
-    this->m_threadR.quit();
-    this->m_threadL.quit();
-    this->m_threadDepthProcess.quit();
-
-    this->m_threadR.wait();
-    this->m_threadL.wait();
-    this->m_threadDepthProcess.wait();
+    delete imageUpdaterL;
+    delete imageUpdaterR;
+    delete m_depthProcess;
 
     if(this->m_timer->isActive())
         this->m_timer->stop();
     delete this->m_timer;
 
-    //delete m_rectangle;
+    if(m_isPlayingVideo != NULL) {
+        delete m_videoPlayerL;
+        delete m_videoPlayerR;
+    }
+
     delete m_fpsCounter;
     qDebug() << "fullscreen closed";
 }
@@ -93,38 +92,15 @@ VrFullscreenViewer::~VrFullscreenViewer()
 
 /* Function initScene
  * -------------------------------
- * function used to initialize the scene, the viewer updater and the threads
- * and also will start the timers for the viewer updaters
+ * function used to initialize the scene. Set up the scene objects
+ * positions and the transitions modules
 */
 void VrFullscreenViewer::initScene()
 {
     bool ret;
-    QImage *qImageL;
-    QImage *qImageR;
 
-    this->m_cameraL->stopGrabbing();
-    this->m_cameraL->setROIRect(cv::Rect(0,0,this->m_cameraL->getMaxWidth(), this->m_cameraL->getMaxHeight()));
-    this->m_cameraL->startGrabbing();
-
-    this->m_cameraR->stopGrabbing();
-    this->m_cameraR->setROIRect(cv::Rect(0,0,this->m_cameraR->getMaxWidth(), this->m_cameraR->getMaxHeight()));
-    this->m_cameraR->startGrabbing();
-
-    qImageL = this->m_cameraL->single_grab_image(ret);
-    qImageR = this->m_cameraR->single_grab_image(ret);
-
-    this->m_frameR.setPixmap(QPixmap::fromImage(*qImageR));
-    this->m_frameL.setPixmap(QPixmap::fromImage(*qImageL));
-
-    //Setting up the scene
-    int imageWidth = this->m_frameR.pixmap().width();
-    int imageHeight = this->m_frameR.pixmap().height();
-
-    m_leftSensorROI = Rect(0,0,imageWidth,imageHeight);
-    m_rightSensorROI = Rect(0,0,imageWidth,imageHeight);
-
-    m_transitionLeft = ROITransition(&m_leftSensorROI);
-    m_transitionRight = ROITransition(&m_rightSensorROI);
+    this->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
+    this->setStyleSheet("border: 0px solid black");
 
     m_currentUserParam = 1;
     loadUserParameters("./configFiles/UserParam1.yml");
@@ -136,58 +112,17 @@ void VrFullscreenViewer::initScene()
 
     this->setScene(&this->m_scene);
 
-    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
-                        max(m_leftSensorROI.height,m_rightSensorROI.height));
-    m_splitLine.setPen(QPen(Qt::red));
-
     //adding items to the scene
     this->scene()->addItem(&this->m_frameR);
     this->scene()->addItem(&this->m_frameL);
-//    this->scene()->addItem(&m_splitLine);
 
     QFont panelFont("Helvetica [Cronyx]",25,12,false );
 
     m_fpsCounter = new QGraphicsTextItemVR("## FPS",0,0,0,0,panelFont);
 
     m_fpsCounter->setPos(600,450);
-    m_fpsCounter->setOffset(imageWidth,0);
+//    m_fpsCounter->setOffset(imageWidth,0);
 //    this->scene()->addItem(m_fpsCounter);
-
-    delete[] qImageL->bits();
-    delete qImageL;
-    qImageL = NULL;
-    delete[] qImageR->bits();
-    delete qImageR;
-    qImageR = NULL;
-
-    //setting up the threads used to grab the images from the camera
-    imageUpdaterR = new VRimageUpdater(m_cameraR, &m_timeR, false, this->m_useUndistort);
-    imageUpdaterL = new VRimageUpdater(m_cameraL, &m_timeL, false, this->m_useUndistort);
-
-    connect(this,SIGNAL(setUpdatingL(bool)),imageUpdaterL,SLOT(setUpdatingEvent(bool)));
-    connect(this,SIGNAL(setUpdatingR(bool)),imageUpdaterR,SLOT(setUpdatingEvent(bool)));
-
-    connect(this,SIGNAL(setProcessingDepth(bool)),m_depthProcess,SLOT(setProcessingEvent(bool)));
-
-    emit setUpdatingR(true);
-    emit setUpdatingL(true);
-
-    this->m_timeR.moveToThread(&this->m_threadR);
-    this->m_timeL.moveToThread(&this->m_threadL);
-
-    this->m_timerDepthProcess.moveToThread(&this->m_threadDepthProcess);
-
-    imageUpdaterR->moveToThread(&this->m_threadR);
-    imageUpdaterL->moveToThread(&this->m_threadL);
-
-    m_depthProcess->moveToThread(&this->m_threadDepthProcess);
-
-    m_threadR.start();
-    m_threadL.start();
-
-    m_threadDepthProcess.start();
-
-    this->m_timer->start();
 }
 
 /* Function frameTimeEvent
@@ -198,6 +133,8 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
+//    qDebug() << "starting main loop";
+//    qDebug() << crono.restart();
     QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
 
@@ -205,7 +142,6 @@ void VrFullscreenViewer::frameUpdateEvent()
         QImagePair image;
         image.l = this->imageUpdaterL->getNextFrame().copy();
         image.r = this->imageUpdaterR->getNextFrame().copy();
-
         QImagePair cut;
         cut.l = image.l.copy(leftrect);
         cut.r = image.r.copy(rightrect);
@@ -247,15 +183,14 @@ void VrFullscreenViewer::frameUpdateEvent()
         this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(leftrect)));
         this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
     } if(m_isPlayingVideo){ //playing video on
-       Mat matL ,matR;
-       m_videoL->grab();
-       m_videoR->grab();
-       m_videoL->read(matL);
-       m_videoR->read(matR);
-       if(!matL.empty()&& !matR.empty())
+       QImagePair frames;
+       frames.l = m_videoPlayerL->getFrame();
+       frames.r = m_videoPlayerR->getFrame();
+
+       if(!frames.l.isNull() && !frames.r.isNull())
        {
-           this->m_frameL.setPixmap(QPixmap::fromImage(Mat2QImage(matL).copy(leftrect)));
-           this->m_frameR.setPixmap(QPixmap::fromImage(Mat2QImage(matR).copy(rightrect)));
+           this->m_frameL.setPixmap(QPixmap::fromImage(frames.l.copy(leftrect)));
+           this->m_frameR.setPixmap(QPixmap::fromImage(frames.r.copy(rightrect)));
        }
     }
     //update the movement in the ROI, if any.
@@ -270,13 +205,10 @@ void VrFullscreenViewer::frameUpdateEvent()
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 
-    float elapsed = crono.restart();
-    m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
+//    qDebug()  << crono.restart();
+//    m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
 //    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 //    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
-//    m_splitLine.setLine(m_leftSensorROI.width, 0,m_leftSensorROI.width,
-//                        max(m_leftSensorROI.height,m_rightSensorROI.height));
-
 }
 
 /* Function showFullScreen
@@ -462,7 +394,10 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_P:
         m_isProcessing = !m_isProcessing;
-        emit setProcessingDepth(m_isProcessing);
+        if(!m_isProcessing)
+            m_depthProcess->start();
+        else
+            m_depthProcess->stop();
         break;
     //Key events to change de user configuration
     case Qt::Key_1:
@@ -514,24 +449,29 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_5:
         if(!m_isPlayingVideo){
+            imageUpdaterL->stop();
+            imageUpdaterR->stop();
             m_isPlayingVideo = true;
-            m_videoL = new VideoCapture("./videos/Loadable_L.avi");
-            m_videoR = new VideoCapture("./videos/Loadable_R.avi");
-        }else
-        {
+            m_videoPlayerL = new VideoPlayer((char*)"./videos/1L.avi");
+            m_videoPlayerR = new VideoPlayer((char*)"./videos/1R.avi");
+            m_videoPlayerL->start();
+            m_videoPlayerR->start();
+        } else {
+            imageUpdaterL->start();
+            imageUpdaterR->start();
             m_isPlayingVideo = false;
-            delete m_videoL;
-            delete m_videoR;
+            m_videoPlayerL->stop();
+            m_videoPlayerR->stop();
         }
+        break;
         //Keys for show 1 static image
     case Qt::Key_8:
         if(m_isDemo && m_currentImage == 1) {
-            emit setUpdatingR(true);
-            emit setUpdatingL(true);
-            m_isDemo = false;
+            imageUpdaterL->start();
+            imageUpdaterR->start();
         } else {
-            emit setUpdatingR(false);
-            emit setUpdatingL(false);
+            imageUpdaterL->stop();
+            imageUpdaterR->stop();
             m_isDemo = true;
             m_currentImage = 1;
         }
@@ -540,12 +480,12 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_9:
         if(m_isDemo && m_currentImage == 2) {
-            emit setUpdatingR(true);
-            emit setUpdatingL(true);
+            imageUpdaterL->start();
+            imageUpdaterR->start();
             m_isDemo = false;
         } else {
-            emit setUpdatingR(false);
-            emit setUpdatingL(false);
+            imageUpdaterL->stop();
+            imageUpdaterR->stop();
             m_isDemo = true;
             m_currentImage = 2;
         }
@@ -554,12 +494,12 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_0:
         if(m_isDemo && m_currentImage == 3) {
-            emit setUpdatingR(true);
-            emit setUpdatingL(true);
+            imageUpdaterL->start();
+            imageUpdaterR->start();
             m_isDemo = false;
         } else {
-            emit setUpdatingR(false);
-            emit setUpdatingL(false);
+            imageUpdaterL->stop();
+            imageUpdaterR->stop();
             m_isDemo = true;
             m_currentImage = 3;
         }
@@ -571,9 +511,6 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     }
     this->m_frameR.setPos(m_leftSensorROI.width,0);
 }
-
-
-
 
 
 

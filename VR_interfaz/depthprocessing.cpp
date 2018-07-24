@@ -8,23 +8,40 @@ DepthProcessing::DepthProcessing()
 {
 }
 
-DepthProcessing::DepthProcessing(QTimer* timer, StereoCalibration stereoCalib,
+DepthProcessing::DepthProcessing(StereoCalibration stereoCalib,
                                  float threshold1, float threshold2, int meanBuffSize,
                                  int subsampling, Elas::setting elasSetting)
 {
-    m_timerTrigger = timer;
     m_currentCalib = stereoCalib;
     m_classifier = ThresholdClassificator(meanBuffSize,threshold1,threshold2);
     m_currentDistance = FAR;
     m_currentDistanceValue = 0;
     m_subsampling = subsampling;
     m_libelasSettings = elasSetting;
-    connect(m_timerTrigger, SIGNAL (timeout()), this, SLOT (frameProcessingEvent()));
+
+    m_timerTrigger.moveToThread(&m_currentThread);
+    connect(&m_timerTrigger, SIGNAL (timeout()), this, SLOT (frameProcessingEvent()));
+    connect(this, SIGNAL (startSignal()), this, SLOT (startEvent()));
+    connect(this, SIGNAL (stopSignal()), this, SLOT (stopEvent()));
+    this->moveToThread(&m_currentThread);
+    m_currentThread.start();
 }
 
 DepthProcessing::~DepthProcessing()
 {
-    m_timerTrigger->stop();
+    this->stop();
+    this->waitUpdateFinished();
+    this->m_currentThread.exit(0);
+    this->m_currentThread.wait();
+}
+
+void DepthProcessing::waitUpdateFinished()
+{
+    while(this->m_timerTrigger.isActive())
+    {
+        m_mutexUpdateFinished.lock();
+        m_mutexUpdateFinished.unlock();
+    }
 }
 
 //Gets
@@ -121,19 +138,29 @@ void DepthProcessing::setLibelasSetting(Elas::setting setting)
     m_mutexElasSettings.unlock();
  }
 
-//Slots
-void DepthProcessing::setProcessingEvent(bool processing)
+void DepthProcessing::start()
 {
-    if(processing){
-        m_timerTrigger->start();
-    } else {
-        m_timerTrigger->stop();
-    }
+    emit startSignal();
+}
+
+void DepthProcessing::startEvent()
+{
+    m_timerTrigger.start();
+}
+
+void DepthProcessing::stop()
+{
+    emit stopSignal();
+}
+
+void DepthProcessing::stopEvent()
+{
+    m_timerTrigger.stop();
 }
 
 void DepthProcessing::frameProcessingEvent()
 {
-//    qDebug() << "spam!";
+    m_mutexUpdateFinished.lock();
     QImagePair currentImages = this->getImages2Process();
 
     if(!currentImages.l.isNull() && !currentImages.r.isNull()) {
@@ -180,6 +207,7 @@ void DepthProcessing::frameProcessingEvent()
 //        else
 //            qDebug() << "far";
     }
+    m_mutexUpdateFinished.unlock();
 }
 
 

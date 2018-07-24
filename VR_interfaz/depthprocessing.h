@@ -14,7 +14,7 @@ class DepthProcessing : public QObject
 {
     Q_OBJECT
 public:
-    DepthProcessing(QTimer* timer, StereoCalibration stereoCalib,
+    DepthProcessing(StereoCalibration stereoCalib,
                      float threshold1, float threshold2, int meanBuffSize,
                      int subsampling=1, Elas::setting elasSetting = Elas::CVC);
     ~DepthProcessing();
@@ -25,12 +25,18 @@ public:
     void setLibelasSetting(Elas::setting setting);
     void setSubsampling(int subsampl);
     void setImages2Process(QImagePair imgPair,Size processingWindowSize);
-
-public slots:
-    void setProcessingEvent(bool processing);
+    void waitUpdateFinished();
+    void start();
+    void stop();
 
 private slots:
     void frameProcessingEvent();
+    void startEvent();
+    void stopEvent();
+
+signals:
+    void startSignal();
+    void stopSignal();
 
 private:
     DepthProcessing();
@@ -50,13 +56,15 @@ private:
     Distance m_currentDistance;
     float m_currentDistanceValue;
 
-    QTimer* m_timerTrigger;
+    QTimer m_timerTrigger;
+    QThread m_currentThread;
 
     QMutex m_mutexDistance;
     QMutex m_mutexDistanceValue;
     QMutex m_mutexSubsampling;
     QMutex m_mutexImages2Process;
     QMutex m_mutexElasSettings;
+    QMutex m_mutexUpdateFinished;
 };
 
 #endif // DEPTHPROCESSING_H

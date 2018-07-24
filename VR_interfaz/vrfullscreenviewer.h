@@ -7,6 +7,7 @@
 #include "./VR_UI_Src/qgraphicstextitemvr.h"
 #include "roitransition.h"
 #include "depthprocessing.h"
+#include "videoplayer.h"
 
 #include "QTimer"
 #include <QTime>
@@ -45,14 +46,13 @@ public:
     VrFullscreenViewer();
     ~VrFullscreenViewer();
     VrFullscreenViewer(Camera* cameraL,Camera* cameraR,StereoCalibration stereoCalib);
+
 public slots:
     void showFullScreen(int screenSelector);
+
 private slots:
     void frameUpdateEvent();
-signals:
-    void setUpdatingR(bool update);
-    void setUpdatingL(bool update);
-    void setProcessingDepth(bool update);
+
 private:
     void initScene();
     void saveUserParameters(QString filename,QString nameSufix="");
@@ -61,20 +61,12 @@ private:
     void zoomOut();
     int m_currentUserParam;
 
-
-    Camera* m_cameraL;
-    Camera* m_cameraR;
-
     QTime crono; //use to perform test, not necessary
     QTimer* m_timer;
 
-    //Timers for the update events in the threads
-    QTimer m_timeR;
-    QTimer m_timeL;
-
+    //associated threads for image capturing and processing
     VRimageUpdater* imageUpdaterR;
     VRimageUpdater* imageUpdaterL;
-
     DepthProcessing* m_depthProcess;
     bool m_isProcessing;
 
@@ -86,10 +78,6 @@ private:
     QGraphicsPixmapItem m_frameR;
     QGraphicsPixmapItem m_frameL;
 
-    //Threads used to grab the images from the cameras
-    QThread m_threadR;
-    QThread m_threadL;
-    QThread m_threadDepthProcess;
     Distance m_currentDistance;
 
     //demo
@@ -102,7 +90,7 @@ private:
 
     //User Interface
     QGraphicsTextItemVR* m_fpsCounter;
-    QGraphicsLineItem m_splitLine;
+
     float m_mean;
 
     Rect m_leftSensorROI;
@@ -112,13 +100,14 @@ private:
     ROITransition m_transitionRight;
     bool m_doTransitions;
 
-    //video demo
-    VideoCapture* m_videoR;
-    VideoCapture* m_videoL;
+    VideoPlayer* m_videoPlayerL;
+    VideoPlayer* m_videoPlayerR;
     bool m_isPlayingVideo;
 
 protected:
     void keyPressEvent(QKeyEvent *event);
 };
+
+
 
 #endif // VRFULLSCREENVIEWER_H

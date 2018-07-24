@@ -44,7 +44,9 @@ Camera::Camera(int num_cam)
 */
 Camera::~Camera()
 {
-    m_pylon_camera->Close();
+//    m_pylon_camera->Close();
+    m_pylon_camera->DestroyDevice();
+//    this->m_pylon_camera->DetachDevice();
     delete m_pylon_camera;
 }
 
@@ -475,5 +477,27 @@ void Camera::setCalibration(CameraCalibration calib)
 bool Camera::isCalibrated()
 {
     return m_calib.isCalibrated();
+}
+
+bool Camera::isCameraConnected()
+{
+    return !this->m_pylon_camera->IsCameraDeviceRemoved() && this->m_pylon_camera->IsOpen();
+}
+
+bool Camera::reconnect(int CamNum)
+{
+    bool hasReconnected = false;
+    PylonInitialize();
+    CTlFactory& tlFactory = CTlFactory::GetInstance();
+    DeviceInfoList_t devices;
+    int num_cameras = tlFactory.EnumerateDevices(devices);
+
+    if(num_cameras-1 >= CamNum)
+    {
+        this->m_pylon_camera = new CInstantCamera( CTlFactory::GetInstance().CreateDevice(devices[CamNum]));
+        this->m_pylon_camera->Open();
+        hasReconnected = true;
+    }
+    return hasReconnected;
 }
 

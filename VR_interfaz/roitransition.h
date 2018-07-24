@@ -15,6 +15,7 @@ class ROITransition
 {
 public:
     ROITransition();
+    ~ROITransition();
     ROITransition(Rect* linkedROIRect);
     void setTarget(Rect targetRect, int numberOfSteps=100);
     void step();

@@ -15,7 +15,7 @@
  * It also can calculate the current fps (frames per second)
  * of the camera
  *
- * it inherits from QGraphicsView
+ * it inherits from QObject
  * Uses Q_OBJECT macro
 */
 class VRimageUpdater : public QObject
@@ -24,20 +24,27 @@ class VRimageUpdater : public QObject
 public:
     VRimageUpdater();
     ~VRimageUpdater();
-    VRimageUpdater(Camera* camera, QTimer* timer, bool mirrored,bool isUndistorted);
+    VRimageUpdater(Camera* camera, bool mirrored,bool isUndistorted);
     QImage getNextFrame();
     void setIsUndistorted(bool isUndistorted);
     float getCurrentFPS();
-public slots:
-    void setUpdatingEvent(bool updating);
+    void waitUpdateFinished();
+    void start();
+    void stop();
+
 private slots:
     void frameUpdateEvent();
+    void startEvent();
+    void stopEvent();
+
+signals:
+    void startSignal();
+    void stopSignal();
+
 private:
-    void updateUserParamInFrame();
     bool m_mirrored;
     bool m_isUndistorted;
 
-    QTimer* m_timeTrigger;
     QTime m_crono; //used for debugging reasons only
     Camera* m_camera;
     QImage m_frame;
@@ -45,6 +52,10 @@ private:
     float m_currentFps;
 
     QMutex  m_mutex;
+    QMutex  m_isUpdating;
+
+    QTimer m_timeTrigger;
+    QThread m_currentThread;
 };
 
 #endif // VRIMAGEUPDATER_H
