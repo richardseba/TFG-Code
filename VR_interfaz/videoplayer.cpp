@@ -5,7 +5,7 @@ VideoPlayer::VideoPlayer(){}
 VideoPlayer::VideoPlayer(char* namefile)
 {
     m_video = VideoCapture(namefile, cv::CAP_FFMPEG );
-    qDebug() << "video opened!" <<  m_video.isOpened();
+    qDebug() << "video opened:" <<  m_video.isOpened();
 
     m_timeTrigger.moveToThread(&m_thread);
     connect(&m_timeTrigger, SIGNAL (timeout()), this, SLOT (frameGrabEvent()));

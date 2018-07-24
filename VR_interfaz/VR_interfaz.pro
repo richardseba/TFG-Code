@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     VR_UI_Src/vrui.cpp \
     classificatorsSrc/thresholdclassificator.cpp \
     depthprocessing.cpp \
-    videoplayer.cpp
+    videoplayer.cpp \
+    threadedloopsevents.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -60,7 +61,8 @@ HEADERS  += mainwindow.h \
     classificatorsSrc/thresholdclassificator.h \
     depthprocessing.h \
     videoplayer.h \
-    qtfilter.h
+    qtfilter.h \
+    threadedloopsevents.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \

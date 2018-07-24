@@ -1,5 +1,5 @@
 #include "vrfullscreenviewer.h"
-#include "qtfilter.h"
+//#include "qtfilter.h"
 
 /* Function VrFullscreenViewer
  * -------------------------------
@@ -464,7 +464,11 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_videoPlayerR->stop();
         }
         break;
-        //Keys for show 1 static image
+    case Qt::Key_6: {
+        tmp.start();
+
+        }
+        break;
     case Qt::Key_8:
         if(m_isDemo && m_currentImage == 1) {
             imageUpdaterL->start();

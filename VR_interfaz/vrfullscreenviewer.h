@@ -1,6 +1,9 @@
 #ifndef VRFULLSCREENVIEWER_H
 #define VRFULLSCREENVIEWER_H
 
+
+#include "threadedloopsevents.h"
+
 #include "camera.h"
 #include "vrimageupdater.h"
 #include "./VR_UI_Src/vrui.h"
@@ -28,6 +31,8 @@
 #include <QGraphicsPolygonItem>
 
 #include "QTime"
+
+
 
 const int STEPS_IN_TRANSITION = 10;
 
@@ -103,6 +108,8 @@ private:
     VideoPlayer* m_videoPlayerL;
     VideoPlayer* m_videoPlayerR;
     bool m_isPlayingVideo;
+
+    ThreadedLoopsEvents tmp;
 
 protected:
     void keyPressEvent(QKeyEvent *event);
