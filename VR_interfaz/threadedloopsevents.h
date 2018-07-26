@@ -29,7 +29,6 @@ private slots:
     void startEvent();
     void stopEvent();
 
-
 signals:
     void startSignal();
     void stopSignal();

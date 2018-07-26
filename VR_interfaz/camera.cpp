@@ -48,6 +48,7 @@ Camera::~Camera()
     m_pylon_camera->DestroyDevice();
 //    this->m_pylon_camera->DetachDevice();
     delete m_pylon_camera;
+    PylonTerminate();
 }
 
 /* Function startGrabbing
