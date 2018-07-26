@@ -74,20 +74,31 @@ RESOURCES +=
 win32 {
     INCLUDEPATH += $$(PYLON_DEV_DIR)/include \
     INCLUDEPATH += C:\opencv3.4\build\include\
+
+    CONFIG(debug, debug|release) {
+        LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib \
+                -L$$(PYLON_DEV_DIR)/lib/x64 \
+                -lPylonBase_MD_VC120_v5_0 \
+                -lPylonUtility_MD_VC120_v5_0 \
+                -lPylonC_MD_VC120 \
+        }
+        else
+        {
+        LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib \
+                -L$$(PYLON_DEV_DIR)/lib/x64 \
+                -lPylonBase_MD_VC120_v5_0 \
+                -lPylonUtility_MD_VC120_v5_0 \
+                -lPylonC_MD_VC120 \
+        }
 }
 
-CONFIG(debug, debug|release) {
-    LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib \
-            -L$$(PYLON_DEV_DIR)/lib/x64 \
-            -lPylonBase_MD_VC120_v5_0 \
-            -lPylonUtility_MD_VC120_v5_0 \
-            -lPylonC_MD_VC120 \
-    }
-    else
-    {
-    LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib \
-            -L$$(PYLON_DEV_DIR)/lib/x64 \
-            -lPylonBase_MD_VC120_v5_0 \
-            -lPylonUtility_MD_VC120_v5_0 \
-            -lPylonC_MD_VC120 \
-    }
+unix{
+    INCLUDEPATH += /opt/pylon5/include
+    INCLUDEPATH += /usr/local/include/opencv
+
+    LIBS += -L/opt/pylon5/lib64
+    LIBS += -lNodeMapData_gcc_v3_0_Basler_pylon_v5_0 -lXmlParser_gcc_v3_0_Basler_pylon_v5_0 -lMathParser_gcc_v3_0_Basler_pylon_v5_0 -lpylonbase -lpylonc -lpylonutility -lGCBase_gcc_v3_0_Basler_pylon_v5_0 -lGenApi_gcc_v3_0_Basler_pylon_v5_0 -lLog_gcc_v3_0_Basler_pylon_v5_0
+
+    LIBS += `pkg-config opencv --libs`
+}
+
