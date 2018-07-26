@@ -55,12 +55,11 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     this->initScene();
 //    this->setRenderHint( QPainter::SmoothPixmapTransform);
 
-    //setting up the threads used to grab the images from the camera
-    imageUpdaterR = new VRimageUpdater(cameraR,  false, this->m_useUndistort);
-    imageUpdaterL = new VRimageUpdater(cameraL,  false, this->m_useUndistort);
+    m_camImageGenL = new CameraImageGenerator(cameraL, this->m_useUndistort);
+    m_camImageGenR = new CameraImageGenerator(cameraR, this->m_useUndistort);
 
-    imageUpdaterL->start();
-    imageUpdaterR->start();
+    m_camImageGenL->start();
+    m_camImageGenR->start();
 
     this->m_timer->start();
 }
@@ -71,8 +70,8 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
 */
 VrFullscreenViewer::~VrFullscreenViewer()
 {
-    delete imageUpdaterL;
-    delete imageUpdaterR;
+    delete m_camImageGenL;
+    delete m_camImageGenR;
     delete m_depthProcess;
 
     if(this->m_timer->isActive())
@@ -80,8 +79,8 @@ VrFullscreenViewer::~VrFullscreenViewer()
     delete this->m_timer;
 
     if(m_isPlayingVideo != NULL) {
-        delete m_videoPlayerL;
-        delete m_videoPlayerR;
+        delete m_videoImageGenL;
+        delete m_videoImageGenR;
     }
 
     delete m_fpsCounter;
@@ -140,8 +139,8 @@ void VrFullscreenViewer::frameUpdateEvent()
 
     if(!m_isDemo && !m_isPlayingVideo){
         QImagePair image;
-        image.l = this->imageUpdaterL->getNextFrame().copy();
-        image.r = this->imageUpdaterR->getNextFrame().copy();
+        image.l = this->m_camImageGenL->getFrame().copy();
+        image.r = this->m_camImageGenR->getFrame().copy();
         QImagePair cut;
         cut.l = image.l.copy(leftrect);
         cut.r = image.r.copy(rightrect);
@@ -184,8 +183,8 @@ void VrFullscreenViewer::frameUpdateEvent()
         this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
     } if(m_isPlayingVideo){ //playing video on
        QImagePair frames;
-       frames.l = m_videoPlayerL->getFrame();
-       frames.r = m_videoPlayerR->getFrame();
+        frames.l = m_videoImageGenL->getFrame();
+        frames.r = m_videoImageGenR->getFrame();
 
        if(!frames.l.isNull() && !frames.r.isNull())
        {
@@ -206,7 +205,7 @@ void VrFullscreenViewer::frameUpdateEvent()
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 
 //    qDebug()  << crono.restart();
-//    m_mean = (this->imageUpdaterL->getCurrentFPS()+this->imageUpdaterR->getCurrentFPS()+m_mean)/3.0;
+//    m_mean = (this->m_videoImageGenL->getCurrentFps()+this->m_videoImageGenR->getCurrentFps()+m_mean)/3.0;
 //    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 //    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
 }
@@ -344,8 +343,8 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_U:
         //Use or not undistort in the images outputed by the camera
         m_useUndistort = !m_useUndistort;
-        this->imageUpdaterR->setIsUndistorted(this->m_useUndistort);
-        this->imageUpdaterL->setIsUndistorted(this->m_useUndistort);
+        this->m_camImageGenL->setUndistortImages(this->m_useUndistort);
+        this->m_camImageGenR->setUndistortImages(this->m_useUndistort);
         break;
     //Key events to move the window of the left camera - WASD keys
     case Qt::Key_W:
@@ -449,33 +448,30 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_5:
         if(!m_isPlayingVideo){
-            imageUpdaterL->stop();
-            imageUpdaterR->stop();
+            m_camImageGenL->stop();
+            m_camImageGenR->stop();
             m_isPlayingVideo = true;
-            m_videoPlayerL = new VideoPlayer((char*)"./videos/1L.avi");
-            m_videoPlayerR = new VideoPlayer((char*)"./videos/1R.avi");
-            m_videoPlayerL->start();
-            m_videoPlayerR->start();
-        } else {
-            imageUpdaterL->start();
-            imageUpdaterR->start();
-            m_isPlayingVideo = false;
-            m_videoPlayerL->stop();
-            m_videoPlayerR->stop();
-        }
-        break;
-    case Qt::Key_6: {
-        tmp.start();
+            m_videoImageGenL = new VideoImageGenerator((char*)"./videos/1L.avi");
+            m_videoImageGenR = new VideoImageGenerator((char*)"./videos/1R.avi");
 
+            m_videoImageGenL->start();
+            m_videoImageGenR->start();
+        } else {
+            m_camImageGenL->start();
+            m_camImageGenR->start();
+            m_isPlayingVideo = false;
+
+            m_videoImageGenL->stop();
+            m_videoImageGenR->stop();
         }
         break;
     case Qt::Key_8:
         if(m_isDemo && m_currentImage == 1) {
-            imageUpdaterL->start();
-            imageUpdaterR->start();
+            m_camImageGenL->start();
+            m_camImageGenR->start();
         } else {
-            imageUpdaterL->stop();
-            imageUpdaterR->stop();
+            m_camImageGenL->stop();
+            m_camImageGenR->stop();
             m_isDemo = true;
             m_currentImage = 1;
         }
@@ -484,12 +480,12 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_9:
         if(m_isDemo && m_currentImage == 2) {
-            imageUpdaterL->start();
-            imageUpdaterR->start();
+            m_camImageGenL->start();
+            m_camImageGenR->start();
             m_isDemo = false;
         } else {
-            imageUpdaterL->stop();
-            imageUpdaterR->stop();
+            m_camImageGenL->stop();
+            m_camImageGenR->stop();
             m_isDemo = true;
             m_currentImage = 2;
         }
@@ -498,12 +494,12 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_0:
         if(m_isDemo && m_currentImage == 3) {
-            imageUpdaterL->start();
-            imageUpdaterR->start();
+            m_camImageGenL->start();
+            m_camImageGenR->start();
             m_isDemo = false;
         } else {
-            imageUpdaterL->stop();
-            imageUpdaterR->stop();
+            m_camImageGenL->stop();
+            m_camImageGenR->stop();
             m_isDemo = true;
             m_currentImage = 3;
         }

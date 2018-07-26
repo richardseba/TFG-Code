@@ -1,7 +1,6 @@
 #ifndef VRIMAGEUPDATER_H
 #define VRIMAGEUPDATER_H
 
-#include "QGraphicsItem"
 #include "QTimer"
 #include "QTime"
 #include "QThread"
@@ -24,7 +23,7 @@ class VRimageUpdater : public QObject
 public:
     VRimageUpdater();
     ~VRimageUpdater();
-    VRimageUpdater(Camera* camera, bool mirrored,bool isUndistorted);
+    VRimageUpdater(Camera* camera, bool isUndistorted);
     QImage getNextFrame();
     void setIsUndistorted(bool isUndistorted);
     float getCurrentFPS();
@@ -42,7 +41,6 @@ signals:
     void stopSignal();
 
 private:
-    bool m_mirrored;
     bool m_isUndistorted;
 
     QTime m_crono; //used for debugging reasons only

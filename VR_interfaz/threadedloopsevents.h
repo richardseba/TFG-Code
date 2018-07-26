@@ -18,7 +18,7 @@ public:
     void waitEndLoopEvent();
 
 protected:
-    void process();
+    virtual void process() = 0;
 
     QTimer m_timeTrigger;
     QMutex m_mutex;

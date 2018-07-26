@@ -35,7 +35,11 @@ SOURCES += main.cpp\
     classificatorsSrc/thresholdclassificator.cpp \
     depthprocessing.cpp \
     videoplayer.cpp \
-    threadedloopsevents.cpp
+    threadedloopsevents.cpp \
+    imageGeneratorSrc/imagegenerator.cpp \
+    imageGeneratorSrc/videoimagegenerator.cpp \
+    imageGeneratorSrc/cameraimagegenerator.cpp \
+    imageGeneratorSrc/imageloadergenerator.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -62,7 +66,11 @@ HEADERS  += mainwindow.h \
     depthprocessing.h \
     videoplayer.h \
     qtfilter.h \
-    threadedloopsevents.h
+    threadedloopsevents.h \
+    imageGeneratorSrc/imagegenerator.h \
+    imageGeneratorSrc/videoimagegenerator.h \
+    imageGeneratorSrc/cameraimagegenerator.h \
+    imageGeneratorSrc/imageloadergenerator.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \

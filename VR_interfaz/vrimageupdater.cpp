@@ -14,9 +14,8 @@ VRimageUpdater::VRimageUpdater()
  * -------------------------------
  * Overloaded constructor
 */
-VRimageUpdater::VRimageUpdater(Camera* camera, bool mirrored, bool isUndistorted)
+VRimageUpdater::VRimageUpdater(Camera* camera, bool isUndistorted)
 {
-    this->m_mirrored = mirrored;
     this->m_isUndistorted = isUndistorted;
     this->m_camera = camera;
     this->m_crono.start();

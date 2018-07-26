@@ -10,7 +10,8 @@
 #include "./VR_UI_Src/qgraphicstextitemvr.h"
 #include "roitransition.h"
 #include "depthprocessing.h"
-#include "videoplayer.h"
+#include "imageGeneratorSrc/videoimagegenerator.h"
+#include "imageGeneratorSrc/cameraimagegenerator.h"
 
 #include "QTimer"
 #include <QTime>
@@ -69,9 +70,9 @@ private:
     QTime crono; //use to perform test, not necessary
     QTimer* m_timer;
 
-    //associated threads for image capturing and processing
-    VRimageUpdater* imageUpdaterR;
-    VRimageUpdater* imageUpdaterL;
+    CameraImageGenerator* m_camImageGenL;
+    CameraImageGenerator* m_camImageGenR;
+
     DepthProcessing* m_depthProcess;
     bool m_isProcessing;
 
@@ -105,11 +106,9 @@ private:
     ROITransition m_transitionRight;
     bool m_doTransitions;
 
-    VideoPlayer* m_videoPlayerL;
-    VideoPlayer* m_videoPlayerR;
+    VideoImageGenerator* m_videoImageGenL;
+    VideoImageGenerator* m_videoImageGenR;
     bool m_isPlayingVideo;
-
-    ThreadedLoopsEvents tmp;
 
 protected:
     void keyPressEvent(QKeyEvent *event);

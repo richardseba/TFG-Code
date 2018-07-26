@@ -18,8 +18,9 @@ class VideoPlayer : public QObject
     Q_OBJECT
 public:
     VideoPlayer();
-    ~VideoPlayer();
     VideoPlayer(char* namefile);
+    ~VideoPlayer();
+
     QImage getFrame();
     void waitEndGrabEvent();
     bool isVideoFinished();

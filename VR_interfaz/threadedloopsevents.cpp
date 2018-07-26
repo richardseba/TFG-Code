@@ -62,11 +62,11 @@ void ThreadedLoopsEvents::frameLoopEvent()
     m_mutex.unlock();
 }
 
-void ThreadedLoopsEvents::process()
-{
-    //proces data in inherited classes
-    qDebug() << "spam";
-}
+//void ThreadedLoopsEvents::process()
+//{
+//    //proces data in inherited classes
+//    qDebug() << "spam";
+//}
 
 
 
