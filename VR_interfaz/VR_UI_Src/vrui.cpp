@@ -1,9 +1,8 @@
 #include "vrui.h"
 
 
-VrUI::VrUI()
+VrUI::VrUI() : QGraphicsItemGroup()
 {
-    QGraphicsItemGroup::QGraphicsItemGroup();
     m_uiFont = new QFont("Helvetica [Cronyx]",25,12,false );
     m_fpsText1 = new QGraphicsTextItem("haodsfdsdfsdfsdfs!");
     m_fpsText1->setFont(*m_uiFont);

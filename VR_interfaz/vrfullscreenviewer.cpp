@@ -135,8 +135,8 @@ void VrFullscreenViewer::frameUpdateEvent()
 {
 //    qDebug() << "starting main loop";
 //    qDebug() << crono.restart();
-    QRect leftrect = QRect::QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
-    QRect rightrect = QRect::QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
+    QRect leftrect = QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
+    QRect rightrect = QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
 
     if(!m_isDemo && !m_isPlayingVideo){
         QImagePair image;
@@ -479,8 +479,8 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_isDemo = true;
             m_currentImage = 1;
         }
-        m_imgL = QImage::QImage("./demo_images/im1L.png");
-        m_imgR = QImage::QImage("./demo_images/im1R.png");
+        m_imgL = QImage("./demo_images/im1L.png");
+        m_imgR = QImage("./demo_images/im1R.png");
         break;
     case Qt::Key_9:
         if(m_isDemo && m_currentImage == 2) {
@@ -493,8 +493,8 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_isDemo = true;
             m_currentImage = 2;
         }
-        m_imgL = QImage::QImage("./demo_images/im2L.png");
-        m_imgR = QImage::QImage("./demo_images/im2R.png");
+        m_imgL = QImage("./demo_images/im2L.png");
+        m_imgR = QImage("./demo_images/im2R.png");
         break;
     case Qt::Key_0:
         if(m_isDemo && m_currentImage == 3) {
@@ -507,8 +507,8 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_isDemo = true;
             m_currentImage = 3;
         }
-        m_imgL = QImage::QImage("./demo_images/im3L.png");
-        m_imgR = QImage::QImage("./demo_images/im3R.png");
+        m_imgL = QImage("./demo_images/im3L.png");
+        m_imgR = QImage("./demo_images/im3R.png");
         break;
     default:
         break;

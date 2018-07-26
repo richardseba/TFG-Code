@@ -4,7 +4,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QMutex>
-#include <Qtime>
+#include <QTime>
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"

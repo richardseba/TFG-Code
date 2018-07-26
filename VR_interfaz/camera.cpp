@@ -1,5 +1,4 @@
 #include "camera.h"
-#include <pylon/PylonGUI.h>
 
 /* Function Camera
  * -------------------------------
