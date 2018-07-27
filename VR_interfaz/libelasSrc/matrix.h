@@ -32,6 +32,11 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 #define endll endl << endl // double end line definition
 
+/* LIBELAS SOURCE CODE
+ * -------------------------------
+ * This File is part of the LIBELAS source code
+*/
+
 typedef double FLOAT;      // double precision
 //typedef float  FLOAT;    // single precision
 

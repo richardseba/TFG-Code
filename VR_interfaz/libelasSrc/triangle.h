@@ -16,6 +16,11 @@
 /*  Modified by Andreas Geiger, 2011                                         */
 /*****************************************************************************/
 
+/* LIBELAS SOURCE CODE
+ * -------------------------------
+ * This File is part of the LIBELAS source code
+*/
+
 /*****************************************************************************/
 /*                                                                           */
 /*  How to call Triangle from another program                                */

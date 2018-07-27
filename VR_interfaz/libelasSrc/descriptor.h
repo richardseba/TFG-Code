@@ -19,6 +19,11 @@ libelas; if not, write to the Free Software Foundation, Inc., 51 Franklin
 Street, Fifth Floor, Boston, MA 02110-1301, USA 
 */
 
+/* LIBELAS SOURCE CODE
+ * -------------------------------
+ * This File is part of the LIBELAS source code
+*/
+
 // NOTE: This descripter is a sparse approximation to the 50-dimensional
 // descriptor described in the paper. It produces similar results, but
 // is faster to compute.

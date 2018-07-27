@@ -4,6 +4,11 @@
 #include "./classificatorsSrc/presetclassificator.h"
 #include "temporalmean.h"
 
+/* Class ThresholdClassificator
+ * -------------------------------
+ * This class is implements a threshold clasifficator method that returns the distance,
+ * as values or class
+*/
 class ThresholdClassificator : public PresetClassificator
 {
 public:

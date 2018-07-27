@@ -4,6 +4,11 @@
 #include "utils.h"
 #include "./libelasSrc/elas.h"
 
+/* Processingimages file
+ * -------------------------------
+ * This File contains some convinient functions usually used in image processing modules
+*/
+
 Mat getColorFrom(Mat backgroundSrc, Mat colorSrc);
 
 MatPair processDisparity(QImage* Im1, QImage* Im2,Elas::setting elasSetting);

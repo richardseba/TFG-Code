@@ -10,6 +10,12 @@
 #include "classificatorsSrc/thresholdclassificator.h"
 #include "libelasSrc/elas.h"
 
+/* Class DepthProcessing
+ * -------------------------------
+ * This class is a thread that in each loop grabs the image pair stored inside it via setImages2Process
+ * and using the LIBELAS library leaves the mean distance of the images in the getCurrentDistance and
+ * getCurrentDistanceValue
+*/
 class DepthProcessing : public QObject
 {
     Q_OBJECT
