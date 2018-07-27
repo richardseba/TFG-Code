@@ -41,6 +41,9 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     m_isProcessing = false;
     m_currentDistance = Distance(2);
 
+    m_imgLoadL = nullptr;
+    m_imgLoadR = nullptr;
+
     m_depthProcess = new DepthProcessing(stereoCalib,12,4,10,4);
 
 //    QtFilter* tmpfilter = new QtFilter();
@@ -84,7 +87,6 @@ VrFullscreenViewer::~VrFullscreenViewer()
     }
 
     delete m_fpsCounter;
-    qDebug() << "fullscreen closed";
 }
 
 
@@ -96,8 +98,6 @@ VrFullscreenViewer::~VrFullscreenViewer()
 */
 void VrFullscreenViewer::initScene()
 {
-    bool ret;
-
     this->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
     this->setStyleSheet("border: 0px solid black");
 
@@ -179,8 +179,8 @@ void VrFullscreenViewer::frameUpdateEvent()
         }
 
     } else if(m_isDemo){
-        this->m_frameL.setPixmap(QPixmap::fromImage(m_imgL.copy(leftrect)));
-        this->m_frameR.setPixmap(QPixmap::fromImage(m_imgR.copy(rightrect)));
+        this->m_frameL.setPixmap(QPixmap::fromImage(m_imgLoadL->getFrame().copy(leftrect)));
+        this->m_frameR.setPixmap(QPixmap::fromImage(m_imgLoadL->getFrame().copy(rightrect)));
     } if(m_isPlayingVideo){ //playing video on
        QImagePair frames;
         frames.l = m_videoImageGenL->getFrame();
@@ -466,50 +466,42 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         }
         break;
     case Qt::Key_8:
-        if(m_isDemo && m_currentImage == 1) {
-            m_camImageGenL->start();
-            m_camImageGenR->start();
-        } else {
-            m_camImageGenL->stop();
-            m_camImageGenR->stop();
-            m_isDemo = true;
-            m_currentImage = 1;
-        }
-        m_imgL = QImage("./demo_images/im1L.png");
-        m_imgR = QImage("./demo_images/im1R.png");
+        setUpDemo((char*)"./demo_images/im1L.png",(char*)"./demo_images/im1R.png",1);
         break;
     case Qt::Key_9:
-        if(m_isDemo && m_currentImage == 2) {
-            m_camImageGenL->start();
-            m_camImageGenR->start();
-            m_isDemo = false;
-        } else {
-            m_camImageGenL->stop();
-            m_camImageGenR->stop();
-            m_isDemo = true;
-            m_currentImage = 2;
-        }
-        m_imgL = QImage("./demo_images/im2L.png");
-        m_imgR = QImage("./demo_images/im2R.png");
+        setUpDemo((char*)"./demo_images/im2L.png",(char*)"./demo_images/im2R.png",2);
         break;
     case Qt::Key_0:
-        if(m_isDemo && m_currentImage == 3) {
-            m_camImageGenL->start();
-            m_camImageGenR->start();
-            m_isDemo = false;
-        } else {
-            m_camImageGenL->stop();
-            m_camImageGenR->stop();
-            m_isDemo = true;
-            m_currentImage = 3;
-        }
-        m_imgL = QImage("./demo_images/im3L.png");
-        m_imgR = QImage("./demo_images/im3R.png");
+        setUpDemo((char*)"./demo_images/im3L.png",(char*)"./demo_images/im3R.png",3);
         break;
     default:
         break;
     }
     this->m_frameR.setPos(m_leftSensorROI.width,0);
+}
+
+void VrFullscreenViewer::setUpDemo(char* nameFileL,char* nameFileR, int currentImage)
+{
+    if(m_isDemo && m_currentImage == currentImage) {
+        m_camImageGenL->start();
+        m_camImageGenR->start();
+
+        m_isDemo = false;
+    } else {
+        m_camImageGenL->stop();
+        m_camImageGenR->stop();
+
+        if(m_imgLoadL != nullptr){
+            delete m_imgLoadL;
+            delete m_imgLoadR;
+        }
+
+        m_imgLoadL = new ImageLoaderGenerator(nameFileL);
+        m_imgLoadR = new ImageLoaderGenerator(nameFileR);
+
+        m_isDemo = true;
+        m_currentImage = currentImage;
+    }
 }
 
 

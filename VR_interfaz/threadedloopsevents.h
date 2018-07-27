@@ -13,9 +13,9 @@ public:
     ThreadedLoopsEvents();
     ~ThreadedLoopsEvents();
 
-    void start();
-    void stop();
-    void waitEndLoopEvent();
+    virtual void start();
+    virtual void stop();
+    virtual void waitEndLoopEvent();
 
 protected:
     virtual void process() = 0;

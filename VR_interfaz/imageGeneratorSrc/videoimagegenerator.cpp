@@ -14,6 +14,7 @@ VideoImageGenerator::VideoImageGenerator(char* nameFile) : ImageGenerator ()
 
 VideoImageGenerator::~VideoImageGenerator()
 {
+    this->stop();
     m_video.release();
 }
 

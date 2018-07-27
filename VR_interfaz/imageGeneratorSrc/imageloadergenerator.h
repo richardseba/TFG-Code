@@ -8,8 +8,8 @@
 class ImageLoaderGenerator : public ImageGenerator
 {
 public:
-    ImageLoaderGenerator();
     ImageLoaderGenerator(char* nameFile);
+    ~ImageLoaderGenerator();
 
     QImage getFrame();
     int hasEnded();
@@ -21,6 +21,7 @@ protected:
     void process();
 
 private:
+    ImageLoaderGenerator();
     QImage m_image;
 };
 

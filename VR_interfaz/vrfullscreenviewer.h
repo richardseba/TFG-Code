@@ -12,6 +12,7 @@
 #include "depthprocessing.h"
 #include "imageGeneratorSrc/videoimagegenerator.h"
 #include "imageGeneratorSrc/cameraimagegenerator.h"
+#include "imageGeneratorSrc/imageloadergenerator.h"
 
 #include "QTimer"
 #include <QTime>
@@ -63,6 +64,7 @@ private:
     void initScene();
     void saveUserParameters(QString filename,QString nameSufix="");
     void loadUserParameters(QString filename,bool transition=false);
+    void setUpDemo(char* nameFileL, char* nameFileR, int currentImage);
     void zoomIn();
     void zoomOut();
     int m_currentUserParam;
@@ -86,9 +88,9 @@ private:
 
     Distance m_currentDistance;
 
-    //demo
-    QImage m_imgL;
-    QImage m_imgR;
+    ImageLoaderGenerator* m_imgLoadL;
+    ImageLoaderGenerator* m_imgLoadR;
+
     int m_currentImage;
     bool m_isDemo;
 

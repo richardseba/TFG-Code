@@ -12,6 +12,8 @@ CameraImageGenerator::CameraImageGenerator(Camera* camera, bool isUndistorted) :
 
 CameraImageGenerator::~CameraImageGenerator()
 {
+    this->stop();
+    this->waitEndLoopEvent();
 }
 
 void CameraImageGenerator::process()

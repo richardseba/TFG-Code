@@ -9,6 +9,10 @@ ImageLoaderGenerator::ImageLoaderGenerator(char* nameFile) : ImageGenerator ()
     m_image = QImage(nameFile);
 }
 
+ImageLoaderGenerator::~ImageLoaderGenerator()
+{
+}
+
 QImage ImageLoaderGenerator::getFrame()
 {
     return m_image;
