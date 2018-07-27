@@ -17,7 +17,6 @@ SOURCES += main.cpp\
     calibdialog.cpp \
     loadcalibparamsdialog.cpp \
     vrfullscreenviewer.cpp \
-    vrimageupdater.cpp \
     selectcameraparamsdialog.cpp \
     utils.cpp \
     cameracalibration.cpp \
@@ -34,14 +33,17 @@ SOURCES += main.cpp\
     VR_UI_Src/vrui.cpp \
     classificatorsSrc/thresholdclassificator.cpp \
     depthprocessing.cpp \
-    videoplayer.cpp
+    threadedloopsevents.cpp \
+    imageGeneratorSrc/imagegenerator.cpp \
+    imageGeneratorSrc/videoimagegenerator.cpp \
+    imageGeneratorSrc/cameraimagegenerator.cpp \
+    imageGeneratorSrc/imageloadergenerator.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
     calibdialog.h \
     loadcalibparamsdialog.h \
     vrfullscreenviewer.h \
-    vrimageupdater.h \
     selectcameraparamsdialog.h \
     utils.h \
     cameracalibration.h \
@@ -59,8 +61,12 @@ HEADERS  += mainwindow.h \
     classificatorsSrc/presetclassificator.h \
     classificatorsSrc/thresholdclassificator.h \
     depthprocessing.h \
-    videoplayer.h \
-    qtfilter.h
+    qtfilter.h \
+    threadedloopsevents.h \
+    imageGeneratorSrc/imagegenerator.h \
+    imageGeneratorSrc/videoimagegenerator.h \
+    imageGeneratorSrc/cameraimagegenerator.h \
+    imageGeneratorSrc/imageloadergenerator.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \
@@ -72,20 +78,31 @@ RESOURCES +=
 win32 {
     INCLUDEPATH += $$(PYLON_DEV_DIR)/include \
     INCLUDEPATH += C:\opencv3.4\build\include\
+
+    CONFIG(debug, debug|release) {
+        LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib \
+                -L$$(PYLON_DEV_DIR)/lib/x64 \
+                -lPylonBase_MD_VC120_v5_0 \
+                -lPylonUtility_MD_VC120_v5_0 \
+                -lPylonC_MD_VC120 \
+        }
+        else
+        {
+        LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib \
+                -L$$(PYLON_DEV_DIR)/lib/x64 \
+                -lPylonBase_MD_VC120_v5_0 \
+                -lPylonUtility_MD_VC120_v5_0 \
+                -lPylonC_MD_VC120 \
+        }
 }
 
-CONFIG(debug, debug|release) {
-    LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib \
-            -L$$(PYLON_DEV_DIR)/lib/x64 \
-            -lPylonBase_MD_VC120_v5_0 \
-            -lPylonUtility_MD_VC120_v5_0 \
-            -lPylonC_MD_VC120 \
-    }
-    else
-    {
-    LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib \
-            -L$$(PYLON_DEV_DIR)/lib/x64 \
-            -lPylonBase_MD_VC120_v5_0 \
-            -lPylonUtility_MD_VC120_v5_0 \
-            -lPylonC_MD_VC120 \
-    }
+unix{
+    INCLUDEPATH += /opt/pylon5/include
+    INCLUDEPATH += /usr/local/include/opencv
+
+    LIBS += -L/opt/pylon5/lib64
+    LIBS += -lNodeMapData_gcc_v3_0_Basler_pylon_v5_0 -lXmlParser_gcc_v3_0_Basler_pylon_v5_0 -lMathParser_gcc_v3_0_Basler_pylon_v5_0 -lpylonbase -lpylonc -lpylonutility -lGCBase_gcc_v3_0_Basler_pylon_v5_0 -lGenApi_gcc_v3_0_Basler_pylon_v5_0 -lLog_gcc_v3_0_Basler_pylon_v5_0
+
+    LIBS += `pkg-config opencv --libs`
+}
+
