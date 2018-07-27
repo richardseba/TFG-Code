@@ -171,8 +171,10 @@ void MainWindow::on_recordingButton_clicked()
             qDebug() << m_vectorVideoL.size() << m_vectorVideoR.size();
             progress.show();
             progress.setFixedSize(250,50);
+            qDebug() << "a guardar";
             saveVideoFromMemory(m_vectorVideoL, m_videoL,&progress);
             saveVideoFromMemory(m_vectorVideoR, m_videoR,&progress);
+            qDebug() << "a despues";
             m_vectorVideoL.clear();
             m_vectorVideoR.clear();
         }
@@ -196,8 +198,16 @@ void MainWindow::on_recordingButton_clicked()
             now = QDateTime::currentDateTime();
             QString namefile = QString("./videos/") + QString(now.toString("dd_MM_hh_mm_ss"));
 
+#ifdef _WIN32
             m_videoL.open((namefile+QString("L.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectL.size());
             m_videoR.open((namefile+QString("R.avi")).toLatin1().data(),-1,FRAME_RATE_SAVE, rectR.size());
+#endif
+
+#ifdef __linux__
+            qDebug() << "Linux";
+            m_videoL.open((namefile+QString("L.avi")).toLatin1().data(),VideoWriter::fourcc('M','J','P','G'),FRAME_RATE_SAVE, rectL.size());
+            m_videoR.open((namefile+QString("R.avi")).toLatin1().data(),VideoWriter::fourcc('M','J','P','G'),FRAME_RATE_SAVE, rectR.size());
+#endif
             qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
         }
         this->m_cameraR->startGrabbing();

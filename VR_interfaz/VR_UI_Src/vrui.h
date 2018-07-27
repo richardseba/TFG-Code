@@ -14,9 +14,9 @@
 
 
 
-/* Class MainWindow
+/* Class VrUI
  * -------------------------------
- * This class is mean to be the main controller of a future VR UI
+ * This class is meant to be the main controller of a future VR UI
  * currently is empty in functionality
  *
 */

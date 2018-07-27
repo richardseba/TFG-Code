@@ -3,6 +3,13 @@
 
 #include "cameracalibration.h"
 
+/* Class CameraCalibration
+ * -------------------------------
+ * This class allows to calibrate pinhole stereo cameras and after
+ * the calibration it allows the user to undistort and rectify stereo images
+ *
+ * The parameters of the calibration can be saved into a file using saveParamsInFile function
+*/
 class StereoCalibration
 {
 public:

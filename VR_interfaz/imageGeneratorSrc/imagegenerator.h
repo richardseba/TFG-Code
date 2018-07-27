@@ -3,6 +3,14 @@
 
 #include "threadedloopsevents.h"
 
+/* Class ABSTRACT ImageGenerator
+ * -------------------------------
+ * This ABSTRACT class contains the virtual functions that a Image generator has to have
+ *
+ * Both getFrame() and hasEnded() have to be implemented by the child classes
+ *
+ * it inherits from ThreadedLoopsEvents
+*/
 class ImageGenerator : public ThreadedLoopsEvents
 {
 public:

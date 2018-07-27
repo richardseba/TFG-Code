@@ -33,8 +33,12 @@ enum ViewingMode {NONE, VIDEO, CAMERA, STILL_IMG};
 
 /* Class VrFullscreenViewer
  * -------------------------------
- * This class represents the fullscreen vr viewer that will
- * be used to display the images captured by vrimageupdater
+ * This class represents a fullscreen vr viewer that updated the scene using images captured
+ * by a ImageGenerator. By default using a CameraImageGenerator.
+ *
+ * This class updates the scene in the function frameUpdateEvent each time the event from the
+ * QTimer m_timer is fired ( is set by default to 0, hence firing again each time the frameUpdateEvent
+ * is exited)
  *
  * it inherits from QGraphicsView
  * Uses Q_OBJECT macro

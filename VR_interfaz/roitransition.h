@@ -7,10 +7,15 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
+
 using namespace cv;
 
 enum Orientation { goingUp=0, goingDown=1, goingLeft=2, goingRight=3, growing=4, decreasing=5 };
 
+/* Class ROITransition
+ * -------------------------------
+ * This class is used to transition between different settings of the visualization
+*/
 class ROITransition
 {
 public:

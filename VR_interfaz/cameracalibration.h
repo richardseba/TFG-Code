@@ -11,7 +11,13 @@
 using namespace std;
 using namespace cv;
 
-
+/* Class CameraCalibration
+ * -------------------------------
+ * This class allows to calibrate pinhole cameras and after
+ * the calibration it allows the user to undistort images captured with the same camera
+ *
+ * The parameters of the calibration can be saved into a file using saveParamsInFile function
+*/
 class CameraCalibration
 {
 public:

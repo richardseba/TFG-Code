@@ -33,7 +33,7 @@ using namespace cv;               //To use opencv
  * -------------------------------
  * This class is used to simplify the use of the basler camera
  * api. It's build to work with all the basler camera portfolio.
- * It uses the CalibrationCamera class to save and undistort its own
+ * It uses the CalibrationCamera class to save its own
  * calibration
 */
 class Camera

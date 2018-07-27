@@ -5,6 +5,11 @@
 
 enum Distance {CLOSE,MEDIUM,FAR};
 
+/* Class ABSTRACT PresetClassificator
+ * -------------------------------
+ * This abstract class is designed to implement a clasifficator method that returns the distance,
+ * as values or class
+*/
 class PresetClassificator
 {
 public:

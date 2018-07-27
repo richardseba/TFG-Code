@@ -25,6 +25,11 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 #include <emmintrin.h>
 #include <pmmintrin.h>
 
+/* LIBELAS SOURCE CODE
+ * -------------------------------
+ * This File is part of the LIBELAS source code
+*/
+
 // define fixed-width datatypes for Visual Studio projects
 #include <stdint.h>
 

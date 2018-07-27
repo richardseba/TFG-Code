@@ -9,6 +9,11 @@
 #include "QDebug"
 #include <QImage>
 
+/* Processing images file
+ * -------------------------------
+ * This File contains some convinient functions used for the development of this software
+*/
+
 using namespace cv;               //To use opencv
 
 typedef struct
@@ -40,7 +45,6 @@ typedef struct
 Mat QImage2Mat(QImage const& src);
 QImage Mat2QImage(Mat const& src);
 int odd2Even(int num);
-
 
 
 #endif // UTILS_H

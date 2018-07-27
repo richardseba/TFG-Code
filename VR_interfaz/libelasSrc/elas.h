@@ -21,6 +21,12 @@ Street, Fifth Floor, Boston, MA 02110-1301, USA
 
 // Main header file. Include this to use libelas in your code.
 
+/* LIBELAS SOURCE CODE
+ * -------------------------------
+ * This File is part of the LIBELAS source code, here some of the parameters of
+ * the depth generation can be modified
+*/
+
 #ifndef __ELAS_H__
 #define __ELAS_H__
 
