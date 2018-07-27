@@ -10,6 +10,7 @@
 #include "./VR_UI_Src/qgraphicstextitemvr.h"
 #include "roitransition.h"
 #include "depthprocessing.h"
+#include "imageGeneratorSrc/imagegenerator.h"
 #include "imageGeneratorSrc/videoimagegenerator.h"
 #include "imageGeneratorSrc/cameraimagegenerator.h"
 #include "imageGeneratorSrc/imageloadergenerator.h"
@@ -34,9 +35,9 @@
 
 #include "QTime"
 
-
-
 const int STEPS_IN_TRANSITION = 10;
+
+enum ViewingMode {NONE, VIDEO, CAMERA, STILL_IMG};
 
 /* Class VrFullscreenViewer
  * -------------------------------
@@ -64,16 +65,21 @@ private:
     void initScene();
     void saveUserParameters(QString filename,QString nameSufix="");
     void loadUserParameters(QString filename,bool transition=false);
-    void setUpDemo(char* nameFileL, char* nameFileR, int currentImage);
+    void setUpCameraVisualization(Camera* camL, Camera* camR);
+    void setUpStillImages(char* nameFileL, char* nameFileR);
+    void setUpVideo(char* nameFileL, char* nameFileR);
     void zoomIn();
     void zoomOut();
     int m_currentUserParam;
 
+    Camera* m_cameraL;
+    Camera* m_cameraR;
+
+    ImageGenerator* m_imgGeneratorL;
+    ImageGenerator* m_imgGeneratorR;
+
     QTime crono; //use to perform test, not necessary
     QTimer* m_timer;
-
-    CameraImageGenerator* m_camImageGenL;
-    CameraImageGenerator* m_camImageGenR;
 
     DepthProcessing* m_depthProcess;
     bool m_isProcessing;
@@ -87,12 +93,6 @@ private:
     QGraphicsPixmapItem m_frameL;
 
     Distance m_currentDistance;
-
-    ImageLoaderGenerator* m_imgLoadL;
-    ImageLoaderGenerator* m_imgLoadR;
-
-    int m_currentImage;
-    bool m_isDemo;
 
     bool m_useUndistort;
 
@@ -108,10 +108,7 @@ private:
     ROITransition m_transitionRight;
     bool m_doTransitions;
 
-    VideoImageGenerator* m_videoImageGenL;
-    VideoImageGenerator* m_videoImageGenR;
-    bool m_isPlayingVideo;
-
+    ViewingMode m_mode;
 protected:
     void keyPressEvent(QKeyEvent *event);
 };
