@@ -1,6 +1,10 @@
 #include "vrfullscreenviewer.h"
 //#include "qtfilter.h"
 
+#include "imageGeneratorSrc/videoimagegenerator.h"
+#include "imageGeneratorSrc/cameraimagegenerator.h"
+#include "imageGeneratorSrc/imageloadergenerator.h"
+
 /* Function VrFullscreenViewer
  * -------------------------------
  * build in constructor.

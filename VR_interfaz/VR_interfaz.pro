@@ -17,7 +17,6 @@ SOURCES += main.cpp\
     calibdialog.cpp \
     loadcalibparamsdialog.cpp \
     vrfullscreenviewer.cpp \
-    vrimageupdater.cpp \
     selectcameraparamsdialog.cpp \
     utils.cpp \
     cameracalibration.cpp \
@@ -34,7 +33,6 @@ SOURCES += main.cpp\
     VR_UI_Src/vrui.cpp \
     classificatorsSrc/thresholdclassificator.cpp \
     depthprocessing.cpp \
-    videoplayer.cpp \
     threadedloopsevents.cpp \
     imageGeneratorSrc/imagegenerator.cpp \
     imageGeneratorSrc/videoimagegenerator.cpp \
@@ -46,7 +44,6 @@ HEADERS  += mainwindow.h \
     calibdialog.h \
     loadcalibparamsdialog.h \
     vrfullscreenviewer.h \
-    vrimageupdater.h \
     selectcameraparamsdialog.h \
     utils.h \
     cameracalibration.h \
@@ -64,7 +61,6 @@ HEADERS  += mainwindow.h \
     classificatorsSrc/presetclassificator.h \
     classificatorsSrc/thresholdclassificator.h \
     depthprocessing.h \
-    videoplayer.h \
     qtfilter.h \
     threadedloopsevents.h \
     imageGeneratorSrc/imagegenerator.h \

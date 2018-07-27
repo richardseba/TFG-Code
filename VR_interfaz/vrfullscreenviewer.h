@@ -1,27 +1,19 @@
 #ifndef VRFULLSCREENVIEWER_H
 #define VRFULLSCREENVIEWER_H
 
-
-#include "threadedloopsevents.h"
-
 #include "camera.h"
-#include "vrimageupdater.h"
 #include "./VR_UI_Src/vrui.h"
 #include "./VR_UI_Src/qgraphicstextitemvr.h"
 #include "roitransition.h"
 #include "depthprocessing.h"
 #include "imageGeneratorSrc/imagegenerator.h"
-#include "imageGeneratorSrc/videoimagegenerator.h"
-#include "imageGeneratorSrc/cameraimagegenerator.h"
-#include "imageGeneratorSrc/imageloadergenerator.h"
 
-#include "QTimer"
+#include <QTimer>
 #include <QTime>
 #include <QKeyEvent>
 #include <QPalette>
 #include <QApplication>
 #include <QDesktopWidget>
-#include <QThread>
 
 #include <QGraphicsView>
 #include "QGraphicsScene"
