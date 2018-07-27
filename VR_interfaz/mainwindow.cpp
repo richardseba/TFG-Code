@@ -205,8 +205,8 @@ void MainWindow::on_recordingButton_clicked()
 
 #ifdef __linux__
             qDebug() << "Linux";
-            m_videoL.open((namefile+QString("L.avi")).toLatin1().data(),VideoWriter::fourcc('M','P','E','G'),FRAME_RATE_SAVE, rectL.size());
-            m_videoR.open((namefile+QString("R.avi")).toLatin1().data(),VideoWriter::fourcc('M','P','E','G'),FRAME_RATE_SAVE, rectR.size());
+            m_videoL.open((namefile+QString("L.avi")).toLatin1().data(),VideoWriter::fourcc('M','J','P','G'),FRAME_RATE_SAVE, rectL.size());
+            m_videoR.open((namefile+QString("R.avi")).toLatin1().data(),VideoWriter::fourcc('M','J','P','G'),FRAME_RATE_SAVE, rectR.size());
 #endif
             qDebug() << "Videos are opened " << (m_videoL.isOpened() && m_videoR.isOpened());
         }
