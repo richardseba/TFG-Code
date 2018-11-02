@@ -439,6 +439,7 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_6:
         setUpVideo((char*)"./videos/1L.avi",(char*)"./videos/1R.avi");
+//        Sleep(5000);
         break;
     case Qt::Key_7:
         setUpCameraVisualization(m_cameraL,m_cameraR);

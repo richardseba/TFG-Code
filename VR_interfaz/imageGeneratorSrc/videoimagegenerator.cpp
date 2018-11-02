@@ -15,6 +15,7 @@ VideoImageGenerator::VideoImageGenerator(char* nameFile) : ImageGenerator ()
 VideoImageGenerator::~VideoImageGenerator()
 {
     this->stop();
+    this->waitEndLoopEvent(); //esto falta en la version que tiene coen en su pc
     m_video.release();
 }
 
