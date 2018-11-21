@@ -88,6 +88,7 @@ private:
 
 
     Camera* m_cameraL;
+//    Camera* m_cameraC;
     Camera* m_cameraR;
     StereoCalibration m_stereoCalib;
 
@@ -116,6 +117,8 @@ private:
     std::vector<QImage> m_vectorVideoR;
 
     Ui::MainWindow *ui;
+
+//    bool m_testCameraC = false;
 
 protected:
     void keyPressEvent(QKeyEvent *event);

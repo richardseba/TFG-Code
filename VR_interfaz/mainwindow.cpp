@@ -31,8 +31,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->m_is_recording = false;
     this->m_calibParams_loaded = true;
 
-    this->m_cameraR = new Camera(0);
-    this->m_cameraL = new Camera(1);
+    this->m_cameraR = new Camera(1);
+    this->m_cameraL = new Camera(2);
+//    this->m_cameraC = new Camera(0);
 
     //Loading the yaml is optional
     this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
@@ -78,6 +79,7 @@ MainWindow::~MainWindow()
 
     delete m_cameraR;
     delete m_cameraL;
+//    delete m_cameraC;
     delete this->m_loadCalibDialog;
     delete this->m_timer;
     PylonTerminate();
@@ -92,35 +94,37 @@ MainWindow::~MainWindow()
 */
 void MainWindow::on_captureButton_clicked()
 {
-    QImage *ImgR,*ImgL;
+    std::shared_ptr<QImage> imgL, imgR;
     bool retL = false,retR = false;
 
-    if(ui->checkBox_capture_left->isChecked())
-        ImgL = this->m_cameraL->single_grab_image(retL);
+    if(ui->checkBox_capture_left->isChecked()) {
+//        if(!m_testCameraC) // testing central camera
+            imgL = this->m_cameraL->single_grab_imageMemSafe(retL);
+//        else
+//            imgL = this->m_cameraC->single_grab_imageMemSafe(retL);
+    }
 
     if(ui->checkBox_capture_right->isChecked()){
-        ImgR = this->m_cameraR->single_grab_image(retR);
+        imgR = this->m_cameraR->single_grab_imageMemSafe(retR);
     }
+
     if(retL)
     {
         QImage copy;
         if(ui->checkBox_undistort->isChecked())
         {
-            copy = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(*ImgL), CV_INTER_LINEAR));
+            copy = Mat2QImage(this->m_stereoCalib.undistortLeft(QImage2Mat(*imgL.get()), CV_INTER_LINEAR));
             ui->label_display1->setPixmap(QPixmap::fromImage(copy));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(copy);
         } else {
-            ui->label_display1->setPixmap(QPixmap::fromImage(*ImgL));
+            ui->label_display1->setPixmap(QPixmap::fromImage(*imgL.get()));
             if(ui->checkBox_save->isChecked())
-                this->saveImage(*ImgL);
+                this->saveImage(*imgL.get());
         }
 
         ui->label_display1->show();
 
-        delete[] ImgL->bits();
-        delete ImgL;
-        ImgL = NULL;
     } else {
         qDebug() << "no left image recieved";
     }
@@ -130,21 +134,17 @@ void MainWindow::on_captureButton_clicked()
         QImage copy;
         if(ui->checkBox_undistort->isChecked())
         {
-            copy = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(*ImgR), CV_INTER_LINEAR));
+            copy = Mat2QImage(this->m_stereoCalib.undistortRight(QImage2Mat(*imgR.get()), CV_INTER_LINEAR));
             ui->label_display2->setPixmap(QPixmap::fromImage(copy));
             if(ui->checkBox_save->isChecked())
                 this->saveImage(copy);
         } else {
-            ui->label_display2->setPixmap(QPixmap::fromImage(*ImgR));
+            ui->label_display2->setPixmap(QPixmap::fromImage(*imgR.get()));
             if(ui->checkBox_save->isChecked())
-                this->saveImage(*ImgR);
+                this->saveImage(*imgR.get());
         }
 
         ui->label_display2->show();
-
-        delete[] ImgR->bits();
-        delete ImgR;
-        ImgR = NULL;
     } else {
         qDebug() << "no right image recieved";
     }
@@ -519,6 +519,10 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     switch (event->key()) {
     case Qt::Key_F11:
         this->on_pushButton_Fullscreen_clicked();
+        break;
+//    case Qt::Key_C:
+//        m_testCameraC = !m_testCameraC;
+//        break;
     default:
         break;
     }
