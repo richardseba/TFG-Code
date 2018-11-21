@@ -28,6 +28,7 @@ using namespace Pylon;
 using namespace GENAPI_NAMESPACE; //To use the basler api
 using namespace cv;               //To use opencv
 
+void cleanupBufferImage(void* info); //used to delete image correctly when the QImage is destroyed
 
 /* Class Camera
  * -------------------------------
@@ -45,6 +46,8 @@ public:
 
     QImage* grab_image(bool &ret);
     QImage* single_grab_image(bool &ret);
+    std::shared_ptr<QImage> grab_imageMemSafe(bool &ret);
+    std::shared_ptr<QImage> single_grab_imageMemSafe(bool &ret);
     void startGrabbing(EGrabStrategy grab_strategy=GrabStrategy_LatestImageOnly);
     void stopGrabbing();
     bool hasImage();

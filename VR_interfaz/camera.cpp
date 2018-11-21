@@ -367,6 +367,50 @@ QImage* Camera::grab_image(bool &ret)
     return qImage;
 }
 
+/* Function grab_imageMemSafe
+ * -------------------------------
+ * callback used when a QImage returned by the memsafe functions is deleted
+ *
+ * info : as a part of the callback, this variable contains the pointer to the data buffer
+ *
+ * return -> image grabbed in QImage type wrapped on a shared_ptr
+*/
+void cleanupBufferImage(void* info)
+{
+    uint8_t* temp = (uint8_t*) info;
+    delete[] temp;
+}
+
+/* Function grab_imageMemSafe
+ * -------------------------------
+ * Memory safe version of the grab_image function
+ *
+ * &ret : boolean that indicates if the grabbing has been successfully.
+ *
+ * return -> image grabbed in QImage type wrapped on a shared_ptr
+*/
+std::shared_ptr<QImage> Camera::grab_imageMemSafe(bool &ret)
+{
+    ret = false;
+    std::shared_ptr<QImage> qImage = std::shared_ptr<QImage>(nullptr);
+    CPylonImage image;
+    CImageFormatConverter fc;
+    fc.OutputPixelFormat = PixelType_RGB8packed;
+    CGrabResultPtr ptrGrabResult;
+
+    this->m_pylon_camera->RetrieveResult( 5000, ptrGrabResult, TimeoutHandling_ThrowException);
+    if (ptrGrabResult->GrabSucceeded())
+    {
+        ret = true;
+        fc.Convert(image, ptrGrabResult);
+        size_t bufferSize = image.GetAllocatedBufferSize();
+        uint8_t *nBuffer = new uint8_t[bufferSize];
+        memcpy(nBuffer,image.GetBuffer(),bufferSize);
+        qImage.reset(new QImage((uint8_t *)nBuffer, ptrGrabResult->GetWidth(), ptrGrabResult->GetHeight(),QImage::Format_RGB888,cleanupBufferImage,nBuffer));
+    }
+    return qImage;
+}
+
 /* Function single_grab_image
  * -------------------------------
  * open the camera grabs an image and closes it
@@ -379,6 +423,22 @@ QImage* Camera::single_grab_image(bool &ret)
 {
     this->startGrabbing();
     QImage* image = grab_image(ret);
+    this->stopGrabbing();
+    return image;
+}
+
+/* Function single_grab_imageMemSafe
+ * -------------------------------
+ * Memsafe version of the single_grab_image
+ *
+ * &ret : boolean that indicates if the grabbing has been successfully.
+ *
+ * return -> image grabbed in QImage type wrapped on a shared_ptr
+*/
+std::shared_ptr<QImage> Camera::single_grab_imageMemSafe(bool &ret)
+{
+    this->startGrabbing();
+    std::shared_ptr<QImage> image = grab_imageMemSafe(ret);
     this->stopGrabbing();
     return image;
 }
