@@ -33,7 +33,7 @@ VrFullscreenViewer::VrFullscreenViewer()
  * NOTE: the setAtributte function is used to set the WA_DeleteOnClose flag on True.
  * This flag will cause the delete of this widget if the close() function is called.
 */
-VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCalibration stereoCalib)
+VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCalibration stereoCalib, Camera* cameraC)
 {
     QDesktopWidget* desk = QApplication::desktop();
     this->setAttribute(Qt::WA_DeleteOnClose);
@@ -47,6 +47,10 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
 
     m_cameraL = cameraL;
     m_cameraR = cameraR;
+    if(cameraC != nullptr){
+        m_cameraC = cameraC;
+        m_cameraCTest = 0;
+    }
 
     m_depthProcess = new DepthProcessing(stereoCalib,12,4,10,4);
 
@@ -73,12 +77,15 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     this->m_timer->start();
 }
 
+
 /* Function ~VrFullscreenViewer
  * -------------------------------
  * build-in destructor
 */
 VrFullscreenViewer::~VrFullscreenViewer()
 {
+    m_imgGeneratorL->stop();
+    m_imgGeneratorR->stop();
     delete m_imgGeneratorL;
     delete m_imgGeneratorR;
 
@@ -453,10 +460,30 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_0:
         setUpStillImages((char*)"./demo_images/im3L.png",(char*)"./demo_images/im3R.png");
         break;
+    case Qt::Key_C:
+        qDebug() << m_cameraCTest;
+        if(m_cameraCTest >= 0) rotateCameraVisualization();
+        break;
     default:
         break;
     }
     this->m_frameR.setPos(m_leftSensorROI.width,0);
+}
+
+void VrFullscreenViewer::rotateCameraVisualization(){
+    m_cameraCTest = (m_cameraCTest+1)%3;
+    switch (m_cameraCTest)
+    {
+        case 0:
+            setUpCameraVisualization(m_cameraL,m_cameraR);
+        break;
+        case 1:
+            setUpCameraVisualization(m_cameraC,m_cameraR);
+        break;
+        case 2:
+            setUpCameraVisualization(m_cameraL,m_cameraC);
+        break;
+    }
 }
 
 void VrFullscreenViewer::setUpStillImages(char* nameFileL,char* nameFileR)
@@ -505,24 +532,28 @@ void VrFullscreenViewer::setUpVideo(char* nameFileL,char* nameFileR)
     m_imgGeneratorR->start();
 }
 
-void VrFullscreenViewer::setUpCameraVisualization(Camera* camL, Camera* camR)
+void VrFullscreenViewer::setUpCameraVisualization(Camera* t_cam1, Camera* t_cam2)
 {
     if(m_mode != CAMERA) {
         m_mode = CAMERA;
     }
-
+    qDebug() << "before stop";
     m_imgGeneratorL->stop();
     m_imgGeneratorR->stop();
 
+    qDebug() << "after stop";
     if(m_imgGeneratorL != nullptr){
         delete m_imgGeneratorL;
     }
     if(m_imgGeneratorR != nullptr){
         delete m_imgGeneratorR;
     }
+    qDebug() << "after delete";
 
-    m_imgGeneratorL = new CameraImageGenerator(camL);
-    m_imgGeneratorR = new CameraImageGenerator(camR);
+    m_imgGeneratorL = new CameraImageGenerator(t_cam1);
+    m_imgGeneratorR = new CameraImageGenerator(t_cam2);
+
+    qDebug() << "after new";
 
     m_imgGeneratorL->start();
     m_imgGeneratorR->start();

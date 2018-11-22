@@ -88,7 +88,7 @@ private:
 
 
     Camera* m_cameraL;
-//    Camera* m_cameraC;
+    Camera* m_cameraC;
     Camera* m_cameraR;
     StereoCalibration m_stereoCalib;
 
@@ -118,7 +118,7 @@ private:
 
     Ui::MainWindow *ui;
 
-//    bool m_testCameraC = false;
+    bool m_testCameraC = false;
 
 protected:
     void keyPressEvent(QKeyEvent *event);

@@ -33,7 +33,7 @@ enum ViewingMode {NONE, VIDEO, CAMERA, STILL_IMG};
 
 /* Class VrFullscreenViewer
  * -------------------------------
- * This class represents a fullscreen vr viewer that updated the scene using images captured
+ * This class represents a fullscreen vr viewer that updates the scene using images captured
  * by a ImageGenerator. By default using a CameraImageGenerator.
  *
  * This class updates the scene in the function frameUpdateEvent each time the event from the
@@ -49,7 +49,7 @@ class VrFullscreenViewer : public QGraphicsView
 public:
     VrFullscreenViewer();
     ~VrFullscreenViewer();
-    VrFullscreenViewer(Camera* cameraL,Camera* cameraR,StereoCalibration stereoCalib);
+    VrFullscreenViewer(Camera* cameraL,Camera* cameraR,StereoCalibration stereoCalib, Camera* cameraC = nullptr);
 
 public slots:
     void showFullScreen(int screenSelector);
@@ -66,10 +66,13 @@ private:
     void setUpVideo(char* nameFileL, char* nameFileR);
     void zoomIn();
     void zoomOut();
+    void rotateCameraVisualization();
     int m_currentUserParam;
 
     Camera* m_cameraL;
     Camera* m_cameraR;
+    Camera* m_cameraC;
+    int m_cameraCTest = -1;
 
     ImageGenerator* m_imgGeneratorL;
     ImageGenerator* m_imgGeneratorR;

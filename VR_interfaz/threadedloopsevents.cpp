@@ -20,15 +20,6 @@ ThreadedLoopsEvents::~ThreadedLoopsEvents()
     this->m_thread.wait();
 }
 
-void ThreadedLoopsEvents::waitEndLoopEvent()
-{
-    while(this->m_timeTrigger.isActive())
-    {
-        m_mutex.lock();
-        m_mutex.unlock();
-    }
-}
-
 void ThreadedLoopsEvents::start()
 {
     m_thread.start();
@@ -43,9 +34,48 @@ void ThreadedLoopsEvents::startEvent()
     }
 }
 
+/* Function stop
+ * -------------------------------
+ * this function schedules a signal to stop the process event,
+ * but not grants that when exited the process event will be finished
+ *
+ * If you want to ensure that the process event is finished use use the
+ * waitEndLoopEvent() function after this or use the more convinient
+ * stopAndWaitfinished()
+*/
 void ThreadedLoopsEvents::stop()
 {
     emit stopSignal();
+}
+
+/* Function waitEndLoopEvent
+ * -------------------------------
+ * this function enters in a infinite bucle until the process bucle is finished
+ * this function must be called after the stop function if is wanted ensure that
+ * the process event is finished.
+ *
+ * WARNING! this function can end in a deadlock if the timetrigger is not scheduled
+ * to end
+*/
+void ThreadedLoopsEvents::waitEndLoopEvent()
+{
+    while(this->m_timeTrigger.isActive())
+    {
+        m_mutex.lock();
+        m_mutex.unlock();
+    }
+}
+
+/* Function stopAndWaitfinished
+ * -------------------------------
+ * this function schedules a signal to stop the process event and waits until
+ * the process event is finished.this function grants that when finished the process event will be already
+ * finished
+*/
+void ThreadedLoopsEvents::stopAndWaitfinished()
+{
+    this->stop();
+    this->waitEndLoopEvent();
 }
 
 void ThreadedLoopsEvents::stopEvent()
