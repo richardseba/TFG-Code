@@ -14,6 +14,7 @@
 #include <QPalette>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QtCharts>
 
 #include <QGraphicsView>
 #include "QGraphicsScene"
@@ -77,7 +78,7 @@ private:
     ImageGenerator* m_imgGeneratorL;
     ImageGenerator* m_imgGeneratorR;
 
-    QTime crono; //use to perform test, not necessary
+    QTime m_crono; //use to perform test, not necessary
     QTimer* m_timer;
 
     DepthProcessing* m_depthProcess;
@@ -90,6 +91,9 @@ private:
     //Images that will be put on the scene
     QGraphicsPixmapItem m_frameR;
     QGraphicsPixmapItem m_frameL;
+
+    QtCharts::QChart* m_rightChart = new QtCharts::QChart();
+    QtCharts::QChart* m_leftChart = new QtCharts::QChart();
 
     Distance m_currentDistance;
 
@@ -108,6 +112,7 @@ private:
     bool m_doTransitions;
 
     ViewingMode m_mode;
+    bool m_test = true;
 protected:
     void keyPressEvent(QKeyEvent *event);
 };

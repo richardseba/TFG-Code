@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui widgets charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     imageGeneratorSrc/imagegenerator.cpp \
     imageGeneratorSrc/videoimagegenerator.cpp \
     imageGeneratorSrc/cameraimagegenerator.cpp \
-    imageGeneratorSrc/imageloadergenerator.cpp
+    imageGeneratorSrc/imageloadergenerator.cpp \
+    histogramimage.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -66,7 +67,8 @@ HEADERS  += mainwindow.h \
     imageGeneratorSrc/imagegenerator.h \
     imageGeneratorSrc/videoimagegenerator.h \
     imageGeneratorSrc/cameraimagegenerator.h \
-    imageGeneratorSrc/imageloadergenerator.h
+    imageGeneratorSrc/imageloadergenerator.h \
+    histogramimage.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \

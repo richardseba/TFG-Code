@@ -4,6 +4,12 @@
 #include "imageGeneratorSrc/videoimagegenerator.h"
 #include "imageGeneratorSrc/cameraimagegenerator.h"
 #include "imageGeneratorSrc/imageloadergenerator.h"
+#include "histogramimage.h"
+
+#include <QtCharts/QChart>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QBarSeries>
+#include <QtCharts/QBarSet>
 
 /* Function VrFullscreenViewer
  * -------------------------------
@@ -99,6 +105,33 @@ VrFullscreenViewer::~VrFullscreenViewer()
 }
 
 
+//QtCharts::QChart*  setTestchart()
+//{
+//    QtCharts::QChart* testchart = new QtCharts::QChart();
+//    QtCharts::QBarSeries* testBars = new QtCharts::QBarSeries();
+//    QtCharts::QBarSet* oneBar = new QtCharts::QBarSet("testing!");
+//    QtCharts::QBarSet* oneBar1 = new QtCharts::QBarSet("testing!");
+//    QtCharts::QBarSet* oneBar2 = new QtCharts::QBarSet("testing!");
+//    QtCharts::QBarSet* oneBar3 = new QtCharts::QBarSet("testing!");
+//    QtCharts::QBarSet* oneBar4 = new QtCharts::QBarSet("testing!");
+//    oneBar->append(25);
+//    oneBar1->append(50);
+//    oneBar2->append(100);
+//    oneBar3->append(200);
+//    oneBar4->append(400);
+//    testBars->append(oneBar);
+//    testBars->append(oneBar1);
+//    testBars->append(oneBar2);
+//    testBars->append(oneBar3);
+//    testBars->append(oneBar4);
+//    testchart->addSeries(testBars);
+
+//    testchart->setGeometry(0,0,500,500);
+////    testchart->
+
+//    return testchart;
+//}
+
 
 /* Function initScene
  * -------------------------------
@@ -123,6 +156,20 @@ void VrFullscreenViewer::initScene()
     //adding items to the scene
     this->scene()->addItem(&this->m_frameR);
     this->scene()->addItem(&this->m_frameL);
+    this->scene()->addItem(m_rightChart);
+    this->scene()->addItem(m_leftChart);
+
+    m_rightChart->setGeometry(1000,0,400,300);
+    m_leftChart->setGeometry(0,0,400,300);
+    m_rightChart->legend()->hide();
+    m_leftChart->legend()->hide();
+    m_rightChart->setTheme(QChart::ChartThemeDark);
+    m_leftChart->setTheme(QChart::ChartThemeDark);
+    m_rightChart->setBackgroundVisible(false);
+    m_leftChart->setBackgroundVisible(false);
+    m_rightChart->setMargins(QMargins(0,5,0,5));
+    m_leftChart->setMargins(QMargins(0,5,0,5));
+
 
     QFont panelFont("Helvetica [Cronyx]",25,12,false );
 
@@ -155,6 +202,14 @@ void VrFullscreenViewer::frameUpdateEvent()
         QImagePair cut;
         cut.l = image.l.copy(leftrect);
         cut.r = image.r.copy(rightrect);
+
+        if(m_test) {
+//            m_crono.restart();
+//            m_test = false;
+            HistogramImage::updateHistogram(m_rightChart,image.r, 64);
+            HistogramImage::updateHistogram(m_leftChart,image.l, 64);
+//            qDebug() << m_crono.restart();
+        }
 
         this->m_frameL.setPixmap(QPixmap::fromImage(cut.l));
         this->m_frameR.setPixmap(QPixmap::fromImage(cut.r));
