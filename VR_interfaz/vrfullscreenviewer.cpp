@@ -99,7 +99,10 @@ VrFullscreenViewer::~VrFullscreenViewer()
     m_imgGeneratorR->stop();
     delete m_imgGeneratorL;
     delete m_imgGeneratorR;
-    //eliminar Camera Image Generator  C
+    qDebug() << "broken";
+    m_imgGeneratorC->stop();
+    delete m_imgGeneratorC;
+    qDebug() << "broken";
 
     delete m_depthProcess;
 
@@ -177,6 +180,16 @@ void VrFullscreenViewer::frameUpdateEvent()
             HistogramImage::updateHistogram(m_leftChart,cut.l, 64);
         }
 
+        if(m_thirdCameraMix){
+            QImage maskC = thirdCameraMix();
+            QPainter painterL(&cut.l);
+            painterL.drawImage(QPoint(0,0), maskC);
+            painterL.end();
+            QPainter painterR(&cut.r);
+            painterR.drawImage(QPoint(0,0), maskC);
+            painterR.end();
+        }
+
         this->m_frameL.setPixmap(QPixmap::fromImage(cut.l));
         this->m_frameR.setPixmap(QPixmap::fromImage(cut.r));
 
@@ -188,9 +201,6 @@ void VrFullscreenViewer::frameUpdateEvent()
                 m_currentDistance = newDistance;
                 switchDistance();
             }
-        }
-        if(m_thirdCameraMix){
-            thirdCameraMix();
         }
     }
     //update the movement in the ROI, if any.
@@ -208,14 +218,26 @@ void VrFullscreenViewer::frameUpdateEvent()
 //    qDebug()  << m_crono.restart();
 }
 
-void VrFullscreenViewer::thirdCameraMix() {
+QImage VrFullscreenViewer::thirdCameraMix() {
+    Mat matC, retC;
     QImage imageC = this->m_imgGeneratorC->getFrame();
     if(!imageC.isNull()){
-        Mat matC, maskC;
+        Mat maskC;
         cvtColor(QImage2Mat(imageC),matC,COLOR_RGB2GRAY);
         cv::threshold(matC,maskC, 200, 255,THRESH_BINARY);
-        imwrite("./GeneratedFiles/test.png",maskC);
-    }
+
+        vector<Mat> channels;
+        Mat g = Mat::zeros(Size(maskC.cols, maskC.rows), CV_8UC1);
+        Mat b = Mat::zeros(Size(maskC.cols, maskC.rows), CV_8UC1);
+        channels.push_back(b);
+        channels.push_back(g);
+        channels.push_back(maskC);
+        channels.push_back(maskC);
+
+        merge(channels, retC);
+    } else retC = Mat::zeros(Size(matC.cols, matC.rows), CV_8UC4);
+    QImage retImg = cvMatToQImage(retC).copy();
+    return retImg;
 }
 
 void VrFullscreenViewer::switchDistance()

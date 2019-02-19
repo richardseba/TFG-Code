@@ -69,7 +69,7 @@ private:
     void zoomOut();
     void switchDistance();
     void rotateCameraVisualization();
-    void thirdCameraMix();
+    QImage thirdCameraMix();
     int m_currentUserParam;
 
     Camera* m_cameraL;
