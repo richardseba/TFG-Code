@@ -55,10 +55,10 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     m_isProcessing = false;
     m_currentDistance = Distance(2);
 
-    m_cameraL = cameraL;
+    m_cameraL = cameraC;
     m_cameraR = cameraR;
     if(cameraC != nullptr){
-        m_cameraC = cameraC;
+        m_cameraC = cameraL;
         m_cameraCTest = 0;
     }
 
@@ -76,8 +76,9 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     this->initScene();
 //    this->setRenderHint( QPainter::SmoothPixmapTransform);
 
-    m_imgGeneratorL = new CameraImageGenerator(cameraL, this->m_useUndistort);
-    m_imgGeneratorR = new CameraImageGenerator(cameraR, this->m_useUndistort);
+    m_imgGeneratorL = new CameraImageGenerator(m_cameraL, this->m_useUndistort);
+    m_imgGeneratorR = new CameraImageGenerator(m_cameraR, this->m_useUndistort);
+    m_imgGeneratorC = new CameraImageGenerator(m_cameraC);
 
     m_mode = CAMERA;
 
@@ -98,6 +99,7 @@ VrFullscreenViewer::~VrFullscreenViewer()
     m_imgGeneratorR->stop();
     delete m_imgGeneratorL;
     delete m_imgGeneratorR;
+    //eliminar Camera Image Generator  C
 
     delete m_depthProcess;
 
@@ -107,34 +109,6 @@ VrFullscreenViewer::~VrFullscreenViewer()
 
     delete m_fpsCounter;
 }
-
-
-//QtCharts::QChart*  setTestchart()
-//{
-//    QtCharts::QChart* testchart = new QtCharts::QChart();
-//    QtCharts::QBarSeries* testBars = new QtCharts::QBarSeries();
-//    QtCharts::QBarSet* oneBar = new QtCharts::QBarSet("testing!");
-//    QtCharts::QBarSet* oneBar1 = new QtCharts::QBarSet("testing!");
-//    QtCharts::QBarSet* oneBar2 = new QtCharts::QBarSet("testing!");
-//    QtCharts::QBarSet* oneBar3 = new QtCharts::QBarSet("testing!");
-//    QtCharts::QBarSet* oneBar4 = new QtCharts::QBarSet("testing!");
-//    oneBar->append(25);
-//    oneBar1->append(50);
-//    oneBar2->append(100);
-//    oneBar3->append(200);
-//    oneBar4->append(400);
-//    testBars->append(oneBar);
-//    testBars->append(oneBar1);
-//    testBars->append(oneBar2);
-//    testBars->append(oneBar3);
-//    testBars->append(oneBar4);
-//    testchart->addSeries(testBars);
-
-//    testchart->setGeometry(0,0,500,500);
-////    testchart->
-
-//    return testchart;
-//}
 
 
 /* Function initScene
@@ -173,15 +147,6 @@ void VrFullscreenViewer::initScene()
     m_leftChart->setBackgroundVisible(false);
     m_rightChart->setMargins(QMargins(0,5,0,5));
     m_leftChart->setMargins(QMargins(0,5,0,5));
-
-
-    QFont panelFont("Helvetica [Cronyx]",25,12,false );
-
-    m_fpsCounter = new QGraphicsTextItemVR("## FPS",0,0,0,0,panelFont);
-
-    m_fpsCounter->setPos(600,450);
-//    m_fpsCounter->setOffset(imageWidth,0);
-//    this->scene()->addItem(m_fpsCounter);
 }
 
 /* Function frameTimeEvent
@@ -192,15 +157,15 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
-    qDebug() << "starting main loop";
-    qDebug() << m_crono.restart();
+//    qDebug() << "starting main loop";
+//    qDebug() << m_crono.restart();
     QRect leftrect = QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
 
     QImagePair image;
     image.l = this->m_imgGeneratorL->getFrame().copy();
     image.r = this->m_imgGeneratorR->getFrame().copy();
-//    qDebug() << m_crono.restart();
+
     if(!image.l.isNull() && !image.r.isNull())
     {
         QImagePair cut;
@@ -211,38 +176,21 @@ void VrFullscreenViewer::frameUpdateEvent()
             HistogramImage::updateHistogram(m_rightChart,cut.r, 64);
             HistogramImage::updateHistogram(m_leftChart,cut.l, 64);
         }
-//        qDebug() << m_crono.restart();
+
         this->m_frameL.setPixmap(QPixmap::fromImage(cut.l));
         this->m_frameR.setPixmap(QPixmap::fromImage(cut.r));
-//        qDebug() << m_crono.restart();
+
         if(m_isProcessing)
         {
             m_depthProcess->setImages2Process(image, Size(1100,1100));
             Distance newDistance = m_depthProcess->getCurrentDistance();
             if(newDistance != m_currentDistance) {
                 m_currentDistance = newDistance;
-                switch (m_currentDistance)
-                {
-                case 2 :
-                    m_currentUserParam = 1;
-                    m_transitionLeft.cancelTransition();
-                    m_transitionRight.cancelTransition();
-                    loadUserParameters("./configFiles/UserParam1.yml",m_doTransitions);
-                    break;
-                case Distance::MEDIUM:
-                    m_currentUserParam = 2;
-                    m_transitionLeft.cancelTransition();
-                    m_transitionRight.cancelTransition();
-                    loadUserParameters("./configFiles/UserParam2.yml",m_doTransitions);
-                    break;
-                case Distance::CLOSE:
-                    m_currentUserParam = 3;
-                    m_transitionLeft.cancelTransition();
-                    m_transitionRight.cancelTransition();
-                    loadUserParameters("./configFiles/UserParam3.yml",m_doTransitions);
-                    break;
-                }
+                switchDistance();
             }
+        }
+        if(m_thirdCameraMix){
+            thirdCameraMix();
         }
     }
     //update the movement in the ROI, if any.
@@ -257,10 +205,42 @@ void VrFullscreenViewer::frameUpdateEvent()
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 
-    qDebug()  << m_crono.restart();
-//    m_mean = (this->m_videoImageGenL->getCurrentFps()+this->m_videoImageGenR->getCurrentFps()+m_mean)/3.0;
-//    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
-//    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
+//    qDebug()  << m_crono.restart();
+}
+
+void VrFullscreenViewer::thirdCameraMix() {
+    QImage imageC = this->m_imgGeneratorC->getFrame();
+    if(!imageC.isNull()){
+        Mat matC, maskC;
+        cvtColor(QImage2Mat(imageC),matC,COLOR_RGB2GRAY);
+        cv::threshold(matC,maskC, 200, 255,THRESH_BINARY);
+        imwrite("./GeneratedFiles/test.png",maskC);
+    }
+}
+
+void VrFullscreenViewer::switchDistance()
+{
+    switch (m_currentDistance)
+    {
+    case 2 :
+        m_currentUserParam = 1;
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
+        loadUserParameters("./configFiles/UserParam1.yml",m_doTransitions);
+        break;
+    case Distance::MEDIUM:
+        m_currentUserParam = 2;
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
+        loadUserParameters("./configFiles/UserParam2.yml",m_doTransitions);
+        break;
+    case Distance::CLOSE:
+        m_currentUserParam = 3;
+        m_transitionLeft.cancelTransition();
+        m_transitionRight.cancelTransition();
+        loadUserParameters("./configFiles/UserParam3.yml",m_doTransitions);
+        break;
+    }
 }
 
 /* Function showFullScreen
@@ -453,6 +433,20 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
             m_depthProcess->stop();
         m_isProcessing = !m_isProcessing;
         break;
+    case Qt::Key_C:
+        qDebug() << m_cameraCTest;
+        if(m_cameraCTest >= 0) rotateCameraVisualization();
+        break;
+    case Qt::Key_H:
+        m_histogramOn = !m_histogramOn;
+        break;
+    case Qt::Key_L:
+        m_thirdCameraMix = !m_thirdCameraMix;
+        if(m_thirdCameraMix)
+            m_imgGeneratorC->start();
+        else
+            m_imgGeneratorC->stop();
+        break;
     //Key events to change de user configuration
     case Qt::Key_1:
         if(m_currentUserParam == 1){
@@ -516,13 +510,6 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_0:
         setUpStillImages((char*)"./demo_images/im3L.png",(char*)"./demo_images/im3R.png");
-        break;
-    case Qt::Key_C:
-        qDebug() << m_cameraCTest;
-        if(m_cameraCTest >= 0) rotateCameraVisualization();
-        break;
-    case Qt::Key_H:
-        m_histogramOn = !m_histogramOn;
         break;
     default:
         break;

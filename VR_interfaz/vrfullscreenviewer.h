@@ -67,7 +67,9 @@ private:
     void setUpVideo(char* nameFileL, char* nameFileR);
     void zoomIn();
     void zoomOut();
+    void switchDistance();
     void rotateCameraVisualization();
+    void thirdCameraMix();
     int m_currentUserParam;
 
     Camera* m_cameraL;
@@ -77,6 +79,7 @@ private:
 
     ImageGenerator* m_imgGeneratorL;
     ImageGenerator* m_imgGeneratorR;
+    ImageGenerator* m_imgGeneratorC;
 
     QTime m_crono; //use to perform test, not necessary
     QTimer* m_timer;
@@ -113,6 +116,7 @@ private:
 
     ViewingMode m_mode;
     bool m_histogramOn = false;
+    bool m_thirdCameraMix = false;
 protected:
     void keyPressEvent(QKeyEvent *event);
 };
