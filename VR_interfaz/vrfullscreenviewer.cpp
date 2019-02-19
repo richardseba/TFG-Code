@@ -43,6 +43,10 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
 {
     QDesktopWidget* desk = QApplication::desktop();
     this->setAttribute(Qt::WA_DeleteOnClose);
+    this->setInteractive(false);
+    this->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    this->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    this->setViewport(new QOpenGLWidget);
 
     m_mean = 1.0;
     m_currentUserParam = 1;
@@ -188,32 +192,29 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
-//    qDebug() << "starting main loop";
-//    qDebug() << crono.restart();
+    qDebug() << "starting main loop";
+    qDebug() << m_crono.restart();
     QRect leftrect = QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
 
     QImagePair image;
     image.l = this->m_imgGeneratorL->getFrame().copy();
     image.r = this->m_imgGeneratorR->getFrame().copy();
-
+//    qDebug() << m_crono.restart();
     if(!image.l.isNull() && !image.r.isNull())
     {
         QImagePair cut;
         cut.l = image.l.copy(leftrect);
         cut.r = image.r.copy(rightrect);
 
-        if(m_test) {
-//            m_crono.restart();
-//            m_test = false;
-            HistogramImage::updateHistogram(m_rightChart,image.r, 64);
-            HistogramImage::updateHistogram(m_leftChart,image.l, 64);
-//            qDebug() << m_crono.restart();
+        if(m_histogramOn) {
+            HistogramImage::updateHistogram(m_rightChart,cut.r, 64);
+            HistogramImage::updateHistogram(m_leftChart,cut.l, 64);
         }
-
+//        qDebug() << m_crono.restart();
         this->m_frameL.setPixmap(QPixmap::fromImage(cut.l));
         this->m_frameR.setPixmap(QPixmap::fromImage(cut.r));
-
+//        qDebug() << m_crono.restart();
         if(m_isProcessing)
         {
             m_depthProcess->setImages2Process(image, Size(1100,1100));
@@ -256,7 +257,7 @@ void VrFullscreenViewer::frameUpdateEvent()
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 
-//    qDebug()  << crono.restart();
+    qDebug()  << m_crono.restart();
 //    m_mean = (this->m_videoImageGenL->getCurrentFps()+this->m_videoImageGenR->getCurrentFps()+m_mean)/3.0;
 //    this->m_fpsCounter->setText(QString("FPS: ") + QString::number((int)m_mean));
 //    this->m_fpsCounter->setText(QString("Time: ") + QString::number((int)elapsed) + " " + QString::number(m_currentDistance) );
@@ -274,6 +275,7 @@ void VrFullscreenViewer::showFullScreen(int screenSelector)
     move(geometry.topLeft());
 
     QGraphicsView::showFullScreen();
+
 }
 
 void VrFullscreenViewer::saveUserParameters(QString filename, QString nameSufix)
@@ -518,6 +520,9 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_C:
         qDebug() << m_cameraCTest;
         if(m_cameraCTest >= 0) rotateCameraVisualization();
+        break;
+    case Qt::Key_H:
+        m_histogramOn = !m_histogramOn;
         break;
     default:
         break;

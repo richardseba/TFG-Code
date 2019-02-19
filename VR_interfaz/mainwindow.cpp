@@ -480,6 +480,7 @@ void MainWindow::on_pushButton_VR_clicked()
 */
 void MainWindow::showVRViewer(int screen)
 {
+
     //To avoid executing if the main window is updating any pixmap
     if(!this->m_is_recording)
     {

@@ -112,7 +112,7 @@ private:
     bool m_doTransitions;
 
     ViewingMode m_mode;
-    bool m_test = true;
+    bool m_histogramOn = false;
 protected:
     void keyPressEvent(QKeyEvent *event);
 };
