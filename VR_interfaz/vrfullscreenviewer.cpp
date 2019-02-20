@@ -97,20 +97,16 @@ VrFullscreenViewer::~VrFullscreenViewer()
 {
     m_imgGeneratorL->stop();
     m_imgGeneratorR->stop();
+    m_imgGeneratorC->stop();
     delete m_imgGeneratorL;
     delete m_imgGeneratorR;
-    qDebug() << "broken";
-    m_imgGeneratorC->stop();
     delete m_imgGeneratorC;
-    qDebug() << "broken";
 
     delete m_depthProcess;
 
     if(this->m_timer->isActive())
         this->m_timer->stop();
     delete this->m_timer;
-
-    delete m_fpsCounter;
 }
 
 
@@ -183,10 +179,10 @@ void VrFullscreenViewer::frameUpdateEvent()
         if(m_thirdCameraMix){
             QImage maskC = thirdCameraMix();
             QPainter painterL(&cut.l);
-            painterL.drawImage(QPoint(0,0), maskC);
+            painterL.drawImage(QPoint(-leftrect.x(),-leftrect.y()), maskC); //Ajustar posicion!
             painterL.end();
             QPainter painterR(&cut.r);
-            painterR.drawImage(QPoint(0,0), maskC);
+            painterR.drawImage(QPoint(-rightrect.x()+150,-rightrect.y()), maskC); //Ajustar posicion!
             painterR.end();
         }
 

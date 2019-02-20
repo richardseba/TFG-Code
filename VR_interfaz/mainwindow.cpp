@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Loading the yaml is optional
     this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
     this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
+    this->m_cameraC->initCamParametersFromYALM("./configFiles/camCconfig.yml");
 
     this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./configFiles/calibLeft.yml");
     this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./configFiles/calibRight.yml");

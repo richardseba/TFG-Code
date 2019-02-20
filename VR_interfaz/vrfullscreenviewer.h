@@ -102,9 +102,6 @@ private:
 
     bool m_useUndistort;
 
-    //User Interface
-    QGraphicsTextItemVR* m_fpsCounter;
-
     float m_mean;
 
     Rect m_leftSensorROI;
