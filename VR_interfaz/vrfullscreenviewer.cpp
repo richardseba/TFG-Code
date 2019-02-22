@@ -78,6 +78,7 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     m_imgGeneratorL = new CameraImageGenerator(m_cameraL, this->m_useUndistort);
     m_imgGeneratorR = new CameraImageGenerator(m_cameraR, this->m_useUndistort);
     m_imgGeneratorC = new CameraImageGenerator(m_cameraC);
+    m_IRworker = new IRimageGenerator(m_imgGeneratorC);
 
     m_mode = CAMERA;
 
@@ -94,9 +95,11 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
 */
 VrFullscreenViewer::~VrFullscreenViewer()
 {
+    m_IRworker->stop();
     m_imgGeneratorL->stop();
     m_imgGeneratorR->stop();
     m_imgGeneratorC->stop();
+    delete m_IRworker;
     delete m_imgGeneratorL;
     delete m_imgGeneratorR;
     delete m_imgGeneratorC;
@@ -175,7 +178,7 @@ void VrFullscreenViewer::frameUpdateEvent()
         }
 
         if(m_thirdCameraMix){
-            QImage maskC = thirdCameraMix();
+            QImage maskC = m_IRworker->getFrame();
             QPainter painterL(&cut.l);
             painterL.drawImage(QPoint(m_centerImageOverL.x()-leftrect.x(),m_centerImageOverL.y()-leftrect.y()), maskC); //Ajustar posicion!
             painterL.end();
@@ -459,9 +462,9 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_I:
         m_thirdCameraMix = !m_thirdCameraMix;
         if(m_thirdCameraMix)
-            m_imgGeneratorC->start();
+            m_IRworker->start();
         else
-            m_imgGeneratorC->stop();
+            m_IRworker->stop();
         break;
     //Key events to change de user configuration
     case Qt::Key_1:

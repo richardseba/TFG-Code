@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     imageGeneratorSrc/videoimagegenerator.cpp \
     imageGeneratorSrc/cameraimagegenerator.cpp \
     imageGeneratorSrc/imageloadergenerator.cpp \
-    histogramimage.cpp
+    histogramimage.cpp \
+    imageGeneratorSrc/irimagegenerator.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -68,7 +69,8 @@ HEADERS  += mainwindow.h \
     imageGeneratorSrc/videoimagegenerator.h \
     imageGeneratorSrc/cameraimagegenerator.h \
     imageGeneratorSrc/imageloadergenerator.h \
-    histogramimage.h
+    histogramimage.h \
+    imageGeneratorSrc/irimagegenerator.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \

@@ -7,6 +7,7 @@
 #include "roitransition.h"
 #include "depthprocessing.h"
 #include "imageGeneratorSrc/imagegenerator.h"
+#include "imageGeneratorSrc/irimagegenerator.h"
 
 #include <QTimer>
 #include <QTime>
@@ -80,6 +81,7 @@ private:
     ImageGenerator* m_imgGeneratorL;
     ImageGenerator* m_imgGeneratorR;
     ImageGenerator* m_imgGeneratorC;
+    IRimageGenerator* m_IRworker;
 
     QTime m_crono; //use to perform test, not necessary
     QTimer* m_timer;
