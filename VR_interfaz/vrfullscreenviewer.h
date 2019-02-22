@@ -114,6 +114,12 @@ private:
     ViewingMode m_mode;
     bool m_histogramOn = false;
     bool m_thirdCameraMix = false;
+
+    QPoint m_centerImageOverL;
+    QPoint m_centerImageOverR;
+
+    bool m_centerImagePointMode;
+
 protected:
     void keyPressEvent(QKeyEvent *event);
 };

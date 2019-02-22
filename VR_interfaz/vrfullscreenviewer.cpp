@@ -1,5 +1,4 @@
 #include "vrfullscreenviewer.h"
-//#include "qtfilter.h"
 
 #include "imageGeneratorSrc/videoimagegenerator.h"
 #include "imageGeneratorSrc/cameraimagegenerator.h"
@@ -156,14 +155,13 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
-//    qDebug() << "starting main loop";
-//    qDebug() << m_crono.restart();
+//    qDebug() << "starting main loop" << m_crono.restart();
     QRect leftrect = QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
 
     QImagePair image;
-    image.l = this->m_imgGeneratorL->getFrame().copy();
-    image.r = this->m_imgGeneratorR->getFrame().copy();
+    image.l = this->m_imgGeneratorL->getFrame();
+    image.r = this->m_imgGeneratorR->getFrame();
 
     if(!image.l.isNull() && !image.r.isNull())
     {
@@ -179,10 +177,10 @@ void VrFullscreenViewer::frameUpdateEvent()
         if(m_thirdCameraMix){
             QImage maskC = thirdCameraMix();
             QPainter painterL(&cut.l);
-            painterL.drawImage(QPoint(-leftrect.x(),-leftrect.y()), maskC); //Ajustar posicion!
+            painterL.drawImage(QPoint(m_centerImageOverL.x()-leftrect.x(),m_centerImageOverL.y()-leftrect.y()), maskC); //Ajustar posicion!
             painterL.end();
             QPainter painterR(&cut.r);
-            painterR.drawImage(QPoint(-rightrect.x()+150,-rightrect.y()), maskC); //Ajustar posicion!
+            painterR.drawImage(QPoint(m_centerImageOverR.x()-rightrect.x(),m_centerImageOverR.y()-rightrect.y()), maskC); //Ajustar posicion!
             painterR.end();
         }
 
@@ -458,7 +456,7 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
     case Qt::Key_H:
         m_histogramOn = !m_histogramOn;
         break;
-    case Qt::Key_L:
+    case Qt::Key_I:
         m_thirdCameraMix = !m_thirdCameraMix;
         if(m_thirdCameraMix)
             m_imgGeneratorC->start();
@@ -528,6 +526,33 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_0:
         setUpStillImages((char*)"./demo_images/im3L.png",(char*)"./demo_images/im3R.png");
+        break;
+    case Qt::Key_O:
+        if(m_centerImagePointMode)
+            m_centerImageOverL.setY(m_centerImageOverL.y()-6);
+        else
+            m_centerImageOverR.setY(m_centerImageOverR.y()-6);
+        break;
+    case Qt::Key_Ntilde:
+        if(m_centerImagePointMode)
+            m_centerImageOverL.setX(m_centerImageOverL.x()+6);
+        else
+            m_centerImageOverR.setX(m_centerImageOverR.x()+6);
+        break;
+    case Qt::Key_K:
+        if(m_centerImagePointMode)
+            m_centerImageOverL.setX(m_centerImageOverL.x()-6);
+        else
+            m_centerImageOverR.setX(m_centerImageOverR.x()-6);
+        break;
+    case Qt::Key_L:
+        if(m_centerImagePointMode)
+            m_centerImageOverL.setY(m_centerImageOverL.y()+6);
+        else
+            m_centerImageOverR.setY(m_centerImageOverR.y()+6);
+        break;
+    case Qt::Key_Shift:
+        m_centerImagePointMode = !m_centerImagePointMode;
         break;
     default:
         break;

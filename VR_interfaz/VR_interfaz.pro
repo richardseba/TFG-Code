@@ -77,6 +77,14 @@ FORMS    += mainwindow.ui \
 
 RESOURCES +=
 
+# remove possible other optimization flags
+QMAKE_CXXFLAGS_RELEASE -= -O
+QMAKE_CXXFLAGS_RELEASE -= -O1
+QMAKE_CXXFLAGS_RELEASE -= -O2
+
+# add the desired -O3 if not present
+QMAKE_CXXFLAGS_RELEASE *= -O3
+
 win32 {
     INCLUDEPATH += $$(PYLON_DEV_DIR)/include \
     INCLUDEPATH += C:\opencv3.4\build\include\
