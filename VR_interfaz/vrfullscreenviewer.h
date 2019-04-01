@@ -80,8 +80,8 @@ private:
 
     ImageGenerator* m_imgGeneratorL;
     ImageGenerator* m_imgGeneratorR;
-    ImageGenerator* m_imgGeneratorC;
-    IRimageGenerator* m_IRworker;
+    ImageGenerator* m_imgGeneratorC = nullptr;
+    IRimageGenerator* m_IRworker = nullptr;
 
     QTime m_crono; //use to perform test, not necessary
     QTimer* m_timer;

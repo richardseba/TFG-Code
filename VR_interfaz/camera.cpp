@@ -29,6 +29,7 @@ Camera::Camera(int num_cam)
     }
     else
     {
+        this->m_pylon_camera = nullptr;
         QMessageBox Msgbox;
         Msgbox.setIcon(Msgbox.Critical);
         Msgbox.setText("<big>Warning</big> <p>\n\n Camera not conected \n The program won't work without both cameras conected</p>");
@@ -45,7 +46,8 @@ Camera::~Camera()
 //    m_pylon_camera->Close();
     m_pylon_camera->DestroyDevice();
 //    this->m_pylon_camera->DetachDevice();
-    delete m_pylon_camera;
+    if(this->m_pylon_camera != nullptr)
+        delete m_pylon_camera;
     PylonTerminate();
 }
 
@@ -540,7 +542,7 @@ bool Camera::isCalibrated()
 
 bool Camera::isCameraConnected()
 {
-    return !this->m_pylon_camera->IsCameraDeviceRemoved() && this->m_pylon_camera->IsOpen();
+    return this->m_pylon_camera != nullptr && this->m_pylon_camera->IsOpen() && !this->m_pylon_camera->IsCameraDeviceRemoved();
 }
 
 bool Camera::reconnect(int CamNum)

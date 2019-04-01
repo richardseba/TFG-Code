@@ -31,14 +31,22 @@ MainWindow::MainWindow(QWidget *parent) :
     this->m_is_recording = false;
     this->m_calibParams_loaded = true;
 
-    this->m_cameraR = new Camera(1);
     this->m_cameraL = new Camera(2);
-    this->m_cameraC = new Camera(0);
+    if(m_cameraL->isCameraConnected()){
+        qDebug() << "cameraC connected";
+        this->m_cameraR = new Camera(1);
+        this->m_cameraC = new Camera(0);
+    } else {
+        this->m_cameraC = nullptr;
+        this->m_cameraR = new Camera(0);
+        this->m_cameraL = new Camera(1);
+    }
 
     //Loading the yaml is optional
     this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
     this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
-    this->m_cameraC->initCamParametersFromYALM("./configFiles/camCconfig.yml");
+    if(m_cameraC != nullptr)
+        this->m_cameraC->initCamParametersFromYALM("./configFiles/camCconfig.yml");
 
     this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./configFiles/calibLeft.yml");
     this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./configFiles/calibRight.yml");
@@ -523,7 +531,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
         this->on_pushButton_Fullscreen_clicked();
         break;
     case Qt::Key_C:
-        m_testCameraC = !m_testCameraC;
+        if(m_cameraC != nullptr && m_cameraC->isCameraConnected())
+            m_testCameraC = !m_testCameraC;
         break;
     default:
         break;

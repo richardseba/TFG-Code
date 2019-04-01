@@ -54,12 +54,11 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
     m_isProcessing = false;
     m_currentDistance = Distance(2);
 
-    m_cameraL = cameraC;
+    m_cameraL = cameraL;
     m_cameraR = cameraR;
-    if(cameraC != nullptr){
-        m_cameraC = cameraL;
-        m_cameraCTest = 0;
-    }
+    m_cameraC = cameraC;
+    if(m_cameraC != nullptr && m_cameraC->isCameraConnected())
+        m_cameraCTest = 0; //by default is -1 (will disable the functionality)
 
     m_depthProcess = new DepthProcessing(stereoCalib,12,4,10,4);
 
@@ -77,9 +76,10 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
 
     m_imgGeneratorL = new CameraImageGenerator(m_cameraL, this->m_useUndistort);
     m_imgGeneratorR = new CameraImageGenerator(m_cameraR, this->m_useUndistort);
-    m_imgGeneratorC = new CameraImageGenerator(m_cameraC);
-    m_IRworker = new IRimageGenerator(m_imgGeneratorC);
-
+    if(cameraC != nullptr && m_cameraC->isCameraConnected()) {
+        m_imgGeneratorC = new CameraImageGenerator(m_cameraC);
+        m_IRworker = new IRimageGenerator(m_imgGeneratorC);
+    }
     m_mode = CAMERA;
 
     m_imgGeneratorL->start();
@@ -95,14 +95,18 @@ VrFullscreenViewer::VrFullscreenViewer(Camera* cameraL,Camera* cameraR, StereoCa
 */
 VrFullscreenViewer::~VrFullscreenViewer()
 {
-    m_IRworker->stop();
     m_imgGeneratorL->stop();
     m_imgGeneratorR->stop();
-    m_imgGeneratorC->stop();
-    delete m_IRworker;
+
     delete m_imgGeneratorL;
     delete m_imgGeneratorR;
-    delete m_imgGeneratorC;
+
+    if(m_cameraC != nullptr && m_cameraC->isCameraConnected()) {
+        m_IRworker->stop();
+        m_imgGeneratorC->stop();
+        delete m_IRworker;
+        delete m_imgGeneratorC;
+    }
 
     delete m_depthProcess;
 
@@ -175,6 +179,8 @@ void VrFullscreenViewer::frameUpdateEvent()
         if(m_histogramOn) {
             HistogramImage::updateHistogram(m_rightChart,cut.r, 64);
             HistogramImage::updateHistogram(m_leftChart,cut.l, 64);
+            cut.l = cut.l.rgbSwapped();
+            cut.r = cut.r.rgbSwapped();
         }
 
         if(m_thirdCameraMix){
@@ -453,18 +459,19 @@ void VrFullscreenViewer::keyPressEvent(QKeyEvent *event)
         m_isProcessing = !m_isProcessing;
         break;
     case Qt::Key_C:
-        qDebug() << m_cameraCTest;
         if(m_cameraCTest >= 0) rotateCameraVisualization();
         break;
     case Qt::Key_H:
         m_histogramOn = !m_histogramOn;
         break;
     case Qt::Key_I:
-        m_thirdCameraMix = !m_thirdCameraMix;
-        if(m_thirdCameraMix)
-            m_IRworker->start();
-        else
-            m_IRworker->stop();
+        if(m_cameraC != nullptr && m_cameraC->isCameraConnected()){
+            m_thirdCameraMix = !m_thirdCameraMix;
+            if(m_thirdCameraMix)
+                m_IRworker->start();
+            else
+                m_IRworker->stop();
+        }
         break;
     //Key events to change de user configuration
     case Qt::Key_1:
