@@ -7,6 +7,7 @@
 #include "roitransition.h"
 #include "depthprocessing.h"
 #include "imageGeneratorSrc/imagegenerator.h"
+#include "imageGeneratorSrc/irimagegenerator.h"
 
 #include <QTimer>
 #include <QTime>
@@ -14,6 +15,7 @@
 #include <QPalette>
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QtCharts>
 
 #include <QGraphicsView>
 #include "QGraphicsScene"
@@ -33,7 +35,7 @@ enum ViewingMode {NONE, VIDEO, CAMERA, STILL_IMG};
 
 /* Class VrFullscreenViewer
  * -------------------------------
- * This class represents a fullscreen vr viewer that updated the scene using images captured
+ * This class represents a fullscreen vr viewer that updates the scene using images captured
  * by a ImageGenerator. By default using a CameraImageGenerator.
  *
  * This class updates the scene in the function frameUpdateEvent each time the event from the
@@ -49,7 +51,7 @@ class VrFullscreenViewer : public QGraphicsView
 public:
     VrFullscreenViewer();
     ~VrFullscreenViewer();
-    VrFullscreenViewer(Camera* cameraL,Camera* cameraR,StereoCalibration stereoCalib);
+    VrFullscreenViewer(Camera* cameraL,Camera* cameraR,StereoCalibration stereoCalib, Camera* cameraC = nullptr);
 
 public slots:
     void showFullScreen(int screenSelector);
@@ -66,15 +68,22 @@ private:
     void setUpVideo(char* nameFileL, char* nameFileR);
     void zoomIn();
     void zoomOut();
+    void switchDistance();
+    void rotateCameraVisualization();
+    QImage thirdCameraMix();
     int m_currentUserParam;
 
     Camera* m_cameraL;
     Camera* m_cameraR;
+    Camera* m_cameraC;
+    int m_cameraCTest = -1;
 
     ImageGenerator* m_imgGeneratorL;
     ImageGenerator* m_imgGeneratorR;
+    ImageGenerator* m_imgGeneratorC;
+    IRimageGenerator* m_IRworker;
 
-    QTime crono; //use to perform test, not necessary
+    QTime m_crono; //use to perform test, not necessary
     QTimer* m_timer;
 
     DepthProcessing* m_depthProcess;
@@ -88,12 +97,12 @@ private:
     QGraphicsPixmapItem m_frameR;
     QGraphicsPixmapItem m_frameL;
 
+    QtCharts::QChart* m_rightChart = new QtCharts::QChart();
+    QtCharts::QChart* m_leftChart = new QtCharts::QChart();
+
     Distance m_currentDistance;
 
     bool m_useUndistort;
-
-    //User Interface
-    QGraphicsTextItemVR* m_fpsCounter;
 
     float m_mean;
 
@@ -105,6 +114,14 @@ private:
     bool m_doTransitions;
 
     ViewingMode m_mode;
+    bool m_histogramOn = false;
+    bool m_thirdCameraMix = false;
+
+    QPoint m_centerImageOverL;
+    QPoint m_centerImageOverR;
+
+    bool m_centerImagePointMode;
+
 protected:
     void keyPressEvent(QKeyEvent *event);
 };

@@ -30,6 +30,7 @@ public:
     virtual void start();
     virtual void stop();
     virtual void waitEndLoopEvent();
+    virtual void stopAndWaitfinished();
 
 protected:
     virtual void process() = 0;

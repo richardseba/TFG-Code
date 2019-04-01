@@ -2,8 +2,8 @@
 ---
 horizontalBinning: 1
 verticalBinning: 1
-xflip: 1
-yflip: 1
+xflip: 0
+yflip: 0
 width: 1600
 height: 1200
 maxWidth: 1600

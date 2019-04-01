@@ -33,11 +33,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     this->m_cameraR = new Camera(1);
     this->m_cameraL = new Camera(2);
-//    this->m_cameraC = new Camera(0);
+    this->m_cameraC = new Camera(0);
 
     //Loading the yaml is optional
     this->m_cameraR->initCamParametersFromYALM("./configFiles/camRconfig.yml");
     this->m_cameraL->initCamParametersFromYALM("./configFiles/camLconfig.yml");
+    this->m_cameraC->initCamParametersFromYALM("./configFiles/camCconfig.yml");
 
     this->m_calibParams_loaded&= this->m_cameraL->initCalibParams("./configFiles/calibLeft.yml");
     this->m_calibParams_loaded&= this->m_cameraR->initCalibParams("./configFiles/calibRight.yml");
@@ -98,10 +99,10 @@ void MainWindow::on_captureButton_clicked()
     bool retL = false,retR = false;
 
     if(ui->checkBox_capture_left->isChecked()) {
-//        if(!m_testCameraC) // testing central camera
+        if(!m_testCameraC) // testing central camera
             imgL = this->m_cameraL->single_grab_imageMemSafe(retL);
-//        else
-//            imgL = this->m_cameraC->single_grab_imageMemSafe(retL);
+        else
+            imgL = this->m_cameraC->single_grab_imageMemSafe(retL);
     }
 
     if(ui->checkBox_capture_right->isChecked()){
@@ -480,6 +481,7 @@ void MainWindow::on_pushButton_VR_clicked()
 */
 void MainWindow::showVRViewer(int screen)
 {
+
     //To avoid executing if the main window is updating any pixmap
     if(!this->m_is_recording)
     {
@@ -489,7 +491,7 @@ void MainWindow::showVRViewer(int screen)
         ui->groupBox_cameraParams->setEnabled(false);
 
         this->m_timer->stop();
-        this->m_screen = new VrFullscreenViewer(this->m_cameraL,this->m_cameraR,m_stereoCalib);
+        this->m_screen = new VrFullscreenViewer(this->m_cameraL,this->m_cameraR,m_stereoCalib, this->m_cameraC);
         connect(this->m_screen,SIGNAL(destroyed(QObject*)),SLOT(fullscreen_closing()));
         this->m_screen->showFullScreen(screen);
     }
@@ -520,9 +522,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     case Qt::Key_F11:
         this->on_pushButton_Fullscreen_clicked();
         break;
-//    case Qt::Key_C:
-//        m_testCameraC = !m_testCameraC;
-//        break;
+    case Qt::Key_C:
+        m_testCameraC = !m_testCameraC;
+        break;
     default:
         break;
     }

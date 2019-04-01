@@ -94,8 +94,9 @@ void CameraImageGenerator::start()
 
 void CameraImageGenerator::stop()
 {
-    m_camera->stopGrabbing();
     ImageGenerator::stop();
+    ImageGenerator::waitEndLoopEvent();
+    m_camera->stopGrabbing();
 }
 
 

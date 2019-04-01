@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui widgets charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -37,7 +37,9 @@ SOURCES += main.cpp\
     imageGeneratorSrc/imagegenerator.cpp \
     imageGeneratorSrc/videoimagegenerator.cpp \
     imageGeneratorSrc/cameraimagegenerator.cpp \
-    imageGeneratorSrc/imageloadergenerator.cpp
+    imageGeneratorSrc/imageloadergenerator.cpp \
+    histogramimage.cpp \
+    imageGeneratorSrc/irimagegenerator.cpp
 
 HEADERS  += mainwindow.h \
     camera.h \
@@ -66,7 +68,9 @@ HEADERS  += mainwindow.h \
     imageGeneratorSrc/imagegenerator.h \
     imageGeneratorSrc/videoimagegenerator.h \
     imageGeneratorSrc/cameraimagegenerator.h \
-    imageGeneratorSrc/imageloadergenerator.h
+    imageGeneratorSrc/imageloadergenerator.h \
+    histogramimage.h \
+    imageGeneratorSrc/irimagegenerator.h
 
 FORMS    += mainwindow.ui \
     calibdialog.ui \
@@ -74,6 +78,14 @@ FORMS    += mainwindow.ui \
     selectcameraparamsdialog.ui
 
 RESOURCES +=
+
+# remove possible other optimization flags
+QMAKE_CXXFLAGS_RELEASE -= -O
+QMAKE_CXXFLAGS_RELEASE -= -O1
+QMAKE_CXXFLAGS_RELEASE -= -O2
+
+# add the desired -O3 if not present
+QMAKE_CXXFLAGS_RELEASE *= -O3
 
 win32 {
     INCLUDEPATH += $$(PYLON_DEV_DIR)/include \
