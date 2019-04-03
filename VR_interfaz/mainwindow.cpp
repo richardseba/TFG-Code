@@ -31,15 +31,15 @@ MainWindow::MainWindow(QWidget *parent) :
     this->m_is_recording = false;
     this->m_calibParams_loaded = true;
 
-    this->m_cameraL = new Camera(2);
-    if(m_cameraL->isCameraConnected()){
+    this->m_cameraR = new Camera(2);
+    if(m_cameraR->isCameraConnected()){
         qDebug() << "cameraC connected";
-        this->m_cameraR = new Camera(1);
+        this->m_cameraL = new Camera(1);
         this->m_cameraC = new Camera(0);
     } else {
         this->m_cameraC = nullptr;
-        this->m_cameraR = new Camera(0);
-        this->m_cameraL = new Camera(1);
+        this->m_cameraR = new Camera(1);
+        this->m_cameraL = new Camera(0);
     }
 
     //Loading the yaml is optional
@@ -75,6 +75,9 @@ MainWindow::MainWindow(QWidget *parent) :
         this->m_stereoCalib.initUndistortImage(Size(roi.width,roi.height));
     }
     m_classifier = ThresholdClassificator(SIZE_OF_CLASSIFIER_BUFFER,12,5);
+
+    this->showVRViewer(0);
+    this->setWindowState(Qt::WindowMinimized);
 }
 
 /* Function ~MainWindow

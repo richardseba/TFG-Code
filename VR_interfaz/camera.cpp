@@ -30,10 +30,11 @@ Camera::Camera(int num_cam)
     else
     {
         this->m_pylon_camera = nullptr;
-        QMessageBox Msgbox;
-        Msgbox.setIcon(Msgbox.Critical);
-        Msgbox.setText("<big>Warning</big> <p>\n\n Camera not conected \n The program won't work without both cameras conected</p>");
-        Msgbox.exec();
+        qDebug() << "camera not working!";
+//        QMessageBox Msgbox;
+//        Msgbox.setIcon(Msgbox.Critical);
+//        Msgbox.setText("<big>Warning</big> <p>\n\n Camera not conected \n The program won't work without both cameras conected</p>");
+//        Msgbox.exec();
     }
 }
 
