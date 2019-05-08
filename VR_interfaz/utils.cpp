@@ -47,9 +47,15 @@ int odd2Even(int num)
 {
     if(num%2 != 0)
         num = num - 1;
-    else
-        num = num;
     return num;
+}
+
+void mixImages(QImage* background, QImage foreground, QPoint positionOverImage)
+{
+    QPainter painter(background);
+
+    painter.drawImage(positionOverImage, foreground); //Ajustar posicion!
+    painter.end();
 }
 
 /*

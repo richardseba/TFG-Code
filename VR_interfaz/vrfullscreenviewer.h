@@ -9,6 +9,8 @@
 #include "imageGeneratorSrc/imagegenerator.h"
 #include "imageGeneratorSrc/irimagegenerator.h"
 
+#include <future>
+
 #include <QTimer>
 #include <QTime>
 #include <QKeyEvent>
@@ -70,7 +72,6 @@ private:
     void zoomOut();
     void switchDistance();
     void rotateCameraVisualization();
-    QImage thirdCameraMix();
     int m_currentUserParam;
 
     Camera* m_cameraL;

@@ -162,19 +162,24 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
-//    qDebug() << "starting main loop" << m_crono.restart();
+//    m_crono.restart();
+    //launching two parallel task to retrieve the images from the worker
+    std::future<QImage> futureImageL( std::async([](ImageGenerator* igGen) { return igGen->getFrame();} , m_imgGeneratorL));
+    std::future<QImage> futureImageR( std::async([](ImageGenerator* igGen) { return igGen->getFrame();} , m_imgGeneratorR));
+
     QRect leftrect = QRect(m_leftSensorROI.x,m_leftSensorROI.y,m_leftSensorROI.width, m_leftSensorROI.height);
     QRect rightrect = QRect(m_rightSensorROI.x,m_rightSensorROI.y,m_rightSensorROI.width, m_rightSensorROI.height);
 
     QImagePair image;
-    image.l = this->m_imgGeneratorL->getFrame();
-    image.r = this->m_imgGeneratorR->getFrame();
+    image.l = futureImageL.get();
+    image.r = futureImageR.get();
 
     if(!image.l.isNull() && !image.r.isNull())
     {
         QImagePair cut;
         cut.l = image.l.copy(leftrect);
         cut.r = image.r.copy(rightrect);
+
 
         if(m_histogramOn) {
             HistogramImage::updateHistogram(m_rightChart,cut.r, 64);
@@ -184,13 +189,17 @@ void VrFullscreenViewer::frameUpdateEvent()
         }
 
         if(m_thirdCameraMix){
+
             QImage maskC = m_IRworker->getFrame();
-            QPainter painterL(&cut.l);
-            painterL.drawImage(QPoint(m_centerImageOverL.x()-leftrect.x(),m_centerImageOverL.y()-leftrect.y()), maskC); //Ajustar posicion!
-            painterL.end();
-            QPainter painterR(&cut.r);
-            painterR.drawImage(QPoint(m_centerImageOverR.x()-rightrect.x(),m_centerImageOverR.y()-rightrect.y()), maskC); //Ajustar posicion!
-            painterR.end();
+
+            QPoint positionL = QPoint(m_centerImageOverL.x()-leftrect.x(),m_centerImageOverL.y()-leftrect.y());
+            QPoint positionR = QPoint(m_centerImageOverR.x()-rightrect.x(),m_centerImageOverR.y()-rightrect.y());
+
+            std::future<void> mixL = std::async(launch::async,mixImages,&cut.l,maskC,positionL);
+            std::future<void> mixR = std::async(launch::async,mixImages,&cut.r,maskC,positionR);
+
+            mixL.wait();
+            mixR.wait();
         }
 
         this->m_frameL.setPixmap(QPixmap::fromImage(cut.l));
@@ -205,7 +214,9 @@ void VrFullscreenViewer::frameUpdateEvent()
                 switchDistance();
             }
         }
+
     }
+
     //update the movement in the ROI, if any.
     this->m_transitionLeft.step();
     this->m_transitionRight.step();
@@ -221,27 +232,9 @@ void VrFullscreenViewer::frameUpdateEvent()
 //    qDebug()  << m_crono.restart();
 }
 
-QImage VrFullscreenViewer::thirdCameraMix() {
-    Mat matC, retC;
-    QImage imageC = this->m_imgGeneratorC->getFrame();
-    if(!imageC.isNull()){
-        Mat maskC;
-        cvtColor(QImage2Mat(imageC),matC,COLOR_RGB2GRAY);
-        cv::threshold(matC,maskC, 200, 255,THRESH_BINARY);
 
-        vector<Mat> channels;
-        Mat g = Mat::zeros(Size(maskC.cols, maskC.rows), CV_8UC1);
-        Mat b = Mat::zeros(Size(maskC.cols, maskC.rows), CV_8UC1);
-        channels.push_back(b);
-        channels.push_back(g);
-        channels.push_back(maskC);
-        channels.push_back(maskC);
 
-        merge(channels, retC);
-    } else retC = Mat::zeros(Size(matC.cols, matC.rows), CV_8UC4);
-    QImage retImg = cvMatToQImage(retC).copy();
-    return retImg;
-}
+
 
 void VrFullscreenViewer::switchDistance()
 {

@@ -11,6 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = VR_interfaz
 TEMPLATE = app
 
+CONFIG += c++11
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     camera.cpp \
@@ -91,21 +93,45 @@ win32 {
     INCLUDEPATH += $$(PYLON_DEV_DIR)/include \
     INCLUDEPATH += C:\opencv3.4\build\include\
 
-    CONFIG(debug, debug|release) {
-        LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib \
-                -L$$(PYLON_DEV_DIR)/lib/x64 \
-                -lPylonBase_MD_VC120_v5_0 \
-                -lPylonUtility_MD_VC120_v5_0 \
-                -lPylonC_MD_VC120 \
-        }
-        else
-        {
-        LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib \
-                -L$$(PYLON_DEV_DIR)/lib/x64 \
-                -lPylonBase_MD_VC120_v5_0 \
-                -lPylonUtility_MD_VC120_v5_0 \
-                -lPylonC_MD_VC120 \
-        }
+
+
+    !contains(QMAKE_TARGET.arch, x86_64) {
+        #message("x86 build")
+
+        CONFIG(debug, debug|release) {
+                message("x86 debug libraries not added")
+            }
+            else
+            {
+            LIBS += C:\opencv3.4\build2\lib\release\opencv_world341.lib \
+                    -L$$(PYLON_DEV_DIR)/lib/Win32 \
+                    -lPylonBase_v5_1 \
+                    -lPylonUtility_v5_1 \
+                    -lPylonC \
+            }
+
+
+
+    } else {
+        #message("x86_64 build")
+
+        CONFIG(debug, debug|release) {
+            LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib \
+                    -L$$(PYLON_DEV_DIR)/lib/x64 \
+                    -lPylonBase_v5_1 \
+                    -lPylonUtility_v5_1 \
+                    -lPylonC \
+            }
+            else
+            {
+            LIBS += C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib \
+                    -L$$(PYLON_DEV_DIR)/lib/x64 \
+                    -lPylonBase_v5_1 \
+                    -lPylonUtility_v5_1 \
+                    -lPylonC \
+            }
+
+    }
 }
 
 unix{

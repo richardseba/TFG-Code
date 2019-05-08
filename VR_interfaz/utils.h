@@ -11,6 +11,7 @@
 #include <QImage>
 #include <QPixmap>
 #include <QtGlobal>
+#include <QPainter>
 
 
 /* Processing images file
@@ -49,6 +50,8 @@ typedef struct
 Mat QImage2Mat(QImage const& src);
 QImage Mat2QImage(Mat const& src);
 int odd2Even(int num);
+
+void mixImages(QImage* background, QImage foreground, QPoint positionOverImage);
 
 /**
    Functions to convert between OpenCV's cv::Mat and Qt's QImage and QPixmap.

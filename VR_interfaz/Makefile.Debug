@@ -17,7 +17,7 @@ CXXFLAGS      = -nologo -Zc:wchar_t -FS -Zc:rvalueCast -Zc:inline -Zc:strictStri
 INCPATH       = -I. -I"C:\Program Files\Basler\pylon 5\development\include" -IINCLUDEPATH -I+= -IC:\opencv3.4\build\include -IC:\Qt\5.10.1\msvc2015_64\include -IC:\Qt\5.10.1\msvc2015_64\include\QtCharts -IC:\Qt\5.10.1\msvc2015_64\include\QtWidgets -IC:\Qt\5.10.1\msvc2015_64\include\QtGui -IC:\Qt\5.10.1\msvc2015_64\include\QtANGLE -IC:\Qt\5.10.1\msvc2015_64\include\QtCore -Idebug -I. -I\include -IC:\Qt\5.10.1\msvc2015_64\mkspecs\win32-msvc 
 LINKER        = link
 LFLAGS        = /NOLOGO /DYNAMICBASE /NXCOMPAT /DEBUG /SUBSYSTEM:WINDOWS "/MANIFESTDEPENDENCY:type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' publicKeyToken='6595b64144ccf1df' language='*' processorArchitecture='*'"
-LIBS          = /LIBPATH:C:\Qt\5.10.1\msvc2015_64\lib C:\Qt\5.10.1\msvc2015_64\lib\qtmaind.lib /LIBPATH:C:\utils\my_sql\my_sql\lib /LIBPATH:C:\utils\postgresql\pgsql\lib shell32.lib C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib /LIBPATH:"C:\Program Files\Basler\pylon 5\development\lib\x64" C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonBase_MD_VC120_v5_0.lib" "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonUtility_MD_VC120_v5_0.lib" "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonC_MD_VC120.lib" C:\Qt\5.10.1\msvc2015_64\lib\Qt5Chartsd.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Cored.lib 
+LIBS          = /LIBPATH:C:\Qt\5.10.1\msvc2015_64\lib C:\Qt\5.10.1\msvc2015_64\lib\qtmaind.lib /LIBPATH:C:\utils\my_sql\my_sql\lib /LIBPATH:C:\utils\postgresql\pgsql\lib shell32.lib C:\opencv3.4\build\x64\vc15\lib\opencv_world341d.lib /LIBPATH:"C:\Program Files\Basler\pylon 5\development\lib\x64" C:\opencv3.4\build\x64\vc15\lib\opencv_world341.lib "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonBase_v5_1.lib" "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonUtility_v5_1.lib" "C:\Program Files\Basler\pylon 5\development\lib\x64\PylonC.lib" C:\Qt\5.10.1\msvc2015_64\lib\Qt5Chartsd.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Widgetsd.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Guid.lib C:\Qt\5.10.1\msvc2015_64\lib\Qt5Cored.lib 
 QMAKE         = C:\Qt\5.10.1\msvc2015_64\bin\qmake.exe
 IDC           = idc
 IDL           = midl /NOLOGO
@@ -601,6 +601,8 @@ debug\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWindow
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\FeaturePersistence.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PylonBitmapImage.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\AviWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\VideoWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\_VideoWriterParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverter.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer16.h" \
@@ -1664,6 +1666,8 @@ debug\moc_vrfullscreenviewer.cpp: camera.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\FeaturePersistence.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PylonBitmapImage.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\AviWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\VideoWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\_VideoWriterParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverter.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer16.h" \
@@ -2928,6 +2932,8 @@ debug\main.obj: main.cpp mainwindow.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\FeaturePersistence.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PylonBitmapImage.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\AviWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\VideoWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\_VideoWriterParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverter.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer16.h" \
@@ -3713,6 +3719,8 @@ debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\FeaturePersistence.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PylonBitmapImage.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\AviWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\VideoWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\_VideoWriterParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverter.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer16.h" \
@@ -4509,6 +4517,8 @@ debug\camera.obj: camera.cpp camera.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\FeaturePersistence.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PylonBitmapImage.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\AviWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\VideoWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\_VideoWriterParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverter.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer16.h" \
@@ -5199,6 +5209,8 @@ debug\vrfullscreenviewer.obj: vrfullscreenviewer.cpp vrfullscreenviewer.h \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\FeaturePersistence.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PylonBitmapImage.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\AviWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\VideoWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\_VideoWriterParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverter.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer16.h" \
@@ -7722,6 +7734,8 @@ debug\cameraimagegenerator.obj: imageGeneratorSrc\cameraimagegenerator.cpp image
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\FeaturePersistence.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PylonBitmapImage.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\AviWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\VideoWriter.h" \
+		"C:\Program Files\Basler\pylon 5\development\include\pylon\_VideoWriterParams.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverter.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer.h" \
 		"C:\Program Files\Basler\pylon 5\development\include\pylon\PixelFormatConverterBayer16.h" \
