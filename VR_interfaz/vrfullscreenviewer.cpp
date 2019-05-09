@@ -162,7 +162,7 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
-    m_crono.restart();
+//    m_crono.restart();
     //launching two parallel task to retrieve the images from the worker
     std::future<QImage> futureImageL( std::async([](ImageGenerator* igGen) { return igGen->getFrame();} , m_imgGeneratorL));
     std::future<QImage> futureImageR( std::async([](ImageGenerator* igGen) { return igGen->getFrame();} , m_imgGeneratorR));
@@ -207,11 +207,17 @@ void VrFullscreenViewer::frameUpdateEvent()
 //        std::future<void> futureSetFrameL( std::async([](QGraphicsPixmapItem* pixmap, QImage img) { pixmap->setPixmap(QPixmap::fromImage(img));} , &m_frameL, cut.l));
 //        std::future<void> futureSetFrameR( std::async([](QGraphicsPixmapItem* pixmap, QImage img) { pixmap->setPixmap(QPixmap::fromImage(img));} , &m_frameR, cut.r));
 
-        this->m_frameL.setPixmap(QPixmap::fromImage(cut.l));
-        this->m_frameR.setPixmap(QPixmap::fromImage(cut.r));
-
 //        futureSetFrameL.wait();
 //        futureSetFrameR.wait();
+
+        std::future<QPixmap> futureGetPixmapL( std::async([](QImage img) { return QPixmap::fromImage(img);} , cut.l));
+        std::future<QPixmap> futureGetPixmapR( std::async([](QImage img) { return QPixmap::fromImage(img);} , cut.r));
+
+        this->m_frameL.setPixmap(futureGetPixmapL.get());
+        this->m_frameR.setPixmap(futureGetPixmapR.get());
+
+//        this->m_frameL.setPixmap(QPixmap::fromImage(cut.l));
+//        this->m_frameR.setPixmap(QPixmap::fromImage(cut.r));
 
         if(m_isProcessing)
         {

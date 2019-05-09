@@ -72,6 +72,7 @@ private:
     void zoomOut();
     void switchDistance();
     void rotateCameraVisualization();
+
     int m_currentUserParam;
 
     Camera* m_cameraL;
