@@ -204,8 +204,8 @@ void VrFullscreenViewer::frameUpdateEvent()
             mixR.wait();
         }
 
-//        std::future<void> futureSetFrameL( std::async([](QGraphicsPixmapItem* pixmap, QImage img) { pixmap->setPixmap(QPixmap::fromImage(img));} , &m_frameL, cut.l));
-//        std::future<void> futureSetFrameR( std::async([](QGraphicsPixmapItem* pixmap, QImage img) { pixmap->setPixmap(QPixmap::fromImage(img));} , &m_frameR, cut.r));
+//        std::future<void> futureSetFrameL( std::async([&]() { m_frameL.setPixmap(QPixmap::fromImage(cut.l));}));
+//        std::future<void> futureSetFrameR( std::async([&]() { m_frameR.setPixmap(QPixmap::fromImage(cut.r));}));
 
 //        futureSetFrameL.wait();
 //        futureSetFrameR.wait();
@@ -243,7 +243,7 @@ void VrFullscreenViewer::frameUpdateEvent()
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 
-    qDebug()  << m_crono.restart();
+//    qDebug()  << m_crono.restart();
 }
 
 
@@ -303,6 +303,12 @@ void VrFullscreenViewer::saveUserParameters(QString filename, QString nameSufix)
     fs << "RightSensorROI_Y" << m_rightSensorROI.y;
     fs << "RightSensorROI_Width" << m_rightSensorROI.width;
     fs << "RightSensorROI_Height" << m_rightSensorROI.height;
+
+    fs << "IRimageoverL_X" << m_centerImageOverL.x();
+    fs << "IRimageoverL_Y" << m_centerImageOverL.y();
+
+    fs << "IRimageoverR_X" << m_centerImageOverR.x();
+    fs << "IRimageoverR_Y" << m_centerImageOverR.y();
 }
 
 void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
@@ -310,7 +316,7 @@ void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
     FileStorage fs(filename.toStdString(), FileStorage::READ);
 
     Rect leftRect, rightRect;
-    int LX, LY, LW, LH, RX, RY, RW, RH;
+    int LX, LY, LW, LH, RX, RY, RW, RH, IR_imgL_X, IR_imgL_Y, IR_imgR_X, IR_imgR_Y;
     fs["LeftSensorROI_X"] >> LX;
     fs["LeftSensorROI_Y"] >> LY;
     fs["LeftSensorROI_Width"] >> LW;
@@ -319,6 +325,12 @@ void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
     fs["RightSensorROI_Y"] >> RY;
     fs["RightSensorROI_Width"] >> RW;
     fs["RightSensorROI_Height"] >> RH;
+
+    fs["IRimageoverL_X"] >> IR_imgL_X;
+    fs["IRimageoverL_Y"] >> IR_imgL_Y;
+
+    fs["IRimageoverR_X"] >> IR_imgR_X;
+    fs["IRimageoverR_Y"] >> IR_imgR_Y;
 
     leftRect.x = LX;
     leftRect.y = LY;
@@ -329,6 +341,12 @@ void VrFullscreenViewer::loadUserParameters(QString filename,bool transition)
     rightRect.y = RY;
     rightRect.height = RH;
     rightRect.width = RW;
+
+    m_centerImageOverL.setX(IR_imgL_X);
+    m_centerImageOverL.setY(IR_imgL_Y);
+    m_centerImageOverR.setX(IR_imgR_X);
+    m_centerImageOverR.setY(IR_imgR_Y);
+
 
     if(!transition)
     {

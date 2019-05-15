@@ -4,7 +4,11 @@ LeftSensorROI_X: -27
 LeftSensorROI_Y: -98
 LeftSensorROI_Width: 1248
 LeftSensorROI_Height: 1404
-RightSensorROI_X: 423
+RightSensorROI_X: 339
 RightSensorROI_Y: -92
 RightSensorROI_Width: 1248
 RightSensorROI_Height: 1404
+IRimageoverL_X: 72
+IRimageoverL_Y: -66
+IRimageoverR_X: -30
+IRimageoverR_Y: -42

@@ -8,3 +8,7 @@ RightSensorROI_X: 60
 RightSensorROI_Y: -44
 RightSensorROI_Width: 1200
 RightSensorROI_Height: 1350
+IRimageoverL_X: 72
+IRimageoverL_Y: -66
+IRimageoverR_X: -30
+IRimageoverR_Y: -42
