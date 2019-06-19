@@ -36,6 +36,8 @@ Camera::Camera(int num_cam)
 //        Msgbox.setText("<big>Warning</big> <p>\n\n Camera not conected \n The program won't work without both cameras conected</p>");
 //        Msgbox.exec();
     }
+    m_fc = new CImageFormatConverter();
+    m_fc->OutputPixelFormat = PixelType_RGB8packed;
 }
 
 /* Function Camera
@@ -47,6 +49,7 @@ Camera::~Camera()
 //    m_pylon_camera->Close();
     m_pylon_camera->DestroyDevice();
 //    this->m_pylon_camera->DetachDevice();
+    delete m_fc;
     if(this->m_pylon_camera != nullptr)
         delete m_pylon_camera;
     PylonTerminate();
@@ -349,21 +352,16 @@ void Camera::moveROIBy(int x, int y)
 QImage* Camera::grab_image(bool &ret)
 {
     ret = false;
-    QImage *qImage = NULL;
-    CPylonImage image;
-    CImageFormatConverter fc;
-    fc.OutputPixelFormat = PixelType_RGB8packed; 
+    QImage *qImage = nullptr;
     CGrabResultPtr ptrGrabResult;
 
     this->m_pylon_camera->RetrieveResult( 5000, ptrGrabResult, TimeoutHandling_ThrowException);
     if (ptrGrabResult->GrabSucceeded())
     {
         ret = true;
-
-        fc.Convert(image, ptrGrabResult);
-        size_t bufferSize = image.GetAllocatedBufferSize();
+        size_t bufferSize = m_fc->GetBufferSizeForConversion(ptrGrabResult);
         uint8_t *nBuffer = new uint8_t[bufferSize];
-        memcpy(nBuffer,image.GetBuffer(),bufferSize);
+        m_fc->Convert(nBuffer,bufferSize, ptrGrabResult);
         qImage = new QImage((uint8_t *)nBuffer, ptrGrabResult->GetWidth(), ptrGrabResult->GetHeight(),QImage::Format_RGB888);
     }
     return qImage;

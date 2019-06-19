@@ -162,7 +162,7 @@ void VrFullscreenViewer::initScene()
 */
 void VrFullscreenViewer::frameUpdateEvent()
 {
-//    m_crono.restart();
+    m_crono.restart();
     //launching two parallel task to retrieve the images from the worker
     std::future<QImage> futureImageL( std::async([](ImageGenerator* igGen) { return igGen->getFrame();} , m_imgGeneratorL));
     std::future<QImage> futureImageR( std::async([](ImageGenerator* igGen) { return igGen->getFrame();} , m_imgGeneratorR));
@@ -243,7 +243,7 @@ void VrFullscreenViewer::frameUpdateEvent()
 
     this->fitInView(this->sceneRect(),Qt::KeepAspectRatio);
 
-//    qDebug()  << m_crono.restart();
+    qDebug()  << m_crono.restart();
 }
 
 

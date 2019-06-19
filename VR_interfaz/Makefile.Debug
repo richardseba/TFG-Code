@@ -657,6 +657,10 @@ debug\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWindow
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
 		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
@@ -701,10 +705,6 @@ debug\moc_mainwindow.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMainWindow
 		VR_UI_Src\vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QStyleOptionGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstyleoption.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
@@ -1722,6 +1722,10 @@ debug\moc_vrfullscreenviewer.cpp: camera.h \
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
 		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
@@ -1751,10 +1755,6 @@ debug\moc_vrfullscreenviewer.cpp: camera.h \
 		VR_UI_Src\vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QStyleOptionGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstyleoption.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
@@ -2484,6 +2484,14 @@ debug\moc_depthprocessing.cpp: C:\Qt\5.10.1\msvc2015_64\include\QtCore\QThread \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h \
 		stereocalibration.h \
 		cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
@@ -2988,6 +2996,10 @@ debug\main.obj: main.cpp mainwindow.h \
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
 		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
@@ -3032,10 +3044,6 @@ debug\main.obj: main.cpp mainwindow.h \
 		VR_UI_Src/vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QStyleOptionGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstyleoption.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
@@ -3775,6 +3783,10 @@ debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
 		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
@@ -3819,10 +3831,6 @@ debug\mainwindow.obj: mainwindow.cpp mainwindow.h \
 		VR_UI_Src/vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QStyleOptionGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstyleoption.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
@@ -4573,6 +4581,10 @@ debug\camera.obj: camera.cpp camera.h \
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
 		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
@@ -5265,6 +5277,10 @@ debug\vrfullscreenviewer.obj: vrfullscreenviewer.cpp vrfullscreenviewer.h \
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
 		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
@@ -5294,10 +5310,6 @@ debug\vrfullscreenviewer.obj: vrfullscreenviewer.cpp vrfullscreenviewer.h \
 		VR_UI_Src/vrui.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qgraphicsitem.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QStyleOptionGraphicsItem \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qstyleoption.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qabstractspinbox.h \
@@ -6064,7 +6076,15 @@ debug\utils.obj: utils.cpp utils.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h
 
 debug\cameracalibration.obj: cameracalibration.cpp cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\core\core.hpp \
@@ -6530,7 +6550,15 @@ debug\temporalmean.obj: temporalmean.cpp temporalmean.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h
 
 debug\processingimages.obj: processingimages.cpp processingimages.h \
 		utils.h \
@@ -6662,6 +6690,14 @@ debug\processingimages.obj: processingimages.cpp processingimages.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h \
 		libelasSrc/elas.h
 
 debug\elas.obj: libelasSrc\elas.cpp libelasSrc/elas.h \
@@ -7043,6 +7079,14 @@ debug\thresholdclassificator.obj: classificatorsSrc\thresholdclassificator.cpp c
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h \
 		temporalmean.h \
 		processingimages.h \
 		libelasSrc/elas.h
@@ -7183,6 +7227,14 @@ debug\depthprocessing.obj: depthprocessing.cpp depthprocessing.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h \
 		stereocalibration.h \
 		cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
@@ -7478,6 +7530,14 @@ debug\videoimagegenerator.obj: imageGeneratorSrc\videoimagegenerator.cpp imageGe
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h \
 		imageGeneratorSrc/imagegenerator.h \
 		threadedloopsevents.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QThread \
@@ -7790,6 +7850,10 @@ debug\cameraimagegenerator.obj: imageGeneratorSrc\cameraimagegenerator.cpp image
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
 		cameracalibration.h \
 		C:\opencv3.4\build\include\opencv2\calib3d\calib3d.hpp \
 		C:\opencv3.4\build\include\opencv2\calib3d.hpp \
@@ -8497,7 +8561,8 @@ debug\histogramimage.obj: histogramimage.cpp histogramimage.h \
 		C:\opencv3.4\build\include\opencv2\imgcodecs\imgcodecs_c.h \
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QDebug \
-		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter
 
 debug\irimagegenerator.obj: imageGeneratorSrc\irimagegenerator.cpp imageGeneratorSrc/irimagegenerator.h \
 		imageGeneratorSrc/imagegenerator.h \
@@ -8636,7 +8701,15 @@ debug\irimagegenerator.obj: imageGeneratorSrc\irimagegenerator.cpp imageGenerato
 		C:\opencv3.4\build\include\opencv2\videoio\videoio_c.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPixmap \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixmap.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\QtGlobal \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QPainter \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainter.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtextoption.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpen.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qbrush.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontinfo.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfont.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qfontmetrics.h
 
 debug\moc_mainwindow.obj: debug\moc_mainwindow.cpp 
 

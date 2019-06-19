@@ -85,6 +85,7 @@ public:
 private:
     CameraCalibration m_calib;
 
+    CImageFormatConverter* m_fc;
     CInstantCamera* m_pylon_camera;
 
     QTime crono; //temporal used for debugging
