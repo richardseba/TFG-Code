@@ -27,6 +27,7 @@ void CameraImageGenerator::process()
         if(ret)
         {
             m_imageMutex.lock();
+            m_currentframeID++;
             if(this->m_isUndistorted && this->m_camera->getIsinitUndistort())
                 //Undistort Image
                 m_currentFrame = this->m_camera->undistortMapImage(*qImage,CV_INTER_LINEAR);
@@ -40,7 +41,7 @@ void CameraImageGenerator::process()
             delete qImage;
             qImage = NULL;
 
-            m_currentFps = 1000.0/(this->m_crono.restart());
+//            m_currentFps = 1000.0/(this->m_crono.restart());
         }
     }
 }
@@ -67,6 +68,18 @@ QImage CameraImageGenerator::getFrame()
     m_imageMutex.unlock();
 
     return image;
+}
+
+std::tuple<QImage, unsigned long> CameraImageGenerator::getFrameWithID()
+{
+    QImage image;
+    unsigned long imageID;
+
+    m_imageMutex.lock();
+    image = m_currentFrame.copy();
+    imageID = m_currentframeID;
+    m_imageMutex.unlock();
+    return std::make_tuple(image,imageID);
 }
 
 /* public Function setIsUndistorted

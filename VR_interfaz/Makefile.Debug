@@ -7396,7 +7396,28 @@ debug\imagegenerator.obj: imageGeneratorSrc\imagegenerator.cpp imageGeneratorSrc
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qset.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
-		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtgui-config.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qcolor.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgb.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qrgba64.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpaintdevice.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qwindowdefs_win.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qrect.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qmargins.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsize.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpixelformat.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtransform.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qmatrix.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpolygon.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qregion.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
+		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h
 
 debug\videoimagegenerator.obj: imageGeneratorSrc\videoimagegenerator.cpp imageGeneratorSrc/videoimagegenerator.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
@@ -7622,7 +7643,6 @@ debug\cameraimagegenerator.obj: imageGeneratorSrc\cameraimagegenerator.cpp image
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qcontiguouscache.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qsharedpointer_impl.h \
-		camera.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\QImage \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qimage.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qtguiglobal.h \
@@ -7644,6 +7664,7 @@ debug\cameraimagegenerator.obj: imageGeneratorSrc\cameraimagegenerator.cpp image
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qdatastream.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtCore\qline.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtGui\qpainterpath.h \
+		camera.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\QMessageBox \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qmessagebox.h \
 		C:\Qt\5.10.1\msvc2015_64\include\QtWidgets\qtwidgetsglobal.h \

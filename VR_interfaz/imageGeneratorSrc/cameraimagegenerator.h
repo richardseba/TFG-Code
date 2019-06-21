@@ -30,6 +30,7 @@ public:
     ~CameraImageGenerator();
 
     QImage getFrame();
+    std::tuple<QImage, unsigned long> getFrameWithID();
     int hasEnded();
     void setUndistortImages(bool undistort);
     float getCurrentFps();
@@ -42,11 +43,12 @@ protected:
 
 private:
     bool m_isUndistorted;
+
     QImage m_currentFrame;
+    QMutex m_imageMutex;
 
     Camera* m_camera;
 
-    QMutex m_imageMutex;
 
     float m_currentFps;
     QTime m_crono;

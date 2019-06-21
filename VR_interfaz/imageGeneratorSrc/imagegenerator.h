@@ -2,6 +2,8 @@
 #define IMAGEGENERATOR_H
 
 #include "threadedloopsevents.h"
+#include <QImage>
+#include "iostream"
 
 /* Class ABSTRACT ImageGenerator
  * -------------------------------
@@ -17,7 +19,10 @@ public:
     ImageGenerator();
     ~ImageGenerator();
     virtual QImage getFrame() = 0;
+    virtual std::tuple<QImage, unsigned long> getFrameWithID() { std::cout << "asd\n"; return std::make_tuple(QImage(),0);}
     virtual int hasEnded() = 0;
+protected:
+    unsigned long m_currentframeID = 0;
 };
 
 #endif // IMAGEGENERATOR_H

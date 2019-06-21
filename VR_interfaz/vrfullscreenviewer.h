@@ -98,6 +98,8 @@ private:
     //Images that will be put on the scene
     QGraphicsPixmapItem m_frameR;
     QGraphicsPixmapItem m_frameL;
+    unsigned long m_frameR_ID = 0;
+    unsigned long m_frameL_ID = 0;
 
     QtCharts::QChart* m_rightChart = new QtCharts::QChart();
     QtCharts::QChart* m_leftChart = new QtCharts::QChart();

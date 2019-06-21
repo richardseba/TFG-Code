@@ -25,7 +25,15 @@ typedef struct
 {
     QImage l;
     QImage r;
+    unsigned long l_ID;
+    unsigned long r_ID;
 } QImagePair;
+
+typedef struct
+{
+    QImage img;
+    unsigned long id;
+} QImageWithID;
 
 typedef struct
 {

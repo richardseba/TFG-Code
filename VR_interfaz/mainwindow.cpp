@@ -76,8 +76,8 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     m_classifier = ThresholdClassificator(SIZE_OF_CLASSIFIER_BUFFER,12,5);
 
-    this->showVRViewer(0);
-    this->setWindowState(Qt::WindowMinimized);
+//    this->showVRViewer(0);
+//    this->setWindowState(Qt::WindowMinimized);
 }
 
 /* Function ~MainWindow
@@ -519,6 +519,7 @@ void MainWindow::fullscreen_closing()
     ui->groupBox_record->setEnabled(true);
     ui->groupBox_3->setEnabled(true);
     ui->groupBox_cameraParams->setEnabled(true);
+    this->setWindowState(Qt::WindowMaximized);
 }
 
 /* Function keyPressEvent
